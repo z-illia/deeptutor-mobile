@@ -1,18 +1,40 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
+import { useEffect, useState, type PropsWithChildren } from 'react';
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import { loadAsync, useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
+import { View } from 'react-native';
+import { ChatProvider } from '@/features/chat/ChatProvider';
+import { FixtureProvider } from '@/features/entry/FixtureProvider';
+import { DesignProvider, useDesign } from '@/shared/design/DesignProvider';
+import { fontAssets } from '@/shared/design/fonts';
+import { Button } from '@/shared/ui/Controls';
+import { DText } from '@/shared/ui/Text';
+import { FeedbackProvider } from '@/shared/ui/Feedback';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
+void SplashScreen.preventAutoHideAsync();
 
-SplashScreen.preventAutoHideAsync();
+function FontGate({ children }: PropsWithChildren) {
+  const [loaded, error] = useFonts(fontAssets);
+  const [recovered, setRecovered] = useState(false);
+  const [retrying, setRetrying] = useState(false);
+  const { colors, t } = useDesign();
+  useEffect(() => { if (loaded || error || recovered) void SplashScreen.hideAsync(); }, [loaded, error, recovered]);
+  if (!loaded && !recovered && !error) return <View style={{ flex: 1, backgroundColor: colors.background }} />;
+  if (error && !recovered) return <View style={{ flex: 1, justifyContent: 'center', padding: 24, gap: 16, backgroundColor: colors.background }}><DText accessibilityRole="alert">Font assets could not be loaded.</DText><Button loading={retrying} onPress={() => { setRetrying(true); void loadAsync(fontAssets).then(() => setRecovered(true)).catch(() => {}).finally(() => setRetrying(false)); }}>{t('Retry')}</Button></View>;
+  return children;
+}
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
-  );
+function RootNavigation() {
+  const { colors, dark } = useDesign();
+  const theme = dark ? DarkTheme : DefaultTheme;
+  return <ThemeProvider value={{ ...theme, colors: { ...theme.colors, primary: colors.primary, background: colors.background, card: colors.card, text: colors.foreground, border: colors.border, notification: colors.destructive } }}>
+    <StatusBar style={dark ? 'light' : 'dark'} />
+    <FontGate><FeedbackProvider><FixtureProvider><ChatProvider><Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background }, animation: 'none' }}><Stack.Screen name="ui/search" options={{ presentation: 'modal' }} /></Stack></ChatProvider></FixtureProvider></FeedbackProvider></FontGate>
+  </ThemeProvider>;
+}
+
+export default function RootLayout() {
+  return <SafeAreaProvider initialMetrics={initialWindowMetrics}><DesignProvider><RootNavigation /></DesignProvider></SafeAreaProvider>;
 }

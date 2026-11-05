@@ -1,0 +1,134 @@
+[
+  {
+    "key": "chat_history",
+    "href": "/space/chat-history",
+    "icon": "History",
+    "title": "Chat History",
+    "zh": "聊天历史",
+    "blurb": "Review and reopen previous conversations.",
+    "unit": "conversations",
+    "tile": "bg-sky-500/10 text-sky-600 dark:text-sky-400",
+    "account": false
+  },
+  {
+    "key": "notebooks",
+    "href": "/notebooks",
+    "icon": "Bookmark",
+    "title": "Favorites",
+    "zh": "收藏夹",
+    "blurb": "Keep original conversations and sources, ready to use in your notes.",
+    "unit": "collections",
+    "tile": "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+    "account": false
+  },
+  {
+    "key": "journal",
+    "href": "/space/journal",
+    "icon": "NotebookPen",
+    "title": "Learning journal",
+    "zh": "学习日志",
+    "blurb": "Inspect your mission, session handoff and confirmed records.",
+    "unit": null,
+    "tile": "bg-teal-500/10 text-teal-600 dark:text-teal-400",
+    "account": false
+  },
+  {
+    "key": "question_bank",
+    "href": "/space/questions",
+    "icon": "ClipboardList",
+    "title": "Question Bank",
+    "zh": "题库",
+    "blurb": "Review and organize quiz questions across sessions.",
+    "unit": "questions",
+    "tile": "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+    "account": false
+  },
+  {
+    "key": "knowledge",
+    "href": "/knowledge-bases",
+    "icon": "BookOpen",
+    "title": "Knowledge Center",
+    "zh": "知识中心",
+    "blurb": "Manage knowledge bases and retrieval engines.",
+    "unit": "knowledge bases",
+    "tile": "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+    "account": false
+  },
+  {
+    "key": "whisper",
+    "href": "/whisper",
+    "icon": "Ear",
+    "title": "Whisper",
+    "zh": "密语",
+    "blurb": "Dual-seat practice room — the supervisor whispers to the trainee only.",
+    "unit": null,
+    "tile": "bg-fuchsia-500/10 text-fuchsia-600 dark:text-fuchsia-400",
+    "account": false
+  },
+  {
+    "key": "agents",
+    "href": "/agents",
+    "icon": "Bot",
+    "title": "My Agents",
+    "zh": "子智能体",
+    "blurb": "Connect local or remote agents and consult them from any chat.",
+    "unit": "agents",
+    "tile": "bg-slate-500/10 text-slate-600 dark:text-slate-300",
+    "account": true
+  },
+  {
+    "key": "personas",
+    "href": "/space/personas",
+    "icon": "UserRound",
+    "title": "Personas",
+    "zh": "Personas",
+    "blurb": "Behavior presets you can apply per chat turn.",
+    "unit": "personas",
+    "tile": "bg-rose-500/10 text-rose-600 dark:text-rose-400",
+    "account": true
+  },
+  {
+    "key": "skills",
+    "href": "/space/skills",
+    "icon": "Wand2",
+    "title": "Skills",
+    "zh": "技能",
+    "blurb": "Capability playbooks the model reads on demand.",
+    "unit": "skills",
+    "tile": "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400",
+    "account": true
+  },
+  {
+    "key": "mcp",
+    "href": "/space/mcp",
+    "icon": "Plug",
+    "title": "MCP Services",
+    "zh": "MCP 服务",
+    "blurb": "Connect hosted MCP services and bring their tools into chat.",
+    "unit": "services",
+    "tile": "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+    "account": true
+  },
+  {
+    "key": "cli_apps",
+    "href": "/space/cli-apps",
+    "icon": "Terminal",
+    "title": "CLI Apps",
+    "zh": "CLI 应用",
+    "blurb": "Command-line tools from the CLI-Anything catalog, callable from chat.",
+    "unit": "apps",
+    "tile": "bg-violet-500/10 text-violet-600 dark:text-violet-400",
+    "account": true
+  },
+  {
+    "key": "memory",
+    "href": "/memory",
+    "icon": "Brain",
+    "title": "Memory",
+    "zh": "记忆",
+    "blurb": "Review what your tutor remembers about you.",
+    "unit": null,
+    "tile": "bg-rose-500/10 text-rose-600 dark:text-rose-400",
+    "account": true
+  }
+]

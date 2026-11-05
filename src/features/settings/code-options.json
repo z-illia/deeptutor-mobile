@@ -1,0 +1,232 @@
+[
+  {
+    "id": "a11yDark",
+    "label": "A11Y Dark",
+    "file": "a11yDark"
+  },
+  {
+    "id": "a11yOneLight",
+    "label": "A11Y One Light",
+    "file": "a11yOneLight"
+  },
+  {
+    "id": "atomDark",
+    "label": "Atom Dark",
+    "file": "atomDark"
+  },
+  {
+    "id": "base16AteliersulphurpoolLight",
+    "label": "Base16 Atelier Sulphurpool Light",
+    "file": "base16AteliersulphurpoolLight"
+  },
+  {
+    "id": "cb",
+    "label": "CB",
+    "file": "cb"
+  },
+  {
+    "id": "coldarkCold",
+    "label": "Coldark Cold",
+    "file": "coldarkCold"
+  },
+  {
+    "id": "coldarkDark",
+    "label": "Coldark Dark",
+    "file": "coldarkDark"
+  },
+  {
+    "id": "coyWithoutShadows",
+    "label": "Coy Without Shadows",
+    "file": "coyWithoutShadows"
+  },
+  {
+    "id": "coy",
+    "label": "Coy",
+    "file": "coy"
+  },
+  {
+    "id": "darcula",
+    "label": "Darcula",
+    "file": "darcula"
+  },
+  {
+    "id": "dark",
+    "label": "Dark",
+    "file": "dark"
+  },
+  {
+    "id": "dracula",
+    "label": "Dracula",
+    "file": "dracula"
+  },
+  {
+    "id": "duotoneDark",
+    "label": "Duotone Dark",
+    "file": "duotoneDark"
+  },
+  {
+    "id": "duotoneEarth",
+    "label": "Duotone Earth",
+    "file": "duotoneEarth"
+  },
+  {
+    "id": "duotoneForest",
+    "label": "Duotone Forest",
+    "file": "duotoneForest"
+  },
+  {
+    "id": "duotoneLight",
+    "label": "Duotone Light",
+    "file": "duotoneLight"
+  },
+  {
+    "id": "duotoneSea",
+    "label": "Duotone Sea",
+    "file": "duotoneSea"
+  },
+  {
+    "id": "duotoneSpace",
+    "label": "Duotone Space",
+    "file": "duotoneSpace"
+  },
+  {
+    "id": "funky",
+    "label": "Funky",
+    "file": "funky"
+  },
+  {
+    "id": "ghcolors",
+    "label": "GH Colors",
+    "file": "ghcolors"
+  },
+  {
+    "id": "gruvboxDark",
+    "label": "Gruvbox Dark",
+    "file": "gruvboxDark"
+  },
+  {
+    "id": "gruvboxLight",
+    "label": "Gruvbox Light",
+    "file": "gruvboxLight"
+  },
+  {
+    "id": "holiTheme",
+    "label": "Holi Theme",
+    "file": "holiTheme"
+  },
+  {
+    "id": "hopscotch",
+    "label": "Hopscotch",
+    "file": "hopscotch"
+  },
+  {
+    "id": "lucario",
+    "label": "Lucario",
+    "file": "lucario"
+  },
+  {
+    "id": "materialDark",
+    "label": "Material Dark",
+    "file": "materialDark"
+  },
+  {
+    "id": "materialLight",
+    "label": "Material Light",
+    "file": "materialLight"
+  },
+  {
+    "id": "materialOceanic",
+    "label": "Material Oceanic",
+    "file": "materialOceanic"
+  },
+  {
+    "id": "nightOwl",
+    "label": "Night Owl",
+    "file": "nightOwl"
+  },
+  {
+    "id": "nord",
+    "label": "Nord",
+    "file": "nord"
+  },
+  {
+    "id": "okaidia",
+    "label": "Okaidia",
+    "file": "okaidia"
+  },
+  {
+    "id": "oneDark",
+    "label": "One Dark",
+    "file": "oneDark"
+  },
+  {
+    "id": "oneLight",
+    "label": "One Light",
+    "file": "oneLight"
+  },
+  {
+    "id": "pojoaque",
+    "label": "Pojoaque",
+    "file": "pojoaque"
+  },
+  {
+    "id": "prism",
+    "label": "Prism",
+    "file": "prism"
+  },
+  {
+    "id": "shadesOfPurple",
+    "label": "Shades of Purple",
+    "file": "shadesOfPurple"
+  },
+  {
+    "id": "solarizedDarkAtom",
+    "label": "Solarized Dark Atom",
+    "file": "solarizedDarkAtom"
+  },
+  {
+    "id": "solarizedlight",
+    "label": "Solarized Light",
+    "file": "solarizedlight"
+  },
+  {
+    "id": "synthwave84",
+    "label": "Synthwave 84",
+    "file": "synthwave84"
+  },
+  {
+    "id": "tomorrow",
+    "label": "Tomorrow",
+    "file": "tomorrow"
+  },
+  {
+    "id": "twilight",
+    "label": "Twilight",
+    "file": "twilight"
+  },
+  {
+    "id": "vsDark",
+    "label": "VS Dark",
+    "file": "vsDark"
+  },
+  {
+    "id": "vs",
+    "label": "VS",
+    "file": "vs"
+  },
+  {
+    "id": "vscDarkPlus",
+    "label": "VSC Dark Plus",
+    "file": "vscDarkPlus"
+  },
+  {
+    "id": "xonokai",
+    "label": "Xonokai",
+    "file": "xonokai"
+  },
+  {
+    "id": "zTouch",
+    "label": "Z Touch",
+    "file": "zTouch"
+  }
+]
