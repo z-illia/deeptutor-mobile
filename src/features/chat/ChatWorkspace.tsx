@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Image, Pressable, ScrollView, TextInput, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import {
+  Activity,
   AlertCircle,
   ArchiveRestore,
   Check,
@@ -12,6 +13,8 @@ import {
   X,
 } from 'lucide-react-native';
 import { useCopy } from '@/features/entry/copy';
+import { useFavorites } from '@/features/favorites/FavoritesProvider';
+import { SaveToNotebookModal } from '@/features/favorites/SaveToNotebookModal';
 import { useDesign } from '@/shared/design/DesignProvider';
 import { geometry } from '@/shared/design/tokens';
 import { Button, IconButton } from '@/shared/ui/Controls';
@@ -35,7 +38,10 @@ import { SessionActionsSheet } from './SessionActionsSheet';
 import { StarterSuggestions } from './StarterSuggestions';
 
 export function ChatWorkspace() {
-  const params = useLocalSearchParams<{ sessionId?: string | string[] }>();
+  const params = useLocalSearchParams<{
+    sessionId?: string | string[];
+    attachFavoriteId?: string;
+  }>();
   const rawSessionId = Array.isArray(params.sessionId)
     ? params.sessionId[0]
     : params.sessionId;
@@ -48,6 +54,23 @@ export function ChatWorkspace() {
   const t = useCopy();
   const { notify } = useFeedback();
   const chat = useChat();
+  const { locateRecord } = useFavorites();
+  const addReference = chat.addReference;
+
+  useEffect(() => {
+    if (!params.attachFavoriteId) return;
+    const found = locateRecord(params.attachFavoriteId);
+    if (found) {
+      addReference(sessionId, {
+        id: `ref-fav-${found.record.id}`,
+        kind: 'favorite',
+        label: found.record.title,
+        subtitle: `${found.notebook.name} · ${found.record.summary ?? 'Saved Original'}`,
+        sourceId: found.record.id,
+        status: 'valid',
+      });
+    }
+  }, [addReference, locateRecord, params.attachFavoriteId, sessionId]);
 
   const [renamingSessionId, setRenamingSessionId] = useState<string | null>(
     null,
@@ -304,6 +327,32 @@ export function ChatWorkspace() {
           >
             <Pressable
               accessibilityRole="button"
+              accessibilityLabel={t('Session Viewer')}
+              onPress={() =>
+                router.push(
+                  `/ui/session-viewer?sessionId=${encodeURIComponent(sessionId ?? 'session-general-1')}` as never,
+                )
+              }
+              style={({ pressed }) => ({
+                minHeight: 36,
+                paddingHorizontal: 10,
+                borderRadius: geometry.radius.md,
+                borderWidth: 1,
+                borderColor: colors.border,
+                backgroundColor: pressed ? colors.secondary : colors.card,
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 6,
+              })}
+            >
+              <Activity size={15} color={colors.primary} />
+              <DText role="small" style={{ fontFamily: 'GeistMedium' }}>
+                {t('Viewer')}
+              </DText>
+            </Pressable>
+
+            <Pressable
+              accessibilityRole="button"
               accessibilityLabel={t('Chat History')}
               onPress={() => router.push('/space/chat-history')}
               style={({ pressed }) => ({
@@ -515,6 +564,7 @@ export function ChatWorkspace() {
               ) : null}
 
               <ChatComposer
+                sessionId={sessionId}
                 value={draft}
                 onChangeText={(text) => chat.setDraft(sessionId, text)}
                 attachments={attachments}
@@ -554,6 +604,7 @@ export function ChatWorkspace() {
             >
               <View style={{ width: '100%', maxWidth: 740, gap: 16 }}>
                 <ChatMessageList
+                  sessionId={sessionId}
                   messages={visibleMessages}
                   siblingsByMessageId={siblingsByMessageId}
                   isStreaming={isStreaming}
@@ -605,6 +656,7 @@ export function ChatWorkspace() {
                   <InlineAlert tone="danger">{sendError}</InlineAlert>
                 ) : null}
                 <ChatComposer
+                  sessionId={sessionId}
                   value={draft}
                   onChangeText={(text) => chat.setDraft(sessionId, text)}
                   attachments={attachments}
@@ -648,6 +700,8 @@ export function ChatWorkspace() {
           onOrganize={chat.organizeSession}
           onDelete={handleDeleteCurrentSession}
         />
+
+        <SaveToNotebookModal />
       </View>
   );
 }

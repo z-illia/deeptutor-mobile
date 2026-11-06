@@ -862,6 +862,7 @@ export function createInitialMessagesBySession(): Record<string, ChatMessageItem
         content: 'How do I find the eigenvalues of A = [[4, 1], [2, 3]]?',
         createdAt: '2026-04-19T11:00:00Z',
         llm: { provider: 'openai', model: 'gpt-4.1' },
+        references: [WORKSPACE_KNOWLEDGE_BASES[0]],
       },
       {
         id: 302,
@@ -878,6 +879,11 @@ export function createInitialMessagesBySession(): Record<string, ChatMessageItem
         ].join('\n'),
         createdAt: '2026-04-19T11:00:09Z',
         llm: { provider: 'openai', model: 'gpt-4.1' },
+        askUser: createSampleAskUserCard(),
+        quiz: createSampleQuizQuestions(),
+        research: createSampleResearchCard(),
+        toolsUsed: ['ask_user', 'quiz_generator', 'deep_research'],
+        artifacts: [SAMPLE_PREVIEW_FILES[4], SAMPLE_PREVIEW_FILES[6]],
         usage: {
           totalTokens: 260,
           latencySeconds: 1.1,

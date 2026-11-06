@@ -78,7 +78,13 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [kindFilter, setKindFilter] = useState('all');
-  const [expandedRecordIds, setExpandedRecordIds] = useState<string[]>([]);
+  const [expandedRecordIds, setExpandedRecordIds] = useState<string[]>(() => {
+    if (params.recordId) return [params.recordId];
+    const firstId = notebookId
+      ? recordsByNotebook[notebookId]?.[0]?.id
+      : undefined;
+    return firstId ? [firstId] : [];
+  });
   const [statusNotice, setStatusNotice] = useState<string | null>(null);
 
   // Collection create/edit modal state
@@ -171,26 +177,6 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
     }
     return { status: 'missing' as const };
   }, [locateRecord, notebookId, params.recordId, rawRecords]);
-
-  useEffect(() => {
-    if (
-      focusedRecordStatus?.status === 'found' &&
-      !expandedRecordIds.includes(focusedRecordStatus.record.id)
-    ) {
-      setExpandedRecordIds((prev) => [...prev, focusedRecordStatus.record.id]);
-    }
-  }, [expandedRecordIds, focusedRecordStatus]);
-
-  useEffect(() => {
-    if (
-      notebookId &&
-      rawRecords.length > 0 &&
-      expandedRecordIds.length === 0 &&
-      !params.recordId
-    ) {
-      setExpandedRecordIds([rawRecords[0].id]);
-    }
-  }, [expandedRecordIds.length, notebookId, params.recordId, rawRecords]);
 
   const openCreateNotebookModal = () => {
     setEditingNotebook(null);
@@ -1833,7 +1819,10 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={t('Retry loading Favorites')}
-              onPress={() => resetFavoritesFixtures()}
+              onPress={() => {
+                resetFavoritesFixtures();
+                setLibraryState('ready');
+              }}
               style={[styles.primaryBtn, { backgroundColor: colors.primary }]}
             >
               <Text

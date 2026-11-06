@@ -12,30 +12,54 @@ import { useFixtures } from '@/features/entry/FixtureProvider';
 import {
   buildVisiblePath,
   isPlaceholderSessionTitle,
+  rebalanceQuizCounts,
   selectChildBranch,
   tipMessageId,
+  validateQuizConfig,
+  validateResearchConfig,
+  type AskUserAnswer,
   type ChatAttachmentSummary,
   type ChatMessageItem,
+  type ContextReferenceItem,
+  type DeepQuestionFormConfig,
+  type DeepResearchFormConfig,
+  type FilePreviewSource,
   type LLMOption,
   type LLMSelection,
   type MasteryTopicLabel,
+  type QuizQuestionUserState,
   type ReadingCollectionLabel,
+  type ResearchOutlineItem,
   type SessionOrganizationPatch,
   type SessionSummary,
+  type ViewerTab,
 } from './model';
 import {
   buildSimulatedAssistantChunks,
   createInitialMessagesBySession,
   createInitialSessions,
+  createSampleAskUserCard,
+  createSampleQuizQuestions,
+  createSampleResearchCard,
   DEFAULT_LLM_SELECTION,
+  DEFAULT_QUIZ_CONFIG,
+  DEFAULT_RESEARCH_CONFIG,
   INITIAL_LLM_OPTIONS,
   MASTERY_TOPICS_BY_WORKSPACE,
   PERSONAL_SUGGESTION_SETS,
   READING_COLLECTIONS_BY_WORKSPACE,
+  SAMPLE_PREVIEW_FILES,
 } from './repository';
 
 export type CatalogLoadState = 'ready' | 'loading' | 'error' | 'empty';
 export type SessionViewState = 'ready' | 'loading' | 'error';
+
+const DEFAULT_ACTIVITY_TAB: ViewerTab = {
+  id: 'tab-activity',
+  kind: 'activity',
+  title: 'Activity',
+  closable: false,
+};
 
 export interface ChatContextValue {
   sessions: SessionSummary[];
@@ -43,7 +67,7 @@ export interface ChatContextValue {
   liveSessionIds: ReadonlySet<string>;
   llmOptions: LLMOption[];
   modelCatalogState: CatalogLoadState;
-   setModelCatalogState: (state: CatalogLoadState) => void;
+  setModelCatalogState: (state: CatalogLoadState) => void;
   sessionViewState: SessionViewState;
   setSessionViewState: (state: SessionViewState) => void;
   defaultModel: LLMSelection;
@@ -59,6 +83,82 @@ export interface ChatContextValue {
   ) => { ok: boolean; error?: string };
   removeAttachment: (sessionId: string | null, attachmentId: string) => void;
   clearAttachments: (sessionId: string | null) => void;
+  // M3.2 Composer References (`UI-COMPOSER-PICKERS`)
+  referenceCatalogState: CatalogLoadState;
+  setReferenceCatalogState: (state: CatalogLoadState) => void;
+  getReferences: (sessionId: string | null) => ContextReferenceItem[];
+  addReference: (
+    sessionId: string | null,
+    item: ContextReferenceItem,
+  ) => { ok: boolean; error?: string };
+  removeReference: (sessionId: string | null, referenceId: string) => void;
+  clearReferences: (sessionId: string | null) => void;
+  // M3.2 Capability Configuration (`UI-CAPABILITIES`)
+  getActiveCapability: (sessionId: string | null) => string;
+  setActiveCapability: (
+    sessionId: string | null,
+    capabilityId: string,
+  ) => void;
+  quizConfig: DeepQuestionFormConfig;
+  updateQuizConfig: (patch: Partial<DeepQuestionFormConfig>) => void;
+  researchConfig: DeepResearchFormConfig;
+  updateResearchConfig: (patch: Partial<DeepResearchFormConfig>) => void;
+  isCapabilityConfirmed: (sessionId: string | null) => boolean;
+  confirmCapabilityConfig: (sessionId: string | null) => {
+    ok: boolean;
+    errors: string[];
+  };
+  // M3.2 Structured Responses (`UI-STRUCTURED-REPLY`, `UI-QUIZ`, `UI-RESEARCH`)
+  submitAskUserAnswers: (
+    sessionId: string,
+    messageId: number,
+    answers: Record<string, AskUserAnswer>,
+  ) => { ok: boolean; error?: string };
+  modifyAskUserAnswers: (sessionId: string, messageId: number) => void;
+  getQuizUserState: (
+    sessionId: string,
+    messageId: number,
+    questionId: string,
+  ) => QuizQuestionUserState;
+  updateQuizUserState: (
+    sessionId: string,
+    messageId: number,
+    questionId: string,
+    patch: Partial<QuizQuestionUserState>,
+  ) => void;
+  quizFollowupByQuestion: Record<
+    string,
+    { role: 'user' | 'assistant'; content: string }[]
+  >;
+  sendQuizFollowup: (
+    questionId: string,
+    prompt: string,
+    questionPrompt: string,
+  ) => void;
+  updateResearchOutline: (
+    sessionId: string,
+    messageId: number,
+    outline: ResearchOutlineItem[],
+  ) => void;
+  startResearchExecution: (sessionId: string, messageId: number) => void;
+  // M3.2 Session Viewer (`MS-SESSION-VIEWER`)
+  getViewerTabs: (sessionId: string | null) => ViewerTab[];
+  getActiveViewerTabId: (sessionId: string | null) => string;
+  getClosedViewerTabs: (sessionId: string | null) => ViewerTab[];
+  openViewerTab: (sessionId: string | null, tab: ViewerTab) => void;
+  closeViewerTab: (sessionId: string | null, tabId: string) => void;
+  selectViewerTab: (sessionId: string | null, tabId: string) => void;
+  reopenClosedViewerTab: (sessionId: string | null) => ViewerTab | null;
+  getMarkdownScratchpad: (sessionId: string | null) => string;
+  setMarkdownScratchpad: (sessionId: string | null, text: string) => void;
+  // M3.2 File Preview (`MS-FILE-PREVIEW`)
+  previewFiles: FilePreviewSource[];
+  activePreviewFile: FilePreviewSource | null;
+  openFilePreview: (
+    fileIdOrSource: string | FilePreviewSource,
+  ) => FilePreviewSource | null;
+  closeFilePreview: () => void;
+  // M3.1 Branching & Session Operations
   getSelectedBranches: (sessionId: string) => Record<string, number>;
   switchBranch: (
     sessionId: string,
@@ -119,6 +219,55 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const [attachmentsByKey, setAttachmentsByKey] = useState<
     Record<string, ChatAttachmentSummary[]>
   >({});
+  const [referencesByKey, setReferencesByKey] = useState<
+    Record<string, ContextReferenceItem[]>
+  >({});
+  const [referenceCatalogState, setReferenceCatalogState] =
+    useState<CatalogLoadState>('ready');
+  const [capabilityByKey, setCapabilityByKey] = useState<
+    Record<string, string>
+  >({});
+  const [capabilityConfirmedByKey, setCapabilityConfirmedByKey] = useState<
+    Record<string, boolean>
+  >({});
+  const [quizConfig, setQuizConfig] = useState<DeepQuestionFormConfig>(
+    DEFAULT_QUIZ_CONFIG,
+  );
+  const [researchConfig, setResearchConfig] = useState<DeepResearchFormConfig>(
+    DEFAULT_RESEARCH_CONFIG,
+  );
+  const [quizStatesByKey, setQuizStatesByKey] = useState<
+    Record<string, QuizQuestionUserState>
+  >({});
+  const [quizFollowupByQuestion, setQuizFollowupByQuestion] = useState<
+    Record<string, { role: 'user' | 'assistant'; content: string }[]>
+  >({
+    'quiz-q1': [
+      {
+        role: 'assistant',
+        content:
+          'Ask me anything about why the trace equals the sum of eigenvalues or how to factor the characteristic polynomial.',
+      },
+    ],
+  });
+  const [viewerTabsByKey, setViewerTabsByKey] = useState<
+    Record<string, ViewerTab[]>
+  >({});
+  const [activeViewerTabByKey, setActiveViewerTabByKey] = useState<
+    Record<string, string>
+  >({});
+  const [closedViewerTabsByKey, setClosedViewerTabsByKey] = useState<
+    Record<string, ViewerTab[]>
+  >({});
+  const [scratchpadByKey, setScratchpadByKey] = useState<
+    Record<string, string>
+  >({
+    '::session-general-1':
+      '# Scratchpad — Fourier Transform\n\n- Parseval energy identity check\n- Compare rectangular vs. Hann window spectral leakage\n',
+  });
+  const [activePreviewFile, setActivePreviewFile] =
+    useState<FilePreviewSource | null>(() => SAMPLE_PREVIEW_FILES[0]);
+
   const [selectedBranchesBySession, setSelectedBranchesBySession] = useState<
     Record<string, Record<string, number>>
   >(() => ({
@@ -227,6 +376,464 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     },
     [draftKey],
   );
+
+  // M3.2 Composer References (`UI-COMPOSER-PICKERS`)
+  const getReferences = useCallback(
+    (sessionId: string | null) => referencesByKey[draftKey(sessionId)] ?? [],
+    [draftKey, referencesByKey],
+  );
+
+  const addReference = useCallback(
+    (
+      sessionId: string | null,
+      item: ContextReferenceItem,
+    ): { ok: boolean; error?: string } => {
+      if (item.status === 'unavailable') {
+        return {
+          ok: false,
+          error: 'Selected reference is no longer available in this workspace.',
+        };
+      }
+      const key = draftKey(sessionId);
+      setReferencesByKey((prev) => {
+        const current = prev[key] ?? [];
+        if (current.some((r) => r.id === item.id)) return prev;
+        return { ...prev, [key]: [...current, item] };
+      });
+      return { ok: true };
+    },
+    [draftKey],
+  );
+
+  const removeReference = useCallback(
+    (sessionId: string | null, referenceId: string) => {
+      const key = draftKey(sessionId);
+      setReferencesByKey((prev) => ({
+        ...prev,
+        [key]: (prev[key] ?? []).filter((r) => r.id !== referenceId),
+      }));
+    },
+    [draftKey],
+  );
+
+  const clearReferences = useCallback(
+    (sessionId: string | null) => {
+      const key = draftKey(sessionId);
+      setReferencesByKey((prev) => ({ ...prev, [key]: [] }));
+    },
+    [draftKey],
+  );
+
+  // M3.2 Capability Configuration (`UI-CAPABILITIES`)
+  const getActiveCapability = useCallback(
+    (sessionId: string | null) =>
+      capabilityByKey[draftKey(sessionId)] ?? 'chat',
+    [capabilityByKey, draftKey],
+  );
+
+  const setActiveCapability = useCallback(
+    (sessionId: string | null, capabilityId: string) => {
+      const key = draftKey(sessionId);
+      setCapabilityByKey((prev) => ({ ...prev, [key]: capabilityId }));
+      const needsConfirm =
+        capabilityId === 'question' || capabilityId === 'research';
+      setCapabilityConfirmedByKey((prev) => ({
+        ...prev,
+        [key]: !needsConfirm,
+      }));
+    },
+    [draftKey],
+  );
+
+  const updateQuizConfig = useCallback(
+    (patch: Partial<DeepQuestionFormConfig>) => {
+      setQuizConfig((prev) => {
+        const nextTotal =
+          patch.totalCount !== undefined ? patch.totalCount : prev.totalCount;
+        const nextTypes =
+          patch.selectedTypes !== undefined
+            ? patch.selectedTypes
+            : prev.selectedTypes;
+        const nextCounts =
+          patch.typeCounts !== undefined
+            ? patch.typeCounts
+            : rebalanceQuizCounts(nextTotal, nextTypes);
+        return {
+          ...prev,
+          ...patch,
+          totalCount: nextTotal,
+          selectedTypes: nextTypes,
+          typeCounts: nextCounts,
+        };
+      });
+    },
+    [],
+  );
+
+  const updateResearchConfig = useCallback(
+    (patch: Partial<DeepResearchFormConfig>) => {
+      setResearchConfig((prev) => {
+        const next = { ...prev, ...patch };
+        if (patch.depth === 'quick') {
+          next.subtopics = 2;
+          next.iterations = 1;
+        } else if (patch.depth === 'standard') {
+          next.subtopics = 3;
+          next.iterations = 2;
+        } else if (patch.depth === 'deep') {
+          next.subtopics = 5;
+          next.iterations = 4;
+        }
+        return next;
+      });
+    },
+    [],
+  );
+
+  const isCapabilityConfirmed = useCallback(
+    (sessionId: string | null) => {
+      const cap = getActiveCapability(sessionId);
+      if (cap !== 'question' && cap !== 'research') return true;
+      return Boolean(capabilityConfirmedByKey[draftKey(sessionId)]);
+    },
+    [capabilityConfirmedByKey, draftKey, getActiveCapability],
+  );
+
+  const confirmCapabilityConfig = useCallback(
+    (sessionId: string | null): { ok: boolean; errors: string[] } => {
+      const cap = getActiveCapability(sessionId);
+      const errors =
+        cap === 'question'
+          ? validateQuizConfig(quizConfig)
+          : cap === 'research'
+            ? validateResearchConfig(researchConfig)
+            : [];
+      if (errors.length > 0) {
+        return { ok: false, errors };
+      }
+      setCapabilityConfirmedByKey((prev) => ({
+        ...prev,
+        [draftKey(sessionId)]: true,
+      }));
+      return { ok: true, errors: [] };
+    },
+    [draftKey, getActiveCapability, quizConfig, researchConfig],
+  );
+
+  // M3.2 Structured Responses (`UI-STRUCTURED-REPLY`, `UI-QUIZ`, `UI-RESEARCH`)
+  const submitAskUserAnswers = useCallback(
+    (
+      sessionId: string,
+      messageId: number,
+      answers: Record<string, AskUserAnswer>,
+    ): { ok: boolean; error?: string } => {
+      if (failOperation) {
+        setMessagesBySession((prev) => ({
+          ...prev,
+          [sessionId]: (prev[sessionId] ?? []).map((m) =>
+            m.id === messageId && m.askUser
+              ? {
+                  ...m,
+                  askUser: {
+                    ...m.askUser,
+                    status: 'error',
+                    errorMessage:
+                      'Unable to submit answers while simulated failure is active.',
+                  },
+                }
+              : m,
+          ),
+        }));
+        return {
+          ok: false,
+          error: 'Unable to submit answers while simulated failure is active.',
+        };
+      }
+      setMessagesBySession((prev) => ({
+        ...prev,
+        [sessionId]: (prev[sessionId] ?? []).map((m) =>
+          m.id === messageId && m.askUser
+            ? {
+                ...m,
+                askUser: {
+                  ...m.askUser,
+                  status: 'submitted',
+                  answers,
+                  errorMessage: undefined,
+                },
+              }
+            : m,
+        ),
+      }));
+      return { ok: true };
+    },
+    [failOperation],
+  );
+
+  const modifyAskUserAnswers = useCallback(
+    (sessionId: string, messageId: number) => {
+      setMessagesBySession((prev) => ({
+        ...prev,
+        [sessionId]: (prev[sessionId] ?? []).map((m) =>
+          m.id === messageId && m.askUser
+            ? {
+                ...m,
+                askUser: {
+                  ...m.askUser,
+                  status: 'pending',
+                  errorMessage: undefined,
+                },
+              }
+            : m,
+        ),
+      }));
+    },
+    [],
+  );
+
+  const getQuizUserState = useCallback(
+    (
+      sessionId: string,
+      messageId: number,
+      questionId: string,
+    ): QuizQuestionUserState => {
+      const key = `${sessionId}::${messageId}::${questionId}`;
+      return (
+        quizStatesByKey[key] ?? {
+          userAnswer: '',
+          submitted: false,
+        }
+      );
+    },
+    [quizStatesByKey],
+  );
+
+  const updateQuizUserState = useCallback(
+    (
+      sessionId: string,
+      messageId: number,
+      questionId: string,
+      patch: Partial<QuizQuestionUserState>,
+    ) => {
+      const key = `${sessionId}::${messageId}::${questionId}`;
+      setQuizStatesByKey((prev) => ({
+        ...prev,
+        [key]: {
+          ...(prev[key] ?? { userAnswer: '', submitted: false }),
+          ...patch,
+        },
+      }));
+    },
+    [],
+  );
+
+  const sendQuizFollowup = useCallback(
+    (questionId: string, prompt: string, questionPrompt: string) => {
+      const trimmed = prompt.trim();
+      if (!trimmed) return;
+      setQuizFollowupByQuestion((prev) => {
+        const current = prev[questionId] ?? [];
+        const reply = `**Follow-up on "${questionPrompt.slice(0, 48)}...":** Start by checking how your step applies to ${trimmed}. Notice that the invariant holds regardless of basis rotation.`;
+        return {
+          ...prev,
+          [questionId]: [
+            ...current,
+            { role: 'user', content: trimmed },
+            { role: 'assistant', content: reply },
+          ],
+        };
+      });
+    },
+    [],
+  );
+
+  const updateResearchOutline = useCallback(
+    (sessionId: string, messageId: number, outline: ResearchOutlineItem[]) => {
+      setMessagesBySession((prev) => ({
+        ...prev,
+        [sessionId]: (prev[sessionId] ?? []).map((m) =>
+          m.id === messageId && m.research
+            ? {
+                ...m,
+                research: {
+                  ...m.research,
+                  outline,
+                },
+              }
+            : m,
+        ),
+      }));
+    },
+    [],
+  );
+
+  const startResearchExecution = useCallback(
+    (sessionId: string, messageId: number) => {
+      if (failOperation) {
+        setMessagesBySession((prev) => ({
+          ...prev,
+          [sessionId]: (prev[sessionId] ?? []).map((m) =>
+            m.id === messageId && m.research
+              ? {
+                  ...m,
+                  research: {
+                    ...m.research,
+                    status: 'error',
+                    errorMessage:
+                      'Research synthesis interrupted. Check your connection and retry.',
+                  },
+                }
+              : m,
+          ),
+        }));
+        return;
+      }
+      setMessagesBySession((prev) => ({
+        ...prev,
+        [sessionId]: (prev[sessionId] ?? []).map((m) =>
+          m.id === messageId && m.research
+            ? {
+                ...m,
+                research: {
+                  ...m.research,
+                  status: 'completed',
+                  errorMessage: undefined,
+                },
+              }
+            : m,
+        ),
+      }));
+    },
+    [failOperation],
+  );
+
+  // M3.2 Session Viewer (`MS-SESSION-VIEWER`)
+  const getViewerTabs = useCallback(
+    (sessionId: string | null): ViewerTab[] => {
+      const key = draftKey(sessionId);
+      const list = viewerTabsByKey[key];
+      if (!list || list.length === 0) return [DEFAULT_ACTIVITY_TAB];
+      return list;
+    },
+    [draftKey, viewerTabsByKey],
+  );
+
+  const getActiveViewerTabId = useCallback(
+    (sessionId: string | null): string => {
+      const key = draftKey(sessionId);
+      return activeViewerTabByKey[key] ?? DEFAULT_ACTIVITY_TAB.id;
+    },
+    [activeViewerTabByKey, draftKey],
+  );
+
+  const getClosedViewerTabs = useCallback(
+    (sessionId: string | null): ViewerTab[] =>
+      closedViewerTabsByKey[draftKey(sessionId)] ?? [],
+    [closedViewerTabsByKey, draftKey],
+  );
+
+  const openViewerTab = useCallback(
+    (sessionId: string | null, tab: ViewerTab) => {
+      const key = draftKey(sessionId);
+      setViewerTabsByKey((prev) => {
+        const current = prev[key] ?? [DEFAULT_ACTIVITY_TAB];
+        if (current.some((t) => t.id === tab.id)) return prev;
+        return { ...prev, [key]: [...current, tab] };
+      });
+      setActiveViewerTabByKey((prev) => ({ ...prev, [key]: tab.id }));
+    },
+    [draftKey],
+  );
+
+  const closeViewerTab = useCallback(
+    (sessionId: string | null, tabId: string) => {
+      if (tabId === DEFAULT_ACTIVITY_TAB.id) return;
+      const key = draftKey(sessionId);
+      setViewerTabsByKey((prev) => {
+        const current = prev[key] ?? [DEFAULT_ACTIVITY_TAB];
+        const target = current.find((t) => t.id === tabId);
+        if (target) {
+          setClosedViewerTabsByKey((closedPrev) => ({
+            ...closedPrev,
+            [key]: [
+              target,
+              ...(closedPrev[key] ?? []).filter((t) => t.id !== tabId),
+            ],
+          }));
+        }
+        const remaining = current.filter((t) => t.id !== tabId);
+        return {
+          ...prev,
+          [key]: remaining.length > 0 ? remaining : [DEFAULT_ACTIVITY_TAB],
+        };
+      });
+      setActiveViewerTabByKey((prev) =>
+        prev[key] === tabId
+          ? { ...prev, [key]: DEFAULT_ACTIVITY_TAB.id }
+          : prev,
+      );
+    },
+    [draftKey],
+  );
+
+  const selectViewerTab = useCallback(
+    (sessionId: string | null, tabId: string) => {
+      const key = draftKey(sessionId);
+      setActiveViewerTabByKey((prev) => ({ ...prev, [key]: tabId }));
+    },
+    [draftKey],
+  );
+
+  const reopenClosedViewerTab = useCallback(
+    (sessionId: string | null): ViewerTab | null => {
+      const key = draftKey(sessionId);
+      const closedList = closedViewerTabsByKey[key] ?? [];
+      if (closedList.length === 0) return null;
+      const [restored, ...rest] = closedList;
+      setClosedViewerTabsByKey((prev) => ({ ...prev, [key]: rest }));
+      openViewerTab(sessionId, restored);
+      return restored;
+    },
+    [closedViewerTabsByKey, draftKey, openViewerTab],
+  );
+
+  const getMarkdownScratchpad = useCallback(
+    (sessionId: string | null): string =>
+      scratchpadByKey[draftKey(sessionId)] ??
+      '# Session Scratchpad\n\nJot down formulas, definitions, or questions during this study session.\n',
+    [draftKey, scratchpadByKey],
+  );
+
+  const setMarkdownScratchpad = useCallback(
+    (sessionId: string | null, text: string) => {
+      const key = draftKey(sessionId);
+      setScratchpadByKey((prev) => ({ ...prev, [key]: text }));
+    },
+    [draftKey],
+  );
+
+  // M3.2 File Preview (`MS-FILE-PREVIEW`)
+  const openFilePreview = useCallback(
+    (
+      fileIdOrSource: string | FilePreviewSource,
+    ): FilePreviewSource | null => {
+      if (typeof fileIdOrSource === 'string') {
+        const found =
+          SAMPLE_PREVIEW_FILES.find((f) => f.id === fileIdOrSource) ??
+          SAMPLE_PREVIEW_FILES.find((f) => f.filename === fileIdOrSource) ??
+          null;
+        if (found) setActivePreviewFile(found);
+        return found;
+      }
+      setActivePreviewFile(fileIdOrSource);
+      return fileIdOrSource;
+    },
+    [],
+  );
+
+  const closeFilePreview = useCallback(() => {
+    setActivePreviewFile(null);
+  }, []);
 
   const getSelectedBranches = useCallback(
     (sessionId: string): Record<string, number> =>
@@ -398,9 +1005,23 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       const currentDraft =
         overrideContent !== undefined ? overrideContent : getDraft(sessionId);
       const currentAttachments = getAttachments(sessionId);
+      const currentReferences = getReferences(sessionId);
+      const activeCapability = getActiveCapability(sessionId);
       const trimmed = currentDraft.trim();
-      if (!trimmed && currentAttachments.length === 0) {
+      if (
+        !trimmed &&
+        currentAttachments.length === 0 &&
+        currentReferences.length === 0
+      ) {
         return { ok: false, sessionId, error: 'Empty message' };
+      }
+
+      if (!isCapabilityConfirmed(sessionId)) {
+        return {
+          ok: false,
+          sessionId,
+          error: 'Confirm capability settings before sending.',
+        };
       }
 
       if (sessionId && liveSessionIds.has(sessionId)) {
@@ -442,11 +1063,27 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           },
         };
         setSessions((prev) => [newSessionSummary, ...prev]);
+
+        // Migrate any draft viewer tabs & scratchpad from __new__ to targetSessionId
+        const oldKey = draftKey(null);
+        const newKey = draftKey(targetSessionId);
+        setViewerTabsByKey((prev) =>
+          prev[oldKey] ? { ...prev, [newKey]: prev[oldKey] } : prev,
+        );
+        setActiveViewerTabByKey((prev) =>
+          prev[oldKey] ? { ...prev, [newKey]: prev[oldKey] } : prev,
+        );
+        setScratchpadByKey((prev) =>
+          prev[oldKey] ? { ...prev, [newKey]: prev[oldKey] } : prev,
+        );
       }
 
       const existingMessages = messagesBySession[targetSessionId] ?? [];
       const currentBranches = selectedBranchesBySession[targetSessionId] ?? {};
-      const visible = buildVisiblePath(existingMessages, currentBranches).messages;
+      const visible = buildVisiblePath(
+        existingMessages,
+        currentBranches,
+      ).messages;
       const parentId = tipMessageId(visible);
 
       const userMsgId = nextMsgIdRef.current++;
@@ -458,14 +1095,22 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           role: 'user',
           content: trimmed,
           createdAt: '2026-04-20T15:45:00Z',
-          attachments: currentAttachments.length ? currentAttachments : undefined,
+          capability: activeCapability,
+          attachments: currentAttachments.length
+            ? currentAttachments
+            : undefined,
+          references: currentReferences.length ? currentReferences : undefined,
           llm: model,
           failedSubmission: true,
-          error: "Couldn't reach the server. Please check your connection and retry.",
+          error:
+            "Couldn't reach the server. Please check your connection and retry.",
         };
         setMessagesBySession((prev) => ({
           ...prev,
-          [targetSessionId!]: [...(prev[targetSessionId!] ?? []), failedUserMsg],
+          [targetSessionId!]: [
+            ...(prev[targetSessionId!] ?? []),
+            failedUserMsg,
+          ],
         }));
         setSelectedBranchesBySession((prev) => ({
           ...prev,
@@ -477,10 +1122,12 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         }));
         setDraft(sessionId, '');
         clearAttachments(sessionId);
+        clearReferences(sessionId);
         return {
           ok: false,
           sessionId: targetSessionId,
-          error: "Couldn't reach the server. Please check your connection and retry.",
+          error:
+            "Couldn't reach the server. Please check your connection and retry.",
         };
       }
 
@@ -497,7 +1144,9 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         role: 'user',
         content: trimmed,
         createdAt: '2026-04-20T15:45:00Z',
+        capability: activeCapability,
         attachments: currentAttachments.length ? currentAttachments : undefined,
+        references: currentReferences.length ? currentReferences : undefined,
         llm: model,
       };
 
@@ -507,8 +1156,21 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         role: 'assistant',
         content: chunks[0],
         createdAt: '2026-04-20T15:45:01Z',
+        capability: activeCapability,
         llm: model,
         isStreaming: true,
+        askUser:
+          activeCapability === 'solve' ? createSampleAskUserCard() : undefined,
+        quiz:
+          activeCapability === 'question'
+            ? createSampleQuizQuestions()
+            : undefined,
+        research:
+          activeCapability === 'research'
+            ? createSampleResearchCard(trimmed || 'Research Topic')
+            : undefined,
+        toolsUsed:
+          activeCapability !== 'chat' ? [activeCapability] : ['kb_search'],
       };
 
       setMessagesBySession((prev) => ({
@@ -545,6 +1207,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         setDraft(targetSessionId, '');
       }
       clearAttachments(sessionId);
+      clearReferences(sessionId);
 
       scheduleAssistantStream(
         targetSessionId,
@@ -558,10 +1221,15 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     },
     [
       clearAttachments,
+      clearReferences,
+      draftKey,
       failOperation,
+      getActiveCapability,
       getAttachments,
       getDraft,
       getEffectiveModel,
+      getReferences,
+      isCapabilityConfirmed,
       liveSessionIds,
       messagesBySession,
       scheduleAssistantStream,
@@ -609,6 +1277,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         content: trimmed,
         createdAt: '2026-04-20T15:50:00Z',
         attachments: original.attachments,
+        references: original.references,
         llm: model,
       };
       const newAssistantMsg: ChatMessageItem = {
@@ -878,7 +1547,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             workspace_id: nextWorkspaceId,
             preferences: {
               ...s.preferences,
-              pinned: s.session_id === sessionId ? nextPinned : s.preferences?.pinned,
+              pinned:
+                s.session_id === sessionId
+                  ? nextPinned
+                  : s.preferences?.pinned,
               archived: nextArchived,
               archived_at: nextArchived
                 ? s.preferences?.archived_at ?? '2026-04-20T16:10:00Z'
@@ -960,7 +1632,9 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     if (suggestionTimerRef.current) clearTimeout(suggestionTimerRef.current);
     setPersonalSuggestionsLoading(true);
     suggestionTimerRef.current = setTimeout(() => {
-      setSuggestionSetIdx((prev) => (prev + 1) % PERSONAL_SUGGESTION_SETS.length);
+      setSuggestionSetIdx(
+        (prev) => (prev + 1) % PERSONAL_SUGGESTION_SETS.length,
+      );
       setPersonalSuggestionsLoading(false);
     }, 150);
   }, []);
@@ -978,6 +1652,17 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     setMessagesBySession(createInitialMessagesBySession());
     setDraftsByKey({});
     setAttachmentsByKey({});
+    setReferencesByKey({});
+    setReferenceCatalogState('ready');
+    setCapabilityByKey({});
+    setCapabilityConfirmedByKey({});
+    setQuizConfig(DEFAULT_QUIZ_CONFIG);
+    setResearchConfig(DEFAULT_RESEARCH_CONFIG);
+    setQuizStatesByKey({});
+    setViewerTabsByKey({});
+    setActiveViewerTabByKey({});
+    setClosedViewerTabsByKey({});
+    setActivePreviewFile(SAMPLE_PREVIEW_FILES[0]);
     setSelectedBranchesBySession({ 'session-general-1': { null: 101 } });
     setLiveSessionIds(new Set());
     setDefaultModel(DEFAULT_LLM_SELECTION);
@@ -993,7 +1678,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   }, [modelCatalogState]);
 
   const personalSuggestions = useMemo(
-    () => PERSONAL_SUGGESTION_SETS[suggestionSetIdx] ?? PERSONAL_SUGGESTION_SETS[0],
+    () =>
+      PERSONAL_SUGGESTION_SETS[suggestionSetIdx] ?? PERSONAL_SUGGESTION_SETS[0],
     [suggestionSetIdx],
   );
 
@@ -1017,6 +1703,41 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       addAttachment,
       removeAttachment,
       clearAttachments,
+      referenceCatalogState,
+      setReferenceCatalogState,
+      getReferences,
+      addReference,
+      removeReference,
+      clearReferences,
+      getActiveCapability,
+      setActiveCapability,
+      quizConfig,
+      updateQuizConfig,
+      researchConfig,
+      updateResearchConfig,
+      isCapabilityConfirmed,
+      confirmCapabilityConfig,
+      submitAskUserAnswers,
+      modifyAskUserAnswers,
+      getQuizUserState,
+      updateQuizUserState,
+      quizFollowupByQuestion,
+      sendQuizFollowup,
+      updateResearchOutline,
+      startResearchExecution,
+      getViewerTabs,
+      getActiveViewerTabId,
+      getClosedViewerTabs,
+      openViewerTab,
+      closeViewerTab,
+      selectViewerTab,
+      reopenClosedViewerTab,
+      getMarkdownScratchpad,
+      setMarkdownScratchpad,
+      previewFiles: SAMPLE_PREVIEW_FILES,
+      activePreviewFile,
+      openFilePreview,
+      closeFilePreview,
       getSelectedBranches,
       switchBranch,
       sendMessage,
@@ -1056,6 +1777,39 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       addAttachment,
       removeAttachment,
       clearAttachments,
+      referenceCatalogState,
+      getReferences,
+      addReference,
+      removeReference,
+      clearReferences,
+      getActiveCapability,
+      setActiveCapability,
+      quizConfig,
+      updateQuizConfig,
+      researchConfig,
+      updateResearchConfig,
+      isCapabilityConfirmed,
+      confirmCapabilityConfig,
+      submitAskUserAnswers,
+      modifyAskUserAnswers,
+      getQuizUserState,
+      updateQuizUserState,
+      quizFollowupByQuestion,
+      sendQuizFollowup,
+      updateResearchOutline,
+      startResearchExecution,
+      getViewerTabs,
+      getActiveViewerTabId,
+      getClosedViewerTabs,
+      openViewerTab,
+      closeViewerTab,
+      selectViewerTab,
+      reopenClosedViewerTab,
+      getMarkdownScratchpad,
+      setMarkdownScratchpad,
+      activePreviewFile,
+      openFilePreview,
+      closeFilePreview,
       getSelectedBranches,
       switchBranch,
       sendMessage,

@@ -15,6 +15,11 @@ import {
 } from 'lucide-react-native';
 import { useCopy } from '@/features/entry/copy';
 import { workspaces } from '@/features/entry/model';
+import { useFavorites } from '@/features/favorites/FavoritesProvider';
+import {
+  buildTranscriptFromMessages,
+  buildUserQueryFromMessages,
+} from '@/features/favorites/model';
 import { useDesign } from '@/shared/design/DesignProvider';
 import { alpha, geometry } from '@/shared/design/tokens';
 import { Button, Field } from '@/shared/ui/Controls';
@@ -64,6 +69,7 @@ export function SessionActionsSheet({
   const { colors } = useDesign();
   const t = useCopy();
   const { notify } = useFeedback();
+  const { openSaveModal } = useFavorites();
   const [renameOpen, setRenameOpen] = useState(false);
   const [renameDraft, setRenameDraft] = useState('');
   const [renameError, setRenameError] = useState('');
@@ -145,12 +151,27 @@ export function SessionActionsSheet({
     notify(`${t('Move to workspace')}: ${targetName}`, 'info');
   };
 
-  const handleSaveToNotebookDeferred = () => {
+  const handleSaveToNotebook = () => {
+    const saveMessages = messages.map((m) => ({
+      role: m.role,
+      content: m.content,
+      capability: m.capability ?? undefined,
+    }));
     onClose();
-    notify(
-      `${t('Save to Notebook')} — ${t('Coming soon')} (M3.2)`,
-      'info',
-    );
+    openSaveModal({
+      payload: {
+        recordType: 'chat',
+        title: sessionLabel,
+        userQuery:
+          buildUserQueryFromMessages(saveMessages) || session.last_message_preview,
+        output:
+          buildTranscriptFromMessages(saveMessages) || session.last_message_preview,
+        metadata: {
+          session_id: session.session_id,
+        },
+      },
+      messages: saveMessages,
+    });
   };
 
   const handleDownloadMarkdown = () => {
@@ -293,14 +314,14 @@ export function SessionActionsSheet({
                 <Pressable
                   accessibilityRole="button"
                   accessibilityLabel={t('Save to Notebook')}
-                  onPress={handleSaveToNotebookDeferred}
+                  onPress={handleSaveToNotebook}
                   style={actionButtonStyle()}
                 >
                   <Bookmark size={16} color={colors.foreground} />
                   <View style={{ flex: 1 }}>
                     <DText role="label">{t('Save to Notebook')}</DText>
                     <DText role="small" muted>
-                      M3.2 · {t('Coming soon')}
+                      {t('Save conversation snapshot to Favorites')}
                     </DText>
                   </View>
                 </Pressable>

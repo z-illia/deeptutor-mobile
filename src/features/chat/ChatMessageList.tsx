@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { Pressable, TextInput, View } from 'react-native';
+import { useRouter } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
 import {
   AlertCircle,
+  BookMarked,
   Check,
   ChevronLeft,
   ChevronRight,
   Copy,
+  FileCode,
   FileText,
   Pencil,
   RotateCcw,
@@ -16,14 +19,20 @@ import {
 } from 'lucide-react-native';
 import { useCopy } from '@/features/entry/copy';
 import { useFixtures } from '@/features/entry/FixtureProvider';
+import { useFavorites } from '@/features/favorites/FavoritesProvider';
 import { useDesign } from '@/shared/design/DesignProvider';
 import { alpha, geometry } from '@/shared/design/tokens';
 import { Button } from '@/shared/ui/Controls';
 import { InlineAlert, StatusChip, useFeedback } from '@/shared/ui/Feedback';
 import { DText } from '@/shared/ui/Text';
+import { AskUserQuestionCard } from './AskUserQuestionCard';
+import { ContextReferenceTree } from './ContextReferenceTree';
+import { QuizViewerCard } from './QuizViewerCard';
+import { ResearchOutlineCard } from './ResearchOutlineCard';
 import type { ChatMessageItem, SiblingInfo } from './model';
 
 export interface ChatMessageListProps {
+  sessionId?: string | null;
   messages: ChatMessageItem[];
   siblingsByMessageId: Map<number, SiblingInfo>;
   isStreaming: boolean;
@@ -159,6 +168,7 @@ function BranchNavigator({
 }
 
 export function ChatMessageList({
+  sessionId = 'session-general-1',
   messages,
   siblingsByMessageId,
   isStreaming,
@@ -173,8 +183,11 @@ export function ChatMessageList({
 }: ChatMessageListProps) {
   const { colors } = useDesign();
   const t = useCopy();
+  const router = useRouter();
   const { notify } = useFeedback();
   const { settings } = useFixtures();
+  const { openSaveModal } = useFavorites();
+  const resolvedSessionId = sessionId ?? 'session-general-1';
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editDraft, setEditDraft] = useState('');
   const [editError, setEditError] = useState('');
@@ -316,8 +329,15 @@ export function ChatMessageList({
                     }}
                   >
                     {msg.attachments.map((att) => (
-                      <View
+                      <Pressable
                         key={att.id}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Preview attachment ${att.name}`}
+                        onPress={() =>
+                          router.push(
+                            `/ui/file-preview?fileId=${encodeURIComponent(att.name)}&sessionId=${encodeURIComponent(resolvedSessionId)}` as never,
+                          )
+                        }
                         style={{
                           flexDirection: 'row',
                           alignItems: 'center',
@@ -332,7 +352,7 @@ export function ChatMessageList({
                       >
                         <FileText size={13} color={colors.primary} />
                         <DText role="small">{att.name}</DText>
-                      </View>
+                      </Pressable>
                     ))}
                   </View>
                 ) : null}
@@ -347,6 +367,13 @@ export function ChatMessageList({
                   {msg.content}
                 </DText>
               </View>
+
+              {msg.references && msg.references.length > 0 ? (
+                <ContextReferenceTree
+                  items={msg.references}
+                  direction="down"
+                />
+              ) : null}
 
               {msg.failedSubmission ? (
                 <View
@@ -597,6 +624,69 @@ export function ChatMessageList({
               );
             })}
 
+            {msg.artifacts && msg.artifacts.length > 0 ? (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  gap: 6,
+                }}
+              >
+                {msg.artifacts.map((art) => (
+                  <Pressable
+                    key={art.id}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Preview artifact ${art.filename}`}
+                    onPress={() =>
+                      router.push(
+                        `/ui/file-preview?fileId=${encodeURIComponent(art.id)}&sessionId=${encodeURIComponent(resolvedSessionId)}` as never,
+                      )
+                    }
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      gap: 6,
+                      paddingHorizontal: 10,
+                      paddingVertical: 5,
+                      borderRadius: geometry.radius.sm,
+                      backgroundColor: colors.secondary,
+                      borderWidth: 1,
+                      borderColor: colors.border,
+                    }}
+                  >
+                    <FileCode size={13} color={colors.primary} />
+                    <DText role="small" style={{ fontFamily: 'GeistMedium' }}>
+                      {art.filename}
+                    </DText>
+                  </Pressable>
+                ))}
+              </View>
+            ) : null}
+
+            {msg.askUser ? (
+              <AskUserQuestionCard
+                sessionId={resolvedSessionId}
+                messageId={msg.id}
+                card={msg.askUser}
+              />
+            ) : null}
+
+            {msg.quiz && msg.quiz.length > 0 ? (
+              <QuizViewerCard
+                sessionId={resolvedSessionId}
+                messageId={msg.id}
+                questions={msg.quiz}
+              />
+            ) : null}
+
+            {msg.research ? (
+              <ResearchOutlineCard
+                sessionId={resolvedSessionId}
+                messageId={msg.id}
+                research={msg.research}
+              />
+            ) : null}
+
             {msg.isStreaming ? (
               <View
                 style={{
@@ -710,6 +800,47 @@ export function ChatMessageList({
                       {copiedId === `assistant-${msg.id}`
                         ? t('Copied')
                         : t('Copy')}
+                    </DText>
+                  </Pressable>
+
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t('Save to Favorites')}
+                    onPress={() =>
+                      openSaveModal({
+                        payload: {
+                          recordType:
+                            msg.capability === 'question'
+                              ? 'question'
+                              : msg.capability === 'research'
+                                ? 'research'
+                                : msg.capability === 'solve'
+                                  ? 'solve'
+                                  : 'chat',
+                          title: (
+                            parentUserMsg?.content || 'Assistant Reply'
+                          ).slice(0, 72),
+                          userQuery: parentUserMsg?.content ?? '',
+                          output: msg.content,
+                          metadata: {
+                            session_id: resolvedSessionId,
+                            message_id: msg.id,
+                          },
+                        },
+                      })
+                    }
+                    style={{
+                      minHeight: 30,
+                      paddingHorizontal: 8,
+                      borderRadius: geometry.radius.sm,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      gap: 4,
+                    }}
+                  >
+                    <BookMarked size={13} color={colors.mutedForeground} />
+                    <DText role="small" muted>
+                      {t('Save')}
                     </DText>
                   </Pressable>
 

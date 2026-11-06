@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Modal,
   Pressable,
@@ -19,7 +19,10 @@ import {
 } from 'lucide-react-native';
 import { useTheme } from '../../theme';
 import { useI18n } from '../../i18n';
-import { useFavorites } from './FavoritesProvider';
+import {
+  type SaveModalRequest,
+  useFavorites,
+} from './FavoritesProvider';
 import {
   buildTranscriptFromMessages,
   buildUserQueryFromMessages,
@@ -31,27 +34,47 @@ import {
 } from './model';
 
 export function SaveToNotebookModal() {
+  const { activeSaveModal, closeSaveModal } = useFavorites();
+  if (!activeSaveModal) return null;
+  return (
+    <SaveToNotebookModalContent
+      key={`${activeSaveModal.payload.title}-${activeSaveModal.messages?.length ?? 0}`}
+      request={activeSaveModal}
+      onClose={closeSaveModal}
+    />
+  );
+}
+
+function SaveToNotebookModalContent({
+  request,
+  onClose,
+}: {
+  request: SaveModalRequest;
+  onClose: () => void;
+}) {
   const { colors } = useTheme();
   const { t } = useI18n();
   const router = useRouter();
-  const {
-    notebooks,
-    activeSaveModal,
-    closeSaveModal,
-    createNotebook,
-    saveRecordToNotebooks,
-  } = useFavorites();
+  const { notebooks, createNotebook, saveRecordToNotebooks } = useFavorites();
 
   const readableNotebooks = useMemo(
     () => notebooks.filter((nb) => !nb.unreadable),
     [notebooks],
   );
 
-  const [title, setTitle] = useState('');
+  const { payload, messages } = request;
+
+  const [customTitle, setCustomTitle] = useState(
+    payload.title || 'Saved session',
+  );
   const [titleEdited, setTitleEdited] = useState(false);
-  const [summary, setSummary] = useState('');
-  const [selectedNotebookIds, setSelectedNotebookIds] = useState<string[]>([]);
-  const [selectedMsgIndexes, setSelectedMsgIndexes] = useState<number[]>([]);
+  const [summary, setSummary] = useState(payload.summary ?? '');
+  const [selectedNotebookIds, setSelectedNotebookIds] = useState<string[]>(() =>
+    readableNotebooks[0]?.id ? [readableNotebooks[0].id] : [],
+  );
+  const [selectedMsgIndexes, setSelectedMsgIndexes] = useState<number[]>(() =>
+    messages && messages.length > 0 ? messages.map((_, idx) => idx) : [],
+  );
   const [creatingInline, setCreatingInline] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -59,55 +82,18 @@ export function SaveToNotebookModal() {
     null,
   );
 
-  useEffect(() => {
-    if (!activeSaveModal) {
-      setErrorMessage(null);
-      setSavedDestinationId(null);
-      setCreatingInline(false);
-      setNewCollectionName('');
-      return;
-    }
-
-    const { payload, messages } = activeSaveModal;
-    setTitle(payload.title || 'Saved session');
-    setTitleEdited(false);
-    setSummary(payload.summary ?? '');
-    setErrorMessage(null);
-    setSavedDestinationId(null);
-
-    if (messages && messages.length > 0) {
-      setSelectedMsgIndexes(messages.map((_, idx) => idx));
-    } else {
-      setSelectedMsgIndexes([]);
-    }
-
-    const firstReadable = readableNotebooks[0]?.id;
-    setSelectedNotebookIds(firstReadable ? [firstReadable] : []);
-  }, [activeSaveModal, readableNotebooks]);
-
-  const messages = activeSaveModal?.messages;
-  const payload = activeSaveModal?.payload;
-
   const selectedMessages = useMemo(() => {
     if (!messages || messages.length === 0) return [];
     const sorted = [...selectedMsgIndexes].sort((a, b) => a - b);
     return sorted.map((idx) => messages[idx]).filter(Boolean);
   }, [messages, selectedMsgIndexes]);
 
-  useEffect(() => {
-    if (!activeSaveModal || !messages || messages.length === 0 || titleEdited) {
-      return;
+  const title = useMemo(() => {
+    if (titleEdited || !messages || messages.length === 0) {
+      return customTitle;
     }
-    const derived = deriveSaveTitle(
-      selectedMessages,
-      activeSaveModal.payload.title || 'Saved session',
-    );
-    setTitle(derived);
-  }, [activeSaveModal, messages, selectedMessages, titleEdited]);
-
-  if (!activeSaveModal || !payload) {
-    return null;
-  }
+    return deriveSaveTitle(selectedMessages, payload.title || 'Saved session');
+  }, [customTitle, messages, payload.title, selectedMessages, titleEdited]);
 
   const kindLabel =
     FAVORITE_KIND_LABELS[favoriteKind(payload.recordType, payload.metadata)];
@@ -198,15 +184,15 @@ export function SaveToNotebookModal() {
 
   return (
     <Modal
-      visible={Boolean(activeSaveModal)}
+      visible
       transparent
       animationType="fade"
-      onRequestClose={closeSaveModal}
+      onRequestClose={onClose}
     >
       <View style={styles.backdrop}>
         <Pressable
           style={StyleSheet.absoluteFill}
-          onPress={closeSaveModal}
+          onPress={onClose}
           accessibilityLabel={t('Close modal backdrop')}
         />
         <View
@@ -242,7 +228,7 @@ export function SaveToNotebookModal() {
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={t('Close Save to Favorites')}
-              onPress={closeSaveModal}
+              onPress={onClose}
               style={styles.closeButton}
             >
               <X size={18} color={colors.mutedForeground} />
@@ -276,7 +262,7 @@ export function SaveToNotebookModal() {
                   accessibilityLabel={t('Open Favorites Collection')}
                   onPress={() => {
                     const dest = savedDestinationId;
-                    closeSaveModal();
+                    onClose();
                     router.push(`/notebooks/${dest}` as never);
                   }}
                   style={[
@@ -296,7 +282,7 @@ export function SaveToNotebookModal() {
                 <Pressable
                   accessibilityRole="button"
                   accessibilityLabel={t('Done saving favorite')}
-                  onPress={closeSaveModal}
+                  onPress={onClose}
                   style={[
                     styles.primaryBtn,
                     { backgroundColor: colors.primary },
@@ -327,7 +313,7 @@ export function SaveToNotebookModal() {
                   <TextInput
                     value={title}
                     onChangeText={(val) => {
-                      setTitle(val);
+                      setCustomTitle(val);
                       setTitleEdited(true);
                       setErrorMessage(null);
                     }}
@@ -659,7 +645,7 @@ export function SaveToNotebookModal() {
                 <Pressable
                   accessibilityRole="button"
                   accessibilityLabel={t('Cancel Save to Favorites')}
-                  onPress={closeSaveModal}
+                  onPress={onClose}
                   style={[
                     styles.secondaryBtn,
                     { borderColor: colors.border },
