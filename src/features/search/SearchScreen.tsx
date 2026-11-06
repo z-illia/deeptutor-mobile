@@ -8,13 +8,14 @@ import { PageScaffold } from '@/shared/ui/Layout';
 import { EmptyState, ErrorState, LoadingState } from '@/shared/ui/Feedback';
 import { useChat } from '../chat/ChatProvider';
 import { displaySessionTitle } from '../chat/model';
+import { useLearning } from '../learning/LearningProvider';
 import { useFixtures } from '../entry/FixtureProvider';
 import { useCopy } from '../entry/copy';
 import { BackButton } from '../entry/Boundary';
 import { allowedDestination, type WorkspaceId } from '../entry/model';
 import { searchRecords, type SearchRecord } from './repository';
 export function SearchScreen() {
-  const f = useFixtures(); const chat = useChat(); const t = useCopy(); const [query, setQuery] = useState(''); const [selected, setSelected] = useState(0);
+  const f = useFixtures(); const chat = useChat(); const learning = useLearning(); const t = useCopy(); const [query, setQuery] = useState(''); const [selected, setSelected] = useState(0);
   useFocusEffect(useCallback(() => { setQuery(''); setSelected(0); }, []));
   const baseResults = searchRecords(query, f.workspace, (href) => allowedDestination(f.mode, href), t).filter((record) => f.resourceState !== 'empty' || record.kind === 'page');
   const existingIds = new Set(baseResults.map((r) => r.id));
@@ -35,7 +36,21 @@ export function SearchScreen() {
       workspace: ((s.workspace_id ?? '') as WorkspaceId),
     }))
     .filter((r) => allowedDestination(f.mode, r.href));
-  const results = [...baseResults, ...dynamicSessions];
+  const dynamicLearning: SearchRecord[] = f.resourceState === 'empty' ? [] : learning.getWorkspaceTopics(f.workspace)
+    .filter((topic) => !existingIds.has(topic.path_id))
+    .filter((topic) => {
+      if (!normalized) return true;
+      return `${topic.name} ${topic.metadata.goal} ${topic.metadata.description}`.toLowerCase().includes(normalized);
+    })
+    .map((topic) => ({
+      id: topic.path_id,
+      kind: 'learning' as const,
+      label: topic.name,
+      href: `/learning/mastery/${encodeURIComponent(topic.path_id)}`,
+      workspace: (topic.content_workspace_id as WorkspaceId),
+    }))
+    .filter((r) => allowedDestination(f.mode, r.href));
+  const results = [...baseResults, ...dynamicSessions, ...dynamicLearning];
   if (f.resourceState === 'loading') return <LoadingState />;
   if (['denied', 'unavailable'].includes(f.resourceState)) return <PageScaffold title={t('navigation.searchEverything')}><BackButton /><EmptyState title={t('Unavailable')} /></PageScaffold>;
   if (f.resourceState === 'error') return <ErrorState message={t('Unavailable')} onRetry={() => f.setResourceState('ready')} />;

@@ -867,10 +867,9 @@ export function recomputeTopicCountsAndNext(topic: MasteryTopic): MasteryTopic {
   let totalMastered = 0;
   let totalLearning = 0;
   let totalNew = 0;
-  let firstUnmastered: {
-    point: MapKnowledgePoint;
-    moduleName: string;
-  } | null = null;
+  let firstUnmasteredId: string | null = null;
+  let firstUnmasteredName: string | null = null;
+  let firstUnmasteredModuleName: string | null = null;
 
   const updatedModules: MapModule[] = topic.map.modules.map(
     (module, moduleIdx) => {
@@ -884,14 +883,18 @@ export function recomputeTopicCountsAndNext(topic: MasteryTopic): MasteryTopic {
         } else if (pt.status === 'learning') {
           modLearning += 1;
           totalLearning += 1;
-          if (!firstUnmastered) {
-            firstUnmastered = { point: pt, moduleName: module.name };
+          if (!firstUnmasteredId) {
+            firstUnmasteredId = pt.id;
+            firstUnmasteredName = pt.name;
+            firstUnmasteredModuleName = module.name;
           }
         } else {
           modNew += 1;
           totalNew += 1;
-          if (!firstUnmastered) {
-            firstUnmastered = { point: pt, moduleName: module.name };
+          if (!firstUnmasteredId) {
+            firstUnmasteredId = pt.id;
+            firstUnmasteredName = pt.name;
+            firstUnmasteredModuleName = module.name;
           }
         }
       }
@@ -923,12 +926,12 @@ export function recomputeTopicCountsAndNext(topic: MasteryTopic): MasteryTopic {
           )?.name ?? null,
         reason: dueReview.reason,
       }
-    : firstUnmastered
+    : firstUnmasteredId
       ? {
           action: 'study',
-          knowledge_point_id: firstUnmastered.point.id,
-          knowledge_point_name: firstUnmastered.point.name,
-          module_name: firstUnmastered.moduleName,
+          knowledge_point_id: firstUnmasteredId,
+          knowledge_point_name: firstUnmasteredName,
+          module_name: firstUnmasteredModuleName,
           reason:
             totalMastered === 0 && totalLearning === 0
               ? 'First waypoint on your route.'
