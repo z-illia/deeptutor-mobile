@@ -1,5 +1,2 @@
-import { ChatHistoryScreen } from '@/features/chat/ChatHistoryScreen';
-
-export default function SpaceChatHistoryRoute() {
-  return <ChatHistoryScreen mode="history" />;
-}
+import { LiveChatScreen } from '@/features/chat/live/LiveChatScreen';
+export default function ChatHistoryRoute() { return <LiveChatScreen showHistory />; }

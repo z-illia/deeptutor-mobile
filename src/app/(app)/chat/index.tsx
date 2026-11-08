@@ -1,5 +1,5 @@
-import { ChatWorkspace } from '@/features/chat/ChatWorkspace';
+import { LiveChatScreen } from '@/features/chat/live/LiveChatScreen';
 
 export default function ChatIndexRoute() {
-  return <ChatWorkspace />;
+  return <LiveChatScreen />;
 }

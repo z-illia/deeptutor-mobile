@@ -22,15 +22,18 @@ export function IconButton({ label, children, ...props }: Omit<ComponentProps<ty
   return <Button {...props} accessibilityLabel={label} variant="ghost" style={[{ width: geometry.touch, height: geometry.touch, paddingHorizontal: 0 }, typeof props.style !== 'function' ? props.style : undefined]}>{children}</Button>;
 }
 
-export function Field({ label, hint, error, optional, style, ...props }: TextInputProps & { label: string; hint?: string; error?: string; optional?: boolean }) {
+export function Field({ label, hint, error, optional, trailing, style, ...props }: TextInputProps & { label: string; hint?: string; error?: string; optional?: boolean; trailing?: ReactNode }) {
   const { colors, t } = useDesign();
   const id = useId();
   const [focused, setFocused] = useState(false);
   return <View style={{ gap: 6, minWidth: 0 }}>
     <DText role="label" nativeID={`${id}-label`}>{label}{optional ? ` (${t('Optional')})` : ''}</DText>
-    <TextInput {...props} accessibilityLabel={label} accessibilityHint={error || hint} aria-invalid={!!error}
-      placeholderTextColor={colors.mutedForeground} onFocus={(event) => { setFocused(true); props.onFocus?.(event); }} onBlur={(event) => { setFocused(false); props.onBlur?.(event); }}
-      style={[{ minHeight: 48, borderWidth: 1, borderColor: error ? colors.destructive : focused ? colors.ring : colors.input, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontFamily: 'Geist', fontSize: 14, color: colors.foreground, backgroundColor: colors.background, boxShadow: focused ? `0 0 0 2px ${alpha(colors.ring, 0.15)}` : undefined }, style]} />
+    <View style={{ position: 'relative', justifyContent: 'center' }}>
+      <TextInput {...props} accessibilityLabel={label} accessibilityHint={error || hint} aria-invalid={!!error}
+        placeholderTextColor={colors.mutedForeground} onFocus={(event) => { setFocused(true); props.onFocus?.(event); }} onBlur={(event) => { setFocused(false); props.onBlur?.(event); }}
+        style={[{ minHeight: 48, borderWidth: 1, borderColor: error ? colors.destructive : focused ? colors.ring : colors.input, borderRadius: 8, paddingHorizontal: 24, paddingRight: trailing ? 56 : 12, paddingVertical: 10, fontFamily: 'Geist', fontSize: 14, color: colors.foreground, backgroundColor: colors.background, boxShadow: focused ? `0 0 0 2px ${alpha(colors.ring, 0.15)}` : undefined }, style]} />
+      {!!trailing && <View style={{ position: 'absolute', right: 8, top: 8, bottom: 8, justifyContent: 'center', alignItems: 'center' }}>{trailing}</View>}
+    </View>
     {!!hint && <DText role="caption" muted>{hint}</DText>}
     {!!error && <DText role="caption" accessibilityRole="alert" style={{ color: colors.destructive }}>{t(error)}</DText>}
   </View>;
