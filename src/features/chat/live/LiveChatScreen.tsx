@@ -2,11 +2,11 @@ import { useAuth } from '@/features/auth/AuthProvider';
 import { useCopy } from '@/features/entry/copy';
 import { BottomNavigation } from '@/features/mobile/BottomNavigation';
 import { useDesign } from '@/shared/design/DesignProvider';
-import { Button, Field, IconButton } from '@/shared/ui/Controls';
+import { Button, IconButton } from '@/shared/ui/Controls';
 import { InlineAlert, LoadingState, StatusChip } from '@/shared/ui/Feedback';
 import { DText } from '@/shared/ui/Text';
 import { router, useLocalSearchParams } from 'expo-router';
-import { ArrowUp, ChevronLeft, History, Plus, Square } from 'lucide-react-native';
+import { ChevronLeft, History, Plus } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,6 +15,7 @@ import { ModelSelectionDialog } from '../ModelSelectionDialog';
 import { FullScreenModal } from '@/shared/ui/FullScreenModal';
 import { ListRow } from '@/shared/ui/ListRow';
 import { commandId } from './protocol';
+import { TutorComposer } from './TutorComposer';
 import { useLiveChat } from './useLiveChat';
 
 export function LiveChatScreen({ showHistory = false }: { showHistory?: boolean }) {
@@ -62,30 +63,15 @@ function ConversationScreen({ sessionId, showHistory }: { sessionId: string | nu
           {item.content ? <ChatMarkdown content={item.content} /> : chat.busy ? <DText muted>{t('Thinking…')}</DText> : null}
         </View>}
       />
-      <View style={{ padding: 16, gap: 10, borderTopWidth: 1, borderColor: colors.border }}>
-        <Button variant="ghost" disabled={chat.busy || chat.loading} onPress={() => setModelsOpen(true)}>{chat.model?.model_name ?? t('Server default model')}</Button>
-        {chat.waiting && <InlineAlert>{t('Your tutor is waiting for your reply.')}</InlineAlert>}
-        <Field
-          label={t('Message')}
-          placeholder={t('Ask DeepTutor…')}
-          value={chat.draft}
-          onChangeText={chat.setDraft}
-          multiline
-          editable={!chat.loading && (!chat.busy || chat.waiting)}
-          style={{ maxHeight: 160, minHeight: 56, paddingVertical: 12, textAlignVertical: 'center' }}
-          trailing={
-            chat.busy && (!chat.waiting || !chat.draft.trim()) ? (
-              <Button accessibilityLabel={t('Stop response')} onPress={() => void chat.stop()} style={{ width: 40, height: 40, minWidth: 40, minHeight: 40, paddingHorizontal: 0, paddingVertical: 0, borderRadius: 999 }}>
-                <Square size={16} color={colors.primaryForeground} fill={colors.primaryForeground} />
-              </Button>
-            ) : (
-              <Button accessibilityLabel={t('Send')} disabled={!chat.draft.trim() || chat.loading || !!chat.error || (chat.busy && !chat.waiting)} onPress={() => { followBottom.current = true; void chat.send(language); }} style={{ width: 40, height: 40, minWidth: 40, minHeight: 40, paddingHorizontal: 0, paddingVertical: 0, borderRadius: 999 }}>
-                <ArrowUp size={18} color={colors.primaryForeground} />
-              </Button>
-            )
-          }
-        />
-      </View>
+      <TutorComposer
+        value={chat.draft} onChangeText={chat.setDraft}
+        modelName={chat.model?.model_name ?? t('Server default model')}
+        onChooseModel={() => setModelsOpen(true)}
+        configuration={chat.configuration} onConfigure={chat.setConfiguration}
+        loading={chat.loading} busy={chat.busy} waiting={chat.waiting} error={!!chat.error}
+        onSend={() => { followBottom.current = true; void chat.send(language); }}
+        onStop={() => void chat.stop()}
+      />
     </KeyboardAvoidingView>
     <BottomNavigation activeScreen={12} />
     <FullScreenModal open={historyOpen} title={t('Recent conversations')} onClose={() => setHistoryOpen(false)} onShow={() => { if (showHistory) void chat.refreshHistory(); }}>

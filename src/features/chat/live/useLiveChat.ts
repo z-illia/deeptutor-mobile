@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { isAxiosError } from 'axios';
 import { api } from '@/api/client';
 import { answerChunk, ChatConnection, commandId, visibleMessages, websocketUrl, type ChatEvent, type ChatModel, type ChatRow, type Conversation } from './protocol';
+import { configurationFromPreferences, type TutorConfiguration } from './configuration';
 import { getConversation, listChatModels, listConversations } from './repository';
 
 export function chatError(cause: unknown): string {
@@ -14,6 +15,7 @@ export function chatError(cause: unknown): string {
 }
 
 export function useLiveChat(initialId: string | null) {
+  const [configuration, setConfiguration] = useState<TutorConfiguration>({});
   const [messages, setMessages] = useState<ChatRow[]>([]);
   const [sessions, setSessions] = useState<Conversation[]>([]);
   const [models, setModels] = useState<ChatModel[]>([]);
@@ -114,6 +116,7 @@ export function useLiveChat(initialId: string | null) {
         if (!active) return;
         const rows = visibleMessages(data);
         savedModel = data.preferences?.llm_selection;
+        setConfiguration(configurationFromPreferences(data.preferences));
         setMessages(rows); setTitle(data.title || 'New chat'); parentId.current = rows.at(-1)?.id ?? null;
         await socket.connect();
         if (!active) return;
@@ -152,7 +155,7 @@ export function useLiveChat(initialId: string | null) {
       await connection.current.send(replying ? {
         type: 'submit_user_reply', turn_id: turnId.current, text: content, command_id: commandId(),
       } : {
-        type: 'start_turn', content, session_id: sessionId.current, capability: 'chat', language,
+        type: 'start_turn', content, session_id: sessionId.current, capability: 'chat', ...configuration, language,
         client_submission_id: commandId(),
         ...(sessionId.current ? { parent_message_id: parentId.current } : {}),
         ...(model ? { llm_selection: { profile_id: model.profile_id, model_id: model.model_id } } : {}),
@@ -166,5 +169,5 @@ export function useLiveChat(initialId: string | null) {
     try { await connection.current?.send({ type: 'cancel_turn', turn_id: turnId.current, command_id: commandId() }); }
     catch (cause) { if (mounted.current) setError(chatError(cause)); }
   };
-  return { messages, sessions, models, model, setModel, title, loading, busy, waiting, draft, setDraft, error, historyError, historyLoading, hasMore, serverSessionId, refreshHistory, send, stop, reload: () => { lock.current = false; setBusy(false); setWaiting(false); setLoading(true); setError(''); setRevision(old => old + 1); } };
+  return { configuration, setConfiguration, messages, sessions, models, model, setModel, title, loading, busy, waiting, draft, setDraft, error, historyError, historyLoading, hasMore, serverSessionId, refreshHistory, send, stop, reload: () => { lock.current = false; setBusy(false); setWaiting(false); setLoading(true); setError(''); setRevision(old => old + 1); } };
 }

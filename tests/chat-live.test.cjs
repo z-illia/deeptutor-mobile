@@ -101,6 +101,7 @@ test('cancelled turn refreshes persisted history and allows the next message wit
   const stored = { session_id: 's1', title: 'Chat', messages: [{ id: 1, role: 'user', content: 'Question' }, { id: 2, parent_message_id: 1, role: 'assistant', content: 'Partial answer' }] };
   let reads = 0;
   const { useLiveChat } = load('src/features/chat/live/useLiveChat.ts', {
+    './configuration': load('src/features/chat/live/configuration.ts'),
     react: {
       useState(initial) {
         const index = stateIndex++;
@@ -127,8 +128,15 @@ test('cancelled turn refreshes persisted history and allows the next message wit
   const settle = () => new Promise(resolve => setImmediate(resolve));
   try {
     await settle();
+    render().setConfiguration({ capability: 'solve', skills: ['pdf'], mcp: ['docs'], persona: 'teacher', answer_by: 'partner:p1', create_target: 'skill' });
     render().setDraft('Question');
     await render().send('en');
+    assert.equal(commands[0].capability, 'solve');
+    assert.deepEqual(commands[0].skills, ['pdf']);
+    assert.deepEqual(commands[0].mcp, ['docs']);
+    assert.equal(commands[0].persona, 'teacher');
+    assert.equal(commands[0].answer_by, 'partner:p1');
+    assert.equal(commands[0].create_target, 'skill');
     onEvent({ type: 'session', session_id: 's1', turn_id: 't1' });
     await render().stop();
     assert.equal(commands.at(-1).type, 'cancel_turn');
