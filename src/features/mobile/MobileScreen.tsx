@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, type Href } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as Clipboard from 'expo-clipboard';
-import { BookOpen, Calendar, ChevronLeft, Folder, Layers, MessageCircle, UserRound, X } from 'lucide-react-native';
+import { ChevronLeft, Layers, UserRound, X } from 'lucide-react-native';
 import { useChat } from '@/features/chat/ChatProvider';
 import { useFixtures } from '@/features/entry/FixtureProvider';
 import { useOverlayFocus } from '@/shared/ui/use-overlay-focus';
@@ -14,9 +14,9 @@ import { NativeLayer, type LayerContext } from './NativeLayers';
 import { useDesign, type Language } from '@/shared/design/DesignProvider';
 import { languageNames, useMobileCopy } from './copy';
 import { useMobileStore } from './local-store';
+import { BottomNavigation, mobileTabs } from './BottomNavigation';
 
 type Dialog = { title: string; message?: string; choices?: string[]; choose?: (value: string) => void; input?: string; submit?: (value: string) => void };
-const roots = [{ number: 1, label: 'Learn', Icon: BookOpen }, { number: 12, label: 'Tutor', Icon: MessageCircle }, { number: 26, label: 'Library', Icon: Folder }, { number: 52, label: 'Plan', Icon: Calendar }];
 const route = (number: number): Href => `/mobile/${number}` as Href;
 const placeholder = (value: string) => /…|^Choose |^Type |^Enter |^Search |^Find /.test(value);
 const subscribeClient = () => () => {};
@@ -219,7 +219,7 @@ export function MobileScreen({ number }: { number: number }) {
   }
   if (!spec) return <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg, padding: 20, gap: 24 }}><Text style={{ color: colors.ink, fontFamily: 'Inter', fontSize: 22 }}>{t("Screen unavailable")}</Text><MobileButton colors={colors} title={t("Back to Learn")} onPress={() => router.replace(route(1))} /></SafeAreaView>;
   const title = number === 13 && sessionId ? chat.sessions.find(session => session.session_id === sessionId)?.title || spec.name.split(' / ')[1] : spec.name.split(' / ')[1];
-  const isRoot = roots.some(root => root.number === number);
+  const isRoot = mobileTabs.some(tab => tab.number === number);
   const body = spec.content.children ?? [];
   const context = body.find(node => node.name === 'Context');
   const contents = number === 13 && sessionId ? body.filter(node => !['Learner question', 'Assistant identity', 'Assistant response', 'Response controls'].includes(node.name)) : body;
@@ -255,7 +255,7 @@ export function MobileScreen({ number }: { number: number }) {
         }}
         ListFooterComponent={<View style={{ gap: 16 }}>{number === 56 && localTasks.length > 0 && taskCards}{number === 29 && <MobileButton colors={colors} title={t("Save note")} onPress={() => act({ id: 'save-note', type: 'frame', name: 'Save note', children: [{ id: 'save-note-label', type: 'text', name: 'Label', content: 'Save note' }] })} />}{!!query && !allNodes(spec.content).some(node => / row$/.test(node.name) && [textOf(node), ...textOf(node).split('\n').map(text => t(text))].join('\n').toLowerCase().includes(query.toLowerCase())) && <Text accessibilityRole="status" style={{ fontFamily: 'Inter', color: colors.muted, fontSize: 16 }}>{t("No results. Try a different search.")}</Text>}</View>}
       />
-      {spec.tabs && <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 12 }}><View accessibilityRole="tablist" style={{ borderWidth: 1, borderColor: colors.line, borderRadius: 32, padding: 6, flexDirection: 'row', gap: 4, backgroundColor: colors.surface }}>{roots.map(({ number: next, label, Icon }) => <Pressable key={next} accessibilityRole="tab" accessibilityLabel={t(label)} accessibilityState={{ selected: number === next }} onPress={() => router.navigate(route(next))} style={{ flex: 1, minHeight: 52, paddingVertical: 4, gap: 3, borderRadius: 28, backgroundColor: number === next ? colors.soft : colors.surface, alignItems: 'center', justifyContent: 'center' }}><Icon size={20} color={number === next ? colors.accent : colors.muted} /><Text style={{ fontFamily: 'Inter', fontSize: 12, fontWeight: '500', color: number === next ? colors.accent : colors.muted }}>{t(label)}</Text></Pressable>)}</View></View>}
+      {spec.tabs && <BottomNavigation activeScreen={number} />}
     </KeyboardAvoidingView>
     <Modal visible={dialog !== null} transparent animationType="fade" onRequestClose={() => setDialog(null)}>
       <View style={{ flex: 1, justifyContent: 'center', padding: 20, backgroundColor: '#00000070' }}><SafeAreaView ref={dialogRoot} accessibilityViewIsModal style={{ backgroundColor: colors.surface, maxHeight: '85%', borderRadius: 16, padding: 20, width: '100%', maxWidth: 560, alignSelf: 'center', gap: 16 }}>

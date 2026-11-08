@@ -77,7 +77,11 @@ export function useLiveChat(initialId: string | null) {
         replyLock.current = false; setWaiting(true);
         if (event.content) setMessages(old => old.map(row => row.id === assistantId.current ? { ...row, content: row.content + '\n\n' + event.content } : row));
       }
-      if (event.type === 'error') setError(event.content || 'The response failed. Reopen the conversation before trying again.');
+      // Cancellation is followed by `done`, which refreshes the persisted conversation.
+      // Treat it as a normal end of the turn so the composer remains usable.
+      if (event.type === 'error' && !/^Turn cancel(?:led|ed)[.!]?$/i.test(event.content?.trim() ?? '')) {
+        setError(event.content || 'The response failed. Reopen the conversation before trying again.');
+      }
       if (event.type === 'protocol_error' || (event.type === 'command_ack' && event.accepted === false)) {
         setError(event.message || 'The server rejected this chat command.'); finish();
       }

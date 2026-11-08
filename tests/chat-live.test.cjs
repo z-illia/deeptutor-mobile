@@ -93,3 +93,59 @@ test('HTTP repository reads real paginated requests and propagates auth failures
     assert.equal(requests[0], '/api/sessions?limit=50&offset=50');
   } finally { await new Promise(resolve => server.close(resolve)); }
 });
+
+test('cancelled turn refreshes persisted history and allows the next message without reload', async () => {
+  const states = [], refs = [], effects = [];
+  let stateIndex = 0, refIndex = 0, onEvent;
+  const commands = [];
+  const stored = { session_id: 's1', title: 'Chat', messages: [{ id: 1, role: 'user', content: 'Question' }, { id: 2, parent_message_id: 1, role: 'assistant', content: 'Partial answer' }] };
+  let reads = 0;
+  const { useLiveChat } = load('src/features/chat/live/useLiveChat.ts', {
+    react: {
+      useState(initial) {
+        const index = stateIndex++;
+        if (!(index in states)) states[index] = initial;
+        return [states[index], value => { states[index] = typeof value === 'function' ? value(states[index]) : value; }];
+      },
+      useRef(initial) { const index = refIndex++; return refs[index] ??= { current: initial }; },
+      useEffect(effect) { if (!effects.length) effects.push(effect); },
+    },
+    '@/api/client': { api: { defaults: { baseURL: 'http://test/api' } } },
+    './protocol': { ...protocol, ChatConnection: class {
+      constructor(url, callback) { onEvent = callback; }
+      async send(command) { commands.push(command); }
+      close() {}
+    } },
+    './repository': {
+      listChatModels: async () => ({ options: [], active: null }),
+      getConversation: async () => { reads++; return stored; },
+    },
+  });
+  const render = () => { stateIndex = 0; refIndex = 0; return useLiveChat(null); };
+  render();
+  const cleanup = effects[0]();
+  const settle = () => new Promise(resolve => setImmediate(resolve));
+  try {
+    await settle();
+    render().setDraft('Question');
+    await render().send('en');
+    onEvent({ type: 'session', session_id: 's1', turn_id: 't1' });
+    await render().stop();
+    assert.equal(commands.at(-1).type, 'cancel_turn');
+    onEvent({ type: 'error', content: 'Turn cancelled', turn_id: 't1' });
+    onEvent({ type: 'done', turn_id: 't1', metadata: { status: 'cancelled' } });
+    await settle();
+    const chat = render();
+    assert.equal(chat.error, '');
+    assert.equal(chat.busy, false);
+    assert.equal(chat.loading, false);
+    assert.equal(reads, 1);
+    assert.deepEqual(chat.messages, stored.messages);
+    chat.setDraft('Continue');
+    await render().send('en');
+    assert.equal(commands.at(-1).type, 'start_turn');
+    assert.equal(commands.at(-1).parent_message_id, 2);
+    onEvent({ type: 'error', content: 'Inference failed' });
+    assert.equal(render().error, 'Inference failed');
+  } finally { cleanup(); }
+});

@@ -1,14 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
-import { FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View } from 'react-native';
-import { router, useLocalSearchParams, type Href } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ArrowUp, BookOpen, Calendar, ChevronLeft, Folder, History, MessageCircle, Plus, Square, X } from 'lucide-react-native';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { useCopy } from '@/features/entry/copy';
+import { BottomNavigation } from '@/features/mobile/BottomNavigation';
 import { useDesign } from '@/shared/design/DesignProvider';
 import { Button, Field, IconButton } from '@/shared/ui/Controls';
-import { DText } from '@/shared/ui/Text';
 import { InlineAlert, LoadingState } from '@/shared/ui/Feedback';
+import { DText } from '@/shared/ui/Text';
+import { router, useLocalSearchParams } from 'expo-router';
+import { ArrowUp, ChevronLeft, History, Plus, Square, X } from 'lucide-react-native';
+import { useEffect, useRef, useState } from 'react';
+import { FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChatMarkdown } from '../ChatMarkdown';
 import { commandId } from './protocol';
 import { useLiveChat } from './useLiveChat';
@@ -84,9 +85,7 @@ function ConversationScreen({ sessionId, showHistory }: { sessionId: string | nu
         />
       </View>
     </KeyboardAvoidingView>
-    <View style={{ flexDirection: 'row', borderTopWidth: 1, borderColor: colors.border }}>
-      {[{ label: 'Learn', path: '/mobile/1', Icon: BookOpen }, { label: 'Tutor', path: '/chat', Icon: MessageCircle }, { label: 'Library', path: '/mobile/26', Icon: Folder }, { label: 'Plan', path: '/mobile/52', Icon: Calendar }].map(({ label, path, Icon }) => <Pressable key={label} accessibilityRole="tab" accessibilityState={{ selected: label === 'Tutor' }} accessibilityLabel={t(label)} onPress={() => { if (label !== 'Tutor') router.navigate(path as Href); }} style={{ flex: 1, minHeight: 60, alignItems: 'center', justifyContent: 'center', gap: 4 }}><Icon size={22} color={label === 'Tutor' ? colors.primary : colors.mutedForeground} /><DText role="caption" muted={label !== 'Tutor'}>{t(label)}</DText></Pressable>)}
-    </View>
+    <BottomNavigation activeScreen={12} />
     <Modal visible={historyOpen} animationType="slide" onRequestClose={() => setHistoryOpen(false)} onShow={() => { if (showHistory) void chat.refreshHistory(); }}>
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
         <View style={{ padding: 16, flexDirection: 'row', alignItems: 'center' }}><DText accessibilityRole="header" style={{ flex: 1, fontSize: 22 }}>{t('Recent conversations')}</DText><IconButton label={t('Close')} onPress={() => setHistoryOpen(false)}><X size={22} color={colors.foreground} /></IconButton></View>
