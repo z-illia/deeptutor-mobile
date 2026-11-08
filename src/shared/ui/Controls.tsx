@@ -1,5 +1,5 @@
 import { useId, useState, type ComponentProps, type ReactNode } from 'react';
-import { ActivityIndicator, Pressable, Switch, TextInput, View, type TextInputProps } from 'react-native';
+import { ActivityIndicator, Pressable, Switch, TextInput, View, type TextInputProps, type StyleProp, type TextStyle } from 'react-native';
 import { useDesign } from '../design/DesignProvider';
 import { alpha, geometry } from '../design/tokens';
 import { DText } from './Text';
@@ -22,12 +22,12 @@ export function IconButton({ label, children, ...props }: Omit<ComponentProps<ty
   return <Button {...props} accessibilityLabel={label} variant="ghost" style={[{ width: geometry.touch, height: geometry.touch, paddingHorizontal: 0 }, typeof props.style !== 'function' ? props.style : undefined]}>{children}</Button>;
 }
 
-export function Field({ label, hint, error, optional, trailing, style, ...props }: TextInputProps & { label: string; hint?: string; error?: string; optional?: boolean; trailing?: ReactNode }) {
+export function Field({ label, labelStyle, hint, error, optional, trailing, style, ...props }: TextInputProps & { label: string; labelStyle?: StyleProp<TextStyle>; hint?: string; error?: string; optional?: boolean; trailing?: ReactNode }) {
   const { colors, t } = useDesign();
   const id = useId();
   const [focused, setFocused] = useState(false);
   return <View style={{ gap: 6, minWidth: 0 }}>
-    <DText role="label" nativeID={`${id}-label`}>{label}{optional ? ` (${t('Optional')})` : ''}</DText>
+    <DText role="label" style={labelStyle} nativeID={`${id}-label`}>{label}{optional ? ` (${t('Optional')})` : ''}</DText>
     <View style={{ position: 'relative', justifyContent: 'center' }}>
       <TextInput {...props} accessibilityLabel={label} accessibilityHint={error || hint} aria-invalid={!!error}
         placeholderTextColor={colors.mutedForeground} onFocus={(event) => { setFocused(true); props.onFocus?.(event); }} onBlur={(event) => { setFocused(false); props.onBlur?.(event); }}

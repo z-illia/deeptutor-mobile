@@ -157,3 +157,11 @@ test('cancelled turn refreshes persisted history and allows the next message wit
     assert.equal(render().error, 'Inference failed');
   } finally { cleanup(); }
 });
+
+test('Tutor restores valid saved configuration without manufacturing unset overrides', () => {
+  const { configurationFromPreferences } = load('src/features/chat/live/configuration.ts');
+  assert.deepEqual(configurationFromPreferences(), {});
+  assert.deepEqual(configurationFromPreferences({ capability: 'solve', skills: ['pdf'], mcp: ['docs'], persona: 'teacher', answer_by: 'partner:p1', create_target: 'skill', unrelated: true }), { capability: 'solve', persona: 'teacher', answer_by: 'partner:p1', create_target: 'skill', skills: ['pdf'], mcp: ['docs'] });
+  assert.deepEqual(configurationFromPreferences({ skills: [false], mcp: 'docs', persona: 2 }), {});
+  assert.deepEqual(configurationFromPreferences({ skills: [], mcp: [], persona: '', answer_by: '', create_target: '' }), { skills: [], mcp: [], persona: '', answer_by: '', create_target: '' });
+});

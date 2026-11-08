@@ -16,12 +16,14 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
     let currentSocket;
     let pending;
     let recovering = false;
+    let failSkills = true;
     const emit = (type, content = '', metadata = {}) => currentSocket.send(JSON.stringify({ protocol_version: '2.0', type, content, metadata, session_id: saved.session_id, turn_id: `turn-${turn}`, seq: ++seq }));
     await page.route('**/api/**', async route => {
       const url = new URL(route.request().url());
       let body;
       if (url.pathname === '/api/auth/status') body = { enabled: false, authenticated: false };
       else if (url.pathname === '/api/settings/llm-options') body = { options: [{ profile_id: 'profile-1', model_id: 'model-1', model_name: 'Contract test model', is_active_default: true }], active: { profile_id: 'profile-1', model_id: 'model-1' } };
+      else if (url.pathname === '/api/skills/list' && failSkills) { failSkills = false; return route.fulfill({ status: 503, json: { detail: 'Unavailable' } }); }
       else if (url.pathname === '/api/skills/list') body = { skills: [{ name: 'pdf', description: 'Document skill' }] };
       else if (url.pathname === '/api/personas') body = { personas: [{ name: 'teacher' }] };
       else if (url.pathname === '/api/settings/mcp') body = { servers: { docs: { enabled: true } }, status: [] };
@@ -72,7 +74,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
     await page.getByRole('button', { name: 'Contract test model', exact: true }).waitFor();
     await page.screenshot({ path: '/tmp/deeptutor-tutor-empty.png' });
     await page.getByRole('button', { name: 'Contract test model', exact: true }).click();
-    await page.getByRole('dialog').getByRole('button', { name: 'Contract test model', exact: true }).click();
+    await page.getByRole('dialog').getByRole('button', { name: 'Model Contract test model', exact: true }).click();
     for (const name of ['Explain', 'Solve', 'Practice', 'Plan', 'Research']) {
       await page.getByRole('button', { name, exact: true }).click();
       await page.getByRole('dialog').getByRole('button').nth(1).click();
@@ -83,7 +85,12 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
     await page.getByRole('dialog').getByRole('button', { name: 'Solve', exact: true }).click();
     for (const [name, option] of [['Skills', 'pdf'], ['Connections', 'docs']]) {
       await page.getByRole('button', { name, exact: true }).click();
+      if (name === 'Skills') {
+        await page.getByText('Unable to load settings. Please try again.', { exact: true }).waitFor();
+        await page.getByRole('button', { name: 'Retry', exact: true }).click();
+      }
       await page.getByRole('button', { name: option, exact: true }).click();
+      assert.equal(await page.getByRole('button', { name: option, exact: true }).getAttribute('aria-selected'), 'true');
       await page.getByRole('button', { name: 'Apply choices', exact: true }).click();
     }
     for (const [name, option] of [['Preferences', 'teacher'], ['Partners', 'Study partner'], ['Create', 'Skill']]) {
@@ -119,6 +126,9 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
     await page.reload();
     await page.getByText('Continue and stop', { exact: true }).waitFor();
     await page.getByRole('button', { name: 'Contract test model', exact: true }).waitFor();
+    await page.getByRole('button', { name: 'Skills', exact: true }).click();
+    assert.equal(await page.getByRole('button', { name: 'pdf', exact: true }).getAttribute('aria-selected'), 'true');
+    await page.getByRole('button', { name: 'Apply choices', exact: true }).click();
     await input.fill('Recover after disconnect');
     await page.getByRole('button', { name: 'Send', exact: true }).click();
     await page.getByRole('button', { name: 'Stop response', exact: true }).waitFor();
@@ -127,10 +137,13 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
     await page.getByRole('button', { name: 'Reload conversation', exact: true }).click();
     await page.getByRole('button', { name: 'Stop response', exact: true }).waitFor({ state: 'hidden' });
     await page.getByText('Streaming response from server', { exact: true }).nth(1).waitFor();
+    await page.getByRole('dialog').first().waitFor({ state: 'hidden' });
+    await page.waitForTimeout(400); // Allow the existing native/web modal slide-out to finish before visual capture.
     await page.screenshot({ path: process.env.SCREENSHOT_PATH || '/tmp/deeptutor-live-chat.png', fullPage: true });
     assert.equal(commands.filter(command => command.type === 'start_turn').length, 3);
     assert.equal(commands.filter(command => command.type === 'cancel_turn').length, 1);
     assert.deepEqual(errors, []);
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'No page overflow; learning actions scroll within their own row');
     console.log('PASS: mobile viewport streamed response, model IDs, persisted branch parent, history, cancellation, reload, disconnect/replay without resending; browser stand-in, no live inference');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });
