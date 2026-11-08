@@ -1,14 +1,11 @@
 import { create } from 'axios';
 
-const baseURL = process.env.EXPO_PUBLIC_API_URL;
-
-if (!baseURL) {
-  throw new Error('EXPO_PUBLIC_API_URL is not configured');
-}
+import { defaultServerUrl } from './server';
 
 export const api = create({
-  baseURL: `${baseURL.replace(/\/+$/, '')}/api`,
+  baseURL: `${defaultServerUrl.replace(/\/+$/, '')}/api`,
   timeout: 30000,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },

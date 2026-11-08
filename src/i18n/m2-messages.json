@@ -1297,7 +1297,10 @@
     "starters.solve.4": "Розв'язати задачу кількома способами",
     "starters.solve.4.prompt": "Розв'яжи ту саму задачу щонайменше двома різними способами, а потім порівняй ідеї, що за ними стоять, коли кожен підходить і скільки роботи потребує. Якщо в тебе ще немає умови задачі, попроси мене її надіслати.",
     "text": "текст",
-    "whisper": "whisper"
+    "whisper": "whisper",
+    "API server URL": "URL сервера API",
+    "Enter a valid HTTP or HTTPS server URL.": "Введіть коректний URL сервера з http:// або https://.",
+    "Server address, for example https://your-server.com": "Адреса сервера, наприклад https://your-server.com"
   },
   "pl": {
     "Account created! Sign in to continue.": "Konto utworzone! Zaloguj się, aby kontynuować.",

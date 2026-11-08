@@ -1,11 +1,15 @@
 import { createContext, useContext, useRef, useState, type PropsWithChildren } from 'react';
+import { useAuth } from '@/features/auth/AuthProvider';
 import { useDesign } from '@/shared/design/DesignProvider';
 import { defaultPreferences, principalFor, settingsTransition, type EntryMode, type Preferences, type ResourceState, type SettingsState, type WorkspaceId } from './model';
 
 function useFixtureState() {
   const design = useDesign();
-  const [mode, setMode] = useState<EntryMode>('disabled');
-  const [profile, setProfile] = useState(principalFor('disabled'));
+  const auth = useAuth();
+  const session = auth.session;
+  const initialMode: EntryMode = !session?.status.enabled ? 'disabled' : !session.profile ? 'signed-out' : session.profile.mustChange ? 'temporary' : session.profile.role === 'admin' ? 'admin' : session.status.preset === 'learner' ? 'learner' : 'standard';
+  const [mode, setMode] = useState<EntryMode>(initialMode);
+  const [profile, setProfile] = useState(session?.profile ?? principalFor(initialMode));
   const [workspace, setWorkspace] = useState<WorkspaceId>('');
   const [resourceState, setResourceState] = useState<ResourceState>('ready');
   const [settingsState, setSettingsState] = useState<ResourceState>('ready');
@@ -42,9 +46,13 @@ function useFixtureState() {
     setSettings(old => settingsTransition(syncSettings(old), { type: operation }));
     if (operation === 'apply') { design.setTheme(settings.staged.theme); design.setLayout(settings.staged.layout); design.setLanguage(settings.staged.language); }
   }); };
-  return { mode, resetMode, profile, setProfile, workspace, setWorkspace, resourceState, setResourceState, settingsState, setSettingsState, whisper, setWhisper, failOperation, setFailOperation, settings, edit, save, busy, run, password, setPassword, registered, setRegistered, signOut: () => resetMode('signed-out') };
+  return { mode, resetMode, profile, setProfile, workspace, setWorkspace, resourceState, setResourceState, settingsState, setSettingsState, whisper, setWhisper, failOperation, setFailOperation, settings, edit, save, busy, run, password, setPassword, registered, setRegistered, signOut: () => { void auth.signOut().catch(() => { void auth.refresh(); }); } };
 }
 type FixtureState = ReturnType<typeof useFixtureState>;
 const Context = createContext<FixtureState | null>(null);
-export function FixtureProvider({ children }: PropsWithChildren) { return <Context.Provider value={useFixtureState()}>{children}</Context.Provider>; }
+function FixtureSession({ children }: PropsWithChildren) { return <Context.Provider value={useFixtureState()}>{children}</Context.Provider>; }
+export function FixtureProvider({ children }: PropsWithChildren) {
+  const auth = useAuth();
+  return <FixtureSession key={JSON.stringify(auth.session)}>{children}</FixtureSession>;
+}
 export function useFixtures() { const value = useContext(Context); if (!value) throw new Error('FixtureProvider is required'); return value; }
