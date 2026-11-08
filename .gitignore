@@ -47,3 +47,14 @@ example
 /scripts
 /docs
 docs/mobile-ui
+
+# Reviewable artifacts for the Pencil mobile redesign; keep older audit files ignored.
+!/docs/
+/docs/*
+!/docs/DESIGN_IMPLEMENTATION_MATRIX.md
+!/docs/mobile-ui/
+/docs/mobile-ui/*
+!/docs/mobile-ui/pen-redesign/
+!/scripts/
+/scripts/*
+!/scripts/verify-mobile-redesign.cjs

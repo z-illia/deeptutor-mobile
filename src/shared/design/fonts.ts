@@ -1,4 +1,5 @@
 export const fontAssets = {
+  Inter: require('../../../assets/fonts/Inter-Variable.ttf'),
   Geist: require('../../../assets/fonts/Geist-Regular.ttf'),
   GeistMedium: require('../../../assets/fonts/Geist-Medium.ttf'),
   GeistSemiBold: require('../../../assets/fonts/Geist-SemiBold.ttf'),
