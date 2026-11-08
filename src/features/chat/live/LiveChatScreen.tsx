@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View } from 'react-native';
 import { router, useLocalSearchParams, type Href } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ArrowUp, BookOpen, Calendar, ChevronLeft, Folder, History, MessageCircle, Plus, X } from 'lucide-react-native';
+import { ArrowUp, BookOpen, Calendar, ChevronLeft, Folder, History, MessageCircle, Plus, Square, X } from 'lucide-react-native';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { useCopy } from '@/features/entry/copy';
 import { useDesign } from '@/shared/design/DesignProvider';
@@ -70,11 +70,18 @@ function ConversationScreen({ sessionId, showHistory }: { sessionId: string | nu
           multiline
           editable={!chat.loading && (!chat.busy || chat.waiting)}
           style={{ maxHeight: 160, minHeight: 56, paddingVertical: 12, textAlignVertical: 'center' }}
-          trailing={<Button accessibilityLabel={t('Send')} disabled={!chat.draft.trim() || chat.loading || !!chat.error || (chat.busy && !chat.waiting)} onPress={() => { followBottom.current = true; void chat.send(language); }} style={{ width: 40, height: 40, minWidth: 40, minHeight: 40, paddingHorizontal: 0, paddingVertical: 0, borderRadius: 999 }}><ArrowUp size={18} color={colors.primaryForeground} /></Button>}
+          trailing={
+            chat.busy && (!chat.waiting || !chat.draft.trim()) ? (
+              <Button accessibilityLabel={t('Stop response')} onPress={() => void chat.stop()} style={{ width: 40, height: 40, minWidth: 40, minHeight: 40, paddingHorizontal: 0, paddingVertical: 0, borderRadius: 999 }}>
+                <Square size={16} color={colors.primaryForeground} fill={colors.primaryForeground} />
+              </Button>
+            ) : (
+              <Button accessibilityLabel={t('Send')} disabled={!chat.draft.trim() || chat.loading || !!chat.error || (chat.busy && !chat.waiting)} onPress={() => { followBottom.current = true; void chat.send(language); }} style={{ width: 40, height: 40, minWidth: 40, minHeight: 40, paddingHorizontal: 0, paddingVertical: 0, borderRadius: 999 }}>
+                <ArrowUp size={18} color={colors.primaryForeground} />
+              </Button>
+            )
+          }
         />
-        {chat.busy && <View style={{ flexDirection: 'row', gap: 8, justifyContent: 'flex-end' }}>
-          <Button variant="secondary" onPress={() => void chat.stop()}>{t('Stop response')}</Button>
-        </View>}
       </View>
     </KeyboardAvoidingView>
     <View style={{ flexDirection: 'row', borderTopWidth: 1, borderColor: colors.border }}>
