@@ -24,8 +24,6 @@ import {
   type QuizQuestionType,
   type ResearchDepth,
   type ResearchMode,
-  summarizeQuizConfig,
-  summarizeResearchConfig,
 } from './model';
 
 const QUIZ_TYPES: { id: QuizQuestionType; label: string }[] = [
@@ -107,8 +105,13 @@ function CapabilityConfigCardBody({
 
   const isQuiz = capability === 'question';
   const summaryText = isQuiz
-    ? summarizeQuizConfig(quizConfig)
-    : summarizeResearchConfig(researchConfig);
+    ? [t(quizConfig.mode === 'mimic' ? 'Mimic Paper' : 'Custom Quiz'), t('Questions ({value1})', { value1: quizConfig.totalCount }), t(QUIZ_DIFFICULTIES.find(item => item.id === quizConfig.difficulty)?.label ?? 'Auto'), `${t('Type')}: ${quizConfig.selectedTypes.length}`].join(' · ')
+    : [t(RESEARCH_MODES.find(item => item.id === researchConfig.mode)?.label ?? 'Report'), t(RESEARCH_DEPTHS.find(item => item.id === researchConfig.depth)?.label ?? 'Standard'), t('Sub-topics ({value1})', { value1: researchConfig.subtopics }), t('Iterations ({value1})', { value1: researchConfig.iterations })].join(' · ');
+
+  const translateError = (message: string) => {
+    const counts = message.match(/^Type mix sum \((\d+)\) must equal total count \((\d+)\)\.$/);
+    return counts ? t('Type mix sum ({sum}) must equal total count ({total}).', { sum: counts[1], total: counts[2] }) : t(message);
+  };
 
   const toggleQuizType = (qType: QuizQuestionType) => {
     setValidationErrors([]);
@@ -225,7 +228,7 @@ function CapabilityConfigCardBody({
                         key={m}
                         accessibilityRole="button"
                         accessibilityState={{ selected: active }}
-                        accessibilityLabel={`Quiz mode ${m}`}
+                        accessibilityLabel={t("Quiz mode {value1}", { value1: t(m === 'custom' ? 'Custom' : 'Mimic Paper') })}
                         onPress={() => {
                           setValidationErrors([]);
                           updateQuizConfig({ mode: m });
@@ -294,7 +297,7 @@ function CapabilityConfigCardBody({
                   <Text
                     style={[styles.sectionLabel, { color: colors.foreground }]}
                   >
-                    {`Questions (${quizConfig.totalCount})`}
+                    {t("Questions ({value1})", { value1: String(quizConfig.totalCount) })}
                   </Text>
                   <View style={styles.stepperRow}>
                     <Pressable
@@ -363,7 +366,7 @@ function CapabilityConfigCardBody({
                           key={diff.id}
                           accessibilityRole="button"
                           accessibilityState={{ selected: active }}
-                          accessibilityLabel={`Quiz difficulty ${diff.label}`}
+                          accessibilityLabel={t("Quiz difficulty {value1}", { value1: t(diff.label) })}
                           onPress={() =>
                             updateQuizConfig({ difficulty: diff.id })
                           }
@@ -414,7 +417,7 @@ function CapabilityConfigCardBody({
                         key={qt.id}
                         accessibilityRole="checkbox"
                         accessibilityState={{ checked: active }}
-                        accessibilityLabel={`Toggle question type ${qt.label}`}
+                        accessibilityLabel={t("Toggle question type {value1}", { value1: t(qt.label) })}
                         onPress={() => toggleQuizType(qt.id)}
                         style={[
                           styles.optionPill,
@@ -463,7 +466,7 @@ function CapabilityConfigCardBody({
                         key={rm.id}
                         accessibilityRole="button"
                         accessibilityState={{ selected: active }}
-                        accessibilityLabel={`Research mode ${rm.label}`}
+                        accessibilityLabel={t("Research mode {value1}", { value1: t(rm.label) })}
                         onPress={() => updateResearchConfig({ mode: rm.id })}
                         style={[
                           styles.optionPill,
@@ -510,7 +513,7 @@ function CapabilityConfigCardBody({
                         key={rd.id}
                         accessibilityRole="button"
                         accessibilityState={{ selected: active }}
-                        accessibilityLabel={`Research depth ${rd.label}`}
+                        accessibilityLabel={t("Research depth {value1}", { value1: t(rd.label) })}
                         onPress={() => updateResearchConfig({ depth: rd.id })}
                         style={[
                           styles.optionPill,
@@ -548,7 +551,7 @@ function CapabilityConfigCardBody({
                   <Text
                     style={[styles.sectionLabel, { color: colors.foreground }]}
                   >
-                    {`Sub-topics (${researchConfig.subtopics})`}
+                    {t("Sub-topics ({value1})", { value1: String(researchConfig.subtopics) })}
                   </Text>
                   <View style={styles.stepperRow}>
                     <Pressable
@@ -612,7 +615,7 @@ function CapabilityConfigCardBody({
                   <Text
                     style={[styles.sectionLabel, { color: colors.foreground }]}
                   >
-                    {`Iterations (${researchConfig.iterations})`}
+                    {t("Iterations ({value1})", { value1: String(researchConfig.iterations) })}
                   </Text>
                   <View style={styles.stepperRow}>
                     <Pressable
@@ -695,7 +698,7 @@ function CapabilityConfigCardBody({
                     key={`cap-err-${idx}`}
                     style={[styles.errorText, { color: colors.destructive }]}
                   >
-                    {err}
+                    {translateError(err)}
                   </Text>
                 ))}
               </View>

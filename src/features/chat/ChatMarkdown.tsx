@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { Check, Copy } from 'lucide-react-native';
+import { useCopy } from '@/features/entry/copy';
 import { useDesign } from '@/shared/design/DesignProvider';
 
 type MarkdownSegment =
@@ -58,6 +59,7 @@ function parseSegments(raw: string): MarkdownSegment[] {
 
 export function ChatMarkdown({ content }: { content: string }) {
   const { colors } = useDesign();
+  const t = useCopy();
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
   const segments = parseSegments(content);
 
@@ -93,7 +95,7 @@ export function ChatMarkdown({ content }: { content: string }) {
                 </Text>
                 <Pressable
                   accessibilityRole="button"
-                  accessibilityLabel="Copy code block"
+                  accessibilityLabel={t("Copy code block")}
                   onPress={async () => {
                     await Clipboard.setStringAsync(seg.code);
                     setCopiedIdx(idx);
@@ -112,7 +114,7 @@ export function ChatMarkdown({ content }: { content: string }) {
                       { color: colors.mutedForeground },
                     ]}
                   >
-                    {isCopied ? 'Copied' : 'Copy'}
+                    {isCopied ? t("Copied") : t("Copy")}
                   </Text>
                 </Pressable>
               </View>

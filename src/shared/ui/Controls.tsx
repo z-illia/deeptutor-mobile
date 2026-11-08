@@ -32,7 +32,7 @@ export function Field({ label, hint, error, optional, style, ...props }: TextInp
       placeholderTextColor={colors.mutedForeground} onFocus={(event) => { setFocused(true); props.onFocus?.(event); }} onBlur={(event) => { setFocused(false); props.onBlur?.(event); }}
       style={[{ minHeight: 48, borderWidth: 1, borderColor: error ? colors.destructive : focused ? colors.ring : colors.input, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontFamily: 'Geist', fontSize: 14, color: colors.foreground, backgroundColor: colors.background, boxShadow: focused ? `0 0 0 2px ${alpha(colors.ring, 0.15)}` : undefined }, style]} />
     {!!hint && <DText role="caption" muted>{hint}</DText>}
-    {!!error && <DText role="caption" accessibilityRole="alert" style={{ color: colors.destructive }}>{error}</DText>}
+    {!!error && <DText role="caption" accessibilityRole="alert" style={{ color: colors.destructive }}>{t(error)}</DText>}
   </View>;
 }
 

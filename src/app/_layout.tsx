@@ -24,7 +24,7 @@ function FontGate({ children }: PropsWithChildren) {
   const { colors, t } = useDesign();
   useEffect(() => { if (loaded || error || recovered) void SplashScreen.hideAsync(); }, [loaded, error, recovered]);
   if (!loaded && !recovered && !error) return <View style={{ flex: 1, backgroundColor: colors.background }} />;
-  if (error && !recovered) return <View style={{ flex: 1, justifyContent: 'center', padding: 24, gap: 16, backgroundColor: colors.background }}><DText accessibilityRole="alert">Font assets could not be loaded.</DText><Button loading={retrying} onPress={() => { setRetrying(true); void loadAsync(fontAssets).then(() => setRecovered(true)).catch(() => {}).finally(() => setRetrying(false)); }}>{t('Retry')}</Button></View>;
+  if (error && !recovered) return <View style={{ flex: 1, justifyContent: 'center', padding: 24, gap: 16, backgroundColor: colors.background }}><DText accessibilityRole="alert">{t("Font assets could not be loaded.")}</DText><Button loading={retrying} onPress={() => { setRetrying(true); void loadAsync(fontAssets).then(() => setRecovered(true)).catch(() => {}).finally(() => setRetrying(false)); }}>{t('Retry')}</Button></View>;
   return children;
 }
 

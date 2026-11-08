@@ -148,7 +148,7 @@ function PageCustomizeDialogBody({
         </Pressable>
       </View>
 
-      {error ? <InlineAlert tone="danger">{error}</InlineAlert> : null}
+      {error ? <InlineAlert tone="danger">{t(error)}</InlineAlert> : null}
 
       <ScrollView style={{ maxHeight: 340 }} contentContainerStyle={{ gap: 12 }}>
         {page === 'learning' ? (

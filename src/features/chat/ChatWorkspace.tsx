@@ -288,7 +288,7 @@ export function ChatWorkspace() {
             {isArchived ? (
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Restore archived session"
+                accessibilityLabel={t("Restore archived session")}
                 onPress={handleRestoreArchived}
                 style={{
                   flexDirection: 'row',
@@ -398,7 +398,7 @@ export function ChatWorkspace() {
             <Pressable
               disabled={!activeSession}
               accessibilityRole="button"
-              accessibilityLabel="Conversation actions"
+              accessibilityLabel={t("Conversation actions")}
               onPress={() => setHeaderMenuOpen(true)}
               style={({ pressed }) => ({
                 width: 36,
@@ -559,7 +559,7 @@ export function ChatWorkspace() {
 
               {sendError ? (
                 <View style={{ width: '100%' }}>
-                  <InlineAlert tone="danger">{sendError}</InlineAlert>
+                  <InlineAlert tone="danger">{t(sendError)}</InlineAlert>
                 </View>
               ) : null}
 
@@ -653,7 +653,7 @@ export function ChatWorkspace() {
             >
               <View style={{ width: '100%', maxWidth: 740, gap: 8 }}>
                 {sendError ? (
-                  <InlineAlert tone="danger">{sendError}</InlineAlert>
+                  <InlineAlert tone="danger">{t(sendError)}</InlineAlert>
                 ) : null}
                 <ChatComposer
                   sessionId={sessionId}

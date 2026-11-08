@@ -156,7 +156,7 @@ export function QuizViewerCard({
         <View style={styles.headerTitleGroup}>
           <HelpCircle size={16} color={colors.primary} />
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>
-            {`Interactive Quiz · ${currentIndex + 1} / ${questions.length}`}
+            {t("Interactive Quiz · {value1} / {value2}", { value1: String(currentIndex + 1), value2: String(questions.length) })}
           </Text>
           <View
             style={[styles.badge, { backgroundColor: colors.secondary }]}
@@ -235,7 +235,7 @@ export function QuizViewerCard({
                 key={opt}
                 accessibilityRole="radio"
                 accessibilityState={{ selected }}
-                accessibilityLabel={`Quiz option ${opt}`}
+                accessibilityLabel={t("Quiz option {value1}", { value1: String(opt) })}
                 onPress={() => handleSelectOption(opt)}
                 style={[
                   styles.optionBtn,
@@ -496,7 +496,7 @@ export function QuizViewerCard({
                     key={cat}
                     accessibilityRole="button"
                     accessibilityState={{ selected: active }}
-                    accessibilityLabel={`Select bookmark tag ${cat}`}
+                    accessibilityLabel={t("Select bookmark tag {value1}", { value1: String(cat) })}
                     onPress={() =>
                       updateQuizUserState(
                         sessionId,

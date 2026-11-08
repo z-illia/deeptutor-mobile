@@ -243,7 +243,7 @@ export function CreateTopicWizard({
           </Pressable>
         </View>
 
-        {error ? <InlineAlert tone="danger">{error}</InlineAlert> : null}
+        {error ? <InlineAlert tone="danger">{t(error)}</InlineAlert> : null}
 
         {wizardDraft.step === 'goal' ? (
           <View testID="wizard-step-goal" style={{ gap: 14 }}>

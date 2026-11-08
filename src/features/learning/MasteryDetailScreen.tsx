@@ -803,7 +803,7 @@ export function MasteryDetailScreen({ pathId }: { pathId: string }) {
         </View>
 
         {actionError ? (
-          <InlineAlert tone="danger">{actionError}</InlineAlert>
+          <InlineAlert tone="danger">{t(actionError)}</InlineAlert>
         ) : null}
 
         {/* Main Content: Outline / Board + Review Plan + Sessions */}
@@ -1692,7 +1692,7 @@ export function MasteryDetailScreen({ pathId }: { pathId: string }) {
                         key={target}
                         testID={`retention-target-${Math.round(target * 100)}`}
                         accessibilityRole="button"
-                        accessibilityLabel={`Recall target ${Math.round(target * 100)}%`}
+                        accessibilityLabel={t("Recall target {value1}%", { value1: String(Math.round(target * 100)) })}
                         accessibilityState={{ selected: active }}
                         onPress={() => setDesiredRetention(pathId, target)}
                         style={{
@@ -1785,7 +1785,7 @@ export function MasteryDetailScreen({ pathId }: { pathId: string }) {
                       </DText>
                       <TextInput
                         testID={`strategy-interval-${type}`}
-                        accessibilityLabel={`${type} rounds (days)`}
+                        accessibilityLabel={t("{value1} rounds (days)", { value1: String(type) })}
                         value={strategyIntervals[type]}
                         onChangeText={(val) =>
                           setStrategyIntervals((prev) => ({
@@ -1813,7 +1813,7 @@ export function MasteryDetailScreen({ pathId }: { pathId: string }) {
                     role="caption"
                     style={{ color: colors.destructive }}
                   >
-                    {strategyFormError}
+                    {t(strategyFormError)}
                   </DText>
                 ) : null}
 
@@ -1916,7 +1916,7 @@ export function MasteryDetailScreen({ pathId }: { pathId: string }) {
                     />
                     <Pressable
                       accessibilityRole="button"
-                      accessibilityLabel={`Select ${rev.knowledge_point_name}`}
+                      accessibilityLabel={t("Select {value1}", { value1: String(rev.knowledge_point_name) })}
                       onPress={() =>
                         setSelectedObjectiveId(pathId, rev.knowledge_point_id)
                       }
@@ -1938,7 +1938,7 @@ export function MasteryDetailScreen({ pathId }: { pathId: string }) {
                     <Pressable
                       testID={`review-start-btn-${rev.knowledge_point_id}`}
                       accessibilityRole="button"
-                      accessibilityLabel={`Start review for ${rev.knowledge_point_name}`}
+                      accessibilityLabel={t("Start review for {value1}", { value1: String(rev.knowledge_point_name) })}
                       onPress={() =>
                         openStudy('review', rev.knowledge_point_name)
                       }

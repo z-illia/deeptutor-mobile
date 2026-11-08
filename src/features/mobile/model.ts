@@ -21,6 +21,7 @@ export interface DesignNode {
   textAlign?: 'left' | 'center' | 'right';
   icon?: string;
   children?: DesignNode[];
+  localize?: boolean;
 }
 export interface MobileSpec {
   number: number;
@@ -43,10 +44,10 @@ export function allNodes(node: DesignNode): DesignNode[] {
   return [node, ...(node.children ?? []).flatMap(allNodes)];
 }
 export function disclosure(id: string, title: string, description: string): DesignNode {
-  return { id, name: `${title} row`, type: 'frame', width: 'fill_container', gap: 12, padding: [14, 0], alignItems: 'center', stroke: '$m-line', strokeWidth: { bottom: 1 }, children: [
+  return { id, localize: false, name: `${title} row`, type: 'frame', width: 'fill_container', gap: 12, padding: [14, 0], alignItems: 'center', stroke: '$m-line', strokeWidth: { bottom: 1 }, children: [
     { id: `${id}:text`, type: 'frame', name: 'Row text', width: 'fill_container', layout: 'vertical', gap: 4, children: [
-      { id: `${id}:title`, type: 'text', name: 'Row title', content: title, fill: '$m-ink', width: 'fill_container', fontSize: 16, fontWeight: '500', lineHeight: 1.4 },
-      { id: `${id}:description`, type: 'text', name: 'Row description', content: description, fill: '$m-muted', width: 'fill_container', fontSize: 14, lineHeight: 1.4 },
+      { id: `${id}:title`, localize: false, type: 'text', name: 'Row title', content: title, fill: '$m-ink', width: 'fill_container', fontSize: 16, fontWeight: '500', lineHeight: 1.4 },
+      { id: `${id}:description`, localize: false, type: 'text', name: 'Row description', content: description, fill: '$m-muted', width: 'fill_container', fontSize: 14, lineHeight: 1.4 },
     ] },
     { id: `${id}:arrow`, type: 'icon', name: 'Disclosure', icon: 'chevron-right', width: 20, height: 20, fill: '$m-muted' },
   ] };

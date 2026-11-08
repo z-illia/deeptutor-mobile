@@ -38,7 +38,7 @@ function TopicMapCard({ topic }: { topic: MasteryTopic }) {
     <Pressable
       testID={`topic-map-card-${topic.path_id}`}
       accessibilityRole="button"
-      accessibilityLabel={`Open ${displayName}, ${mastered} of ${total} knowledge points complete`}
+      accessibilityLabel={t("Open {value1}, {value2} of {value3} knowledge points complete", { value1: String(displayName), value2: String(mastered), value3: String(total) })}
       onPress={() =>
         router.push(
           `/learning/mastery/${encodeURIComponent(topic.path_id)}` as Href,
@@ -299,7 +299,7 @@ export function TopicAtlasScreen() {
                 key={candidate}
                 testID={`atlas-state-${candidate}`}
                 accessibilityRole="button"
-                accessibilityLabel={`Set atlas state ${candidate}`}
+                accessibilityLabel={t("Set atlas state {value1}", { value1: String(candidate) })}
                 accessibilityState={{ selected: atlasState === candidate }}
                 onPress={() => setAtlasState(candidate)}
                 style={{

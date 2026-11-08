@@ -47,7 +47,9 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
-    "test": "node --test --test-isolation=none tests/*.test.cjs"
+    "test": "node --test --test-isolation=none tests/*.test.cjs",
+    "locales:check": "node scripts/locale-contract.cjs --check",
+    "locales:audit": "node scripts/audit-locales.cjs"
   },
   "private": true
 }

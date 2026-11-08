@@ -1,9 +1,8 @@
+import { useCallback } from 'react';
 import { useDesign } from '@/shared/design/DesignProvider';
-import messages from '@/i18n/m2-messages.json';
-import learningMessages from '@/i18n/m4-messages.json';
+import { translateCopy, type CopyValues } from '@/i18n/copy';
+
 export function useCopy() {
   const { language } = useDesign();
-  const bundle: Record<string, string> = messages[language];
-  const learning: Record<string, string> = language === 'uk' ? learningMessages.uk : {};
-  return (key: string) => bundle[key] || learning[key] || key;
+  return useCallback((key: string, values?: CopyValues) => translateCopy(language, key, values), [language]);
 }

@@ -7,6 +7,7 @@ import {
   History,
   X,
 } from 'lucide-react-native';
+import { useCopy } from '@/features/entry/copy';
 import { useTheme } from '../../theme';
 import { type ContextReferenceItem, type ContextReferenceKind } from './model';
 
@@ -36,6 +37,7 @@ export function ContextReferenceTree({
   onSelect?: (item: ContextReferenceItem) => void;
 }) {
   const { colors } = useTheme();
+  const t = useCopy();
   if (!items || items.length === 0) return null;
 
   return (
@@ -73,7 +75,7 @@ export function ContextReferenceTree({
               <Text
                 style={[styles.kindTag, { color: colors.mutedForeground }]}
               >
-                {KIND_BADGE_MAP[item.kind]}
+                {t(KIND_BADGE_MAP[item.kind])}
               </Text>
               <Text
                 numberOfLines={1}
@@ -85,7 +87,7 @@ export function ContextReferenceTree({
             {onRemove ? (
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={`Remove reference ${item.label}`}
+                accessibilityLabel={t('Remove reference {label}', { label: item.label })}
                 onPress={() => onRemove(item.id)}
                 style={styles.removeBtn}
               >

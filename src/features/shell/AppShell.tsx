@@ -108,7 +108,7 @@ export function AppShell({ children }: PropsWithChildren) {
           <DText role="caption" muted style={{ paddingHorizontal: 4 }}>{t('No conversations yet')}</DText>
         )}
       </View>
-      {arranging && <View style={{ gap: 4, marginTop: 12 }}><Button variant="ghost" onPress={() => { setHidden([]); setOrder([]); }}>{t('Reset to defaults')}</Button>{!phone && <View style={{ flexDirection: 'row' }}><Button variant="ghost" accessibilityLabel="Narrow sidebar" onPress={() => setPreferredWidth((old) => Math.max(220, old - 20))}>−</Button><Button variant="ghost" accessibilityLabel="Widen sidebar" onPress={() => setPreferredWidth((old) => Math.min(480, old + 20))}>+</Button></View>}</View>}
+      {arranging && <View style={{ gap: 4, marginTop: 12 }}><Button variant="ghost" onPress={() => { setHidden([]); setOrder([]); }}>{t('Reset to defaults')}</Button>{!phone && <View style={{ flexDirection: 'row' }}><Button variant="ghost" accessibilityLabel={t("Narrow sidebar")} onPress={() => setPreferredWidth((old) => Math.max(220, old - 20))}>−</Button><Button variant="ghost" accessibilityLabel={t("Widen sidebar")} onPress={() => setPreferredWidth((old) => Math.min(480, old + 20))}>+</Button></View>}</View>}
     </ScrollView>}
     <View style={{ padding: 8, gap: 4, marginTop: 'auto' }}>
       <IconButton label={t('Arrange sidebar')} onPress={() => { setCollapsed(false); setArranging((old) => !old); }}><SlidersHorizontal size={16} color={colors.mutedForeground} /></IconButton>

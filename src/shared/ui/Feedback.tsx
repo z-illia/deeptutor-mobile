@@ -57,7 +57,7 @@ export function FeedbackProvider({ children }: PropsWithChildren) {
   };
   return <FeedbackContext.Provider value={{ notify }}>{children}
     {!!notices.length && <View pointerEvents="box-none" accessibilityLiveRegion="polite" style={{ position: 'absolute', left: 24, right: 24, bottom: insets.bottom + 24, gap: 8, zIndex: 200, alignItems: 'flex-end' }}>
-      {notices.map((notice) => <View key={notice.id} style={{ width: '100%', maxWidth: 384 }}><InlineAlert tone={notice.tone} action={<IconButton label={t('Dismiss')} onPress={() => setNotices((old) => old.filter((n) => n.id !== notice.id))}><X size={16} color={colors.foreground} /></IconButton>}>{notice.message}</InlineAlert></View>)}
+      {notices.map((notice) => <View key={notice.id} style={{ width: '100%', maxWidth: 384 }}><InlineAlert tone={notice.tone} action={<IconButton label={t('Dismiss')} onPress={() => setNotices((old) => old.filter((n) => n.id !== notice.id))}><X size={16} color={colors.foreground} /></IconButton>}>{t(notice.message)}</InlineAlert></View>)}
     </View>}
   </FeedbackContext.Provider>;
 }

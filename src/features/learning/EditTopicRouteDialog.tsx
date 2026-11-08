@@ -200,7 +200,7 @@ function EditTopicRouteDialogBody({
         </DText>
       </View>
 
-      {error ? <InlineAlert tone="danger">{error}</InlineAlert> : null}
+      {error ? <InlineAlert tone="danger">{t(error)}</InlineAlert> : null}
 
       <ScrollView style={{ maxHeight: 380 }} contentContainerStyle={{ gap: 12 }}>
         {/* Map description */}

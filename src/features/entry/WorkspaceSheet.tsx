@@ -15,7 +15,7 @@ export function WorkspaceSheet({ open, onClose }: { open: boolean; onClose: () =
   const f = useFixtures(); const t = useCopy(); const { colors } = useDesign(); const path = usePathname(); const [error, setError] = useState('');
   const go = (href: string) => { onClose(); router.push(href as Href); };
   return <Dialog placement="bottom" open={open} title={t('Workspace')} busy={!!f.busy} onClose={() => { setError(''); onClose(); }}>
-    {!!error && <InlineAlert tone="danger">{error}</InlineAlert>}
+    {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
     {workspaces.map((row) => <Button key={row.id} variant="ghost" accessibilityState={{ selected: f.workspace === row.id }} disabled={!!f.busy} loading={f.busy === `workspace:${row.id}`} icon={f.workspace === row.id ? <Check size={16} color={colors.foreground} /> : undefined} onPress={() => {
       if (row.id === f.workspace) { onClose(); return; }
       void f.run(`workspace:${row.id}`, () => { f.setWorkspace(row.id); setError(''); onClose(); router.replace(switchDestination(path) as Href); }).then((ok) => { if (!ok) setError(t('Could not save the draft. Free browser storage before switching workspaces.')); });

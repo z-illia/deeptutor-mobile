@@ -194,7 +194,7 @@ export function AskUserQuestionCard({
               key={q.id}
               accessibilityRole="tab"
               accessibilityState={{ selected: active }}
-              accessibilityLabel={`Question tab ${idx + 1}: ${q.header}`}
+              accessibilityLabel={t("Question tab {value1}: {value2}", { value1: String(idx + 1), value2: String(q.header) })}
               onPress={() => setActiveIndex(idx)}
               style={[
                 styles.questionTab,
@@ -239,7 +239,7 @@ export function AskUserQuestionCard({
                   checked: selected,
                   selected,
                 }}
-                accessibilityLabel={`Select option ${opt.label}`}
+                accessibilityLabel={t("Select option {value1}", { value1: String(opt.label) })}
                 onPress={() => toggleOption(opt.id)}
                 style={[
                   styles.optionRow,
@@ -294,7 +294,7 @@ export function AskUserQuestionCard({
             onChangeText={handleFreeTextChange}
             placeholder={t('Or type a custom response...')}
             placeholderTextColor={colors.mutedForeground}
-            accessibilityLabel={`Custom answer for ${currentQuestion.header}`}
+            accessibilityLabel={t("Custom answer for {value1}", { value1: String(currentQuestion.header) })}
             style={[
               styles.freeTextInput,
               {
@@ -319,7 +319,7 @@ export function AskUserQuestionCard({
         >
           <AlertTriangle size={14} color={colors.destructive} />
           <Text style={[styles.errorText, { color: colors.destructive }]}>
-            {card.errorMessage}
+            {t(card.errorMessage)}
           </Text>
         </View>
       ) : null}

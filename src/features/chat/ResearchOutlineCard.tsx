@@ -120,7 +120,7 @@ export function ResearchOutlineCard({
         <View style={styles.headerLeft}>
           <Microscope size={16} color={colors.primary} />
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>
-            {`Research Outline · ${research.outline.length} sub-topics`}
+            {t("Research Outline · {value1} sub-topics", { value1: String(research.outline.length) })}
           </Text>
           <View
             style={[
@@ -198,7 +198,7 @@ export function ResearchOutlineCard({
                       onChangeText={(val) =>
                         handleUpdateSubtopic(item.id, { title: val })
                       }
-                      accessibilityLabel={`Sub-topic title ${item.id}`}
+                      accessibilityLabel={t("Sub-topic title {value1}", { value1: String(item.id) })}
                       style={[
                         styles.subtopicTitleInput,
                         {
@@ -209,7 +209,7 @@ export function ResearchOutlineCard({
                     />
                     <Pressable
                       accessibilityRole="button"
-                      accessibilityLabel={`Delete sub-topic ${item.title}`}
+                      accessibilityLabel={t("Delete sub-topic {value1}", { value1: String(item.title) })}
                       onPress={() => handleDeleteSubtopic(item.id)}
                       style={styles.deleteSubBtn}
                     >
@@ -221,7 +221,7 @@ export function ResearchOutlineCard({
                     onChangeText={(val) =>
                       handleUpdateSubtopic(item.id, { overview: val })
                     }
-                    accessibilityLabel={`Sub-topic overview ${item.id}`}
+                    accessibilityLabel={t("Sub-topic overview {value1}", { value1: String(item.id) })}
                     multiline
                     style={[
                       styles.subtopicDescInput,
@@ -285,7 +285,7 @@ export function ResearchOutlineCard({
             >
               <AlertTriangle size={14} color={colors.destructive} />
               <Text style={[styles.errorText, { color: colors.destructive }]}>
-                {validationError}
+                {t(validationError)}
               </Text>
             </View>
           ) : null}
@@ -302,7 +302,7 @@ export function ResearchOutlineCard({
             >
               <AlertTriangle size={14} color={colors.destructive} />
               <Text style={[styles.errorText, { color: colors.destructive }]}>
-                {research.errorMessage}
+                {t(research.errorMessage)}
               </Text>
             </View>
           ) : null}
@@ -327,7 +327,7 @@ export function ResearchOutlineCard({
               <Text
                 style={[styles.citationsTitle, { color: colors.foreground }]}
               >
-                {`Citations (${research.citations.length})`}
+                {t("Citations ({value1})", { value1: String(research.citations.length) })}
               </Text>
               {research.citations.map((cit) => (
                 <View key={cit.id} style={styles.citationRow}>

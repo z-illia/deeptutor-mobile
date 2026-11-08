@@ -3,6 +3,8 @@ import { Pressable, Switch, Text, TextInput, View, type TextStyle, type ViewStyl
 import { BatteryFull, BookOpen, Bookmark, Calendar, ChevronLeft, ChevronRight, Copy, Ellipsis, Folder, Layers, MessageCircle, NotebookPen, Signal, UserRound, Volume2, Wifi } from 'lucide-react-native';
 import { colorOf, labelOf, textOf, type DesignNode, type MobileColors } from './model';
 
+import { languageNames, useMobileCopy } from './copy';
+
 const icons = { 'battery-full': BatteryFull, 'book-open': BookOpen, bookmark: Bookmark, calendar: Calendar, 'chevron-left': ChevronLeft, 'chevron-right': ChevronRight, copy: Copy, ellipsis: Ellipsis, folder: Folder, layers: Layers, 'message-circle': MessageCircle, 'notebook-pen': NotebookPen, signal: Signal, 'user-round': UserRound, 'volume-2': Volume2, wifi: Wifi };
 export interface LayerContext {
   colors: MobileColors;
@@ -15,12 +17,12 @@ export interface LayerContext {
   chooseField: (node: DesignNode, options: string[]) => void;
 }
 export const fieldOptions: Record<string, string[]> = {
-  Theme: ['System', 'Light', 'Dark'], Status: ['To do', 'In progress', 'Done', 'Archived'],
+  Theme: ['System', 'Light', 'Dark', 'Cream', 'Glass'], Status: ['To do', 'In progress', 'Done', 'Archived'],
   Workspace: ['Software Development', 'General workspace'], 'Destination workspace': ['Software Development', 'General workspace'],
   'Source workspace': ['Software Development', 'General workspace'],
   'Recall target': ['70%', '80%', '90%'], 'Apply choices': ['This turn only', 'Every turn'],
   'Choice duration': ['This turn only', 'Every turn'],
-  'Interface language': ['English', 'Українська', 'Polski', '中文'], 'Model output language': ['Automatic', 'English', 'Українська', 'Polski', '中文'],
+  'Interface language': Object.values(languageNames), 'Model output language': ['Automatic', 'English', 'Українська', 'Polski', '中文'],
   'Reply language': ['Automatic', 'English', 'Українська'], 'Learning text size': ['16', '18', '20', '24'],
   'Line spacing': ['1.4', '1.5', '1.75', '2'], 'Code syntax theme': ['Default', 'Light', 'Dark'],
   Transport: ['Streamable HTTP', 'SSE'], Engine: ['LlamaIndex', 'PageIndex', 'RAGAnything'],
@@ -53,6 +55,7 @@ export function layerStyle(node: DesignNode, colors: MobileColors, horizontal = 
   };
 }
 function NativeField({ node, ctx }: { node: DesignNode; ctx: LayerContext }) {
+  const t = useMobileCopy();
   const label = labelOf(node);
   const surface = node.children?.[1];
   const source = surface ? textOf(surface) : '';
@@ -64,18 +67,20 @@ function NativeField({ node, ctx }: { node: DesignNode; ctx: LayerContext }) {
   const [focused, setFocused] = useState(false);
   const style: TextStyle = { fontFamily: 'Inter', fontSize: 16, lineHeight: 23, color: ctx.colors.ink, minHeight: 52, paddingVertical: 14, paddingHorizontal: 16, borderRadius: 10, backgroundColor: ctx.colors.surface, borderWidth: focused ? 2 : 1, borderColor: focused ? ctx.colors.accent : ctx.colors['field-line'] };
   return <View style={{ alignSelf: 'stretch', gap: 8 }}>
-    <Text style={{ fontFamily: 'Inter', fontWeight: '600', fontSize: 14, lineHeight: 20, color: ctx.colors.muted }}>{label}</Text>
-    {options ? <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityHint="Choose a value" onPress={() => ctx.chooseField(node, options)} style={[style, { flexDirection: 'row', alignItems: 'center', gap: 12 }]}><Text style={{ color: ctx.colors.ink, fontFamily: 'Inter', fontSize: 16, flex: 1 }}>{value || source}</Text><ChevronRight color={ctx.colors.muted} size={20} /></Pressable>
-      : <TextInput accessibilityLabel={label} value={value} placeholder={placeholder ? source : undefined} placeholderTextColor={ctx.colors.muted} secureTextEntry={secret} autoCapitalize={/url|origin|email|password|credential/i.test(label) ? 'none' : 'sentences'} autoCorrect={!/url|origin|email|password|credential/i.test(label)} keyboardType={/url|origin/i.test(label) ? 'url' : /email/i.test(label) ? 'email-address' : /seconds|tokens|characters|size|interval|rounds|budget|port|TTL|depth|ratio/i.test(label) ? 'decimal-pad' : 'default'} multiline={!secret && /answer|message|prompt|instructions|description|note/i.test(label)} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} onChangeText={text => ctx.setValue(node, text)} style={style} returnKeyType={isSearch ? 'search' : 'default'} />}
+    <Text style={{ fontFamily: 'Inter', fontWeight: '600', fontSize: 14, lineHeight: 20, color: ctx.colors.muted }}>{t(label)}</Text>
+    {options ? <Pressable accessibilityRole="button" accessibilityLabel={t(label)} accessibilityHint={t('Choose a value')} onPress={() => ctx.chooseField(node, options)} style={[style, { flexDirection: 'row', alignItems: 'center', gap: 12 }]}><Text style={{ color: ctx.colors.ink, fontFamily: 'Inter', fontSize: 16, flex: 1 }}>{t(value || source)}</Text><ChevronRight color={ctx.colors.muted} size={20} /></Pressable>
+      : <TextInput accessibilityLabel={t(label)} value={value} placeholder={placeholder ? t(source) : undefined} placeholderTextColor={ctx.colors.muted} secureTextEntry={secret} autoCapitalize={/url|origin|email|password|credential/i.test(label) ? 'none' : 'sentences'} autoCorrect={!/url|origin|email|password|credential/i.test(label)} keyboardType={/url|origin/i.test(label) ? 'url' : /email/i.test(label) ? 'email-address' : /seconds|tokens|characters|size|interval|rounds|budget|port|TTL|depth|ratio/i.test(label) ? 'decimal-pad' : 'default'} multiline={!secret && /answer|message|prompt|instructions|description|note/i.test(label)} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} onChangeText={text => ctx.setValue(node, text)} style={style} returnKeyType={isSearch ? 'search' : 'default'} />}
   </View>;
 }
 export const NativeLayer = memo(function NativeLayer({ node, ctx, horizontal = false, selectedRow }: { node: DesignNode; ctx: LayerContext; horizontal?: boolean; selectedRow?: boolean }) {
+  const t = useMobileCopy();
   const [focused, setFocused] = useState(false);
   const style = layerStyle(node, ctx.colors, horizontal);
   if (/Software keyboard illustration/.test(node.name)) return null;
   if (node.type === 'text' && node.name !== 'Editor content') {
     const heading = /heading|title|greeting|objective/i.test(node.name) && (node.fontSize ?? 0) >= 18;
-    return <Text accessibilityRole={heading ? 'header' : undefined} selectable style={[style, { backgroundColor: undefined, fontFamily: node.fontFamily === 'IBM Plex Mono' ? 'monospace' : 'Inter', fontSize: node.fontSize ?? 16, lineHeight: Math.round((node.fontSize ?? 16) * (node.lineHeight ?? 1.4)), fontWeight: (node.fontWeight === 'normal' ? '400' : node.fontWeight ?? '400') as TextStyle['fontWeight'], textAlign: node.textAlign, color: colorOf(node.fill, ctx.colors) ?? ctx.colors.ink }]}>{selectedRow !== undefined && /^(Not selected|Selected)$/.test(node.content ?? '') ? selectedRow ? 'Selected' : 'Not selected' : node.content}</Text>;
+    const content = selectedRow !== undefined && /^(Not selected|Selected)$/.test(node.content ?? '') ? t(selectedRow ? 'Selected' : 'Not selected') : node.localize === false || node.fontFamily === 'IBM Plex Mono' || node.name === 'Full original learning goal' ? node.content : t(node.content ?? '');
+    return <Text accessibilityRole={heading ? 'header' : undefined} selectable style={[style, { backgroundColor: undefined, fontFamily: node.fontFamily === 'IBM Plex Mono' ? 'monospace' : 'Inter', fontSize: node.fontSize ?? 16, lineHeight: Math.round((node.fontSize ?? 16) * (node.lineHeight ?? 1.4)), fontWeight: (node.fontWeight === 'normal' ? '400' : node.fontWeight ?? '400') as TextStyle['fontWeight'], textAlign: node.textAlign, color: colorOf(node.fill, ctx.colors) ?? ctx.colors.ink }]}>{content}</Text>;
   }
   if (node.type === 'icon') {
     const Icon = icons[node.icon as keyof typeof icons] ?? ChevronRight;
@@ -86,18 +91,18 @@ export const NativeLayer = memo(function NativeLayer({ node, ctx, horizontal = f
     const labelNode = node.children?.[0];
     const label = labelNode ? labelOf(labelNode) : node.name;
     const on = ctx.values[node.name] === undefined ? /\bOn\b/.test(textOf(node)) : ctx.values[node.name] === 'true';
-    return <View style={[style, { minHeight: 48, alignItems: 'center' }]}><View style={{ flex: 1, gap: 4 }}><Text style={{ fontFamily: 'Inter', color: ctx.colors.ink, fontSize: 16, fontWeight: '500' }}>{label}</Text><Text style={{ fontFamily: 'Inter', color: ctx.colors.muted, fontSize: 14 }}>{on ? 'On' : 'Off'}</Text></View><Switch accessibilityLabel={label} value={on} onValueChange={v => ctx.setValue(node, String(v))} trackColor={{ false: ctx.colors['switch-off'], true: ctx.colors.action }} thumbColor={ctx.colors['switch-thumb']} /></View>;
+    return <View style={[style, { minHeight: 48, alignItems: 'center' }]}><View style={{ flex: 1, gap: 4 }}><Text style={{ fontFamily: 'Inter', color: ctx.colors.ink, fontSize: 16, fontWeight: '500' }}>{t(label)}</Text><Text style={{ fontFamily: 'Inter', color: ctx.colors.muted, fontSize: 14 }}>{t(on ? 'On' : 'Off')}</Text></View><Switch accessibilityLabel={t(label)} value={on} onValueChange={v => ctx.setValue(node, String(v))} trackColor={{ false: ctx.colors['switch-off'], true: ctx.colors.action }} thumbColor={ctx.colors['switch-thumb']} /></View>;
   }
   if (node.name === 'Editor content' || /^(Note|Markdown body|SOUL.md · Edit \/ Preview) section$/.test(node.name)) {
     const source = node.content ?? textOf(node).split('\n').slice(1).join('\n');
-    return <TextInput accessibilityLabel={node.name === 'Editor content' ? 'Note body' : node.name.replace(' section', '')} multiline value={ctx.values[node.name] ?? source} onChangeText={value => ctx.setValue(node, value)} textAlignVertical="top" style={{ minHeight: 160, padding: 16, borderWidth: 1, borderColor: ctx.colors['field-line'], borderRadius: 10, fontFamily: 'Inter', fontSize: 16, lineHeight: 25, color: ctx.colors.ink, backgroundColor: ctx.colors.surface }} />;
+    return <TextInput accessibilityLabel={t(node.name === 'Editor content' ? 'Note body' : node.name.replace(' section', ''))} multiline value={ctx.values[node.name] ?? source} onChangeText={value => ctx.setValue(node, value)} textAlignVertical="top" style={{ minHeight: 160, padding: 16, borderWidth: 1, borderColor: ctx.colors['field-line'], borderRadius: 10, fontFamily: 'Inter', fontSize: 16, lineHeight: 25, color: ctx.colors.ink, backgroundColor: ctx.colors.surface }} />;
   }
   const row = / row$/.test(node.name);
-  if (row && ctx.query && !textOf(node).toLowerCase().includes(ctx.query.toLowerCase())) return null;
+  if (row && ctx.query && ![textOf(node), ...textOf(node).split('\n').map(text => t(text))].join('\n').toLowerCase().includes(ctx.query.toLowerCase())) return null;
   const isChoice = row && ctx.selection;
   const selected = isChoice && ctx.selected === node.name;
   const interactive = row || / action$|Date \d+|Workspace switch|Account and settings|More actions|Back button/.test(node.name);
   const children: ReactNode = <>{node.children?.map(child => <NativeLayer key={child.id} node={child} ctx={ctx} horizontal={node.layout !== 'vertical'} selectedRow={isChoice ? selected : selectedRow} />)}</>;
-  if (interactive) return <Pressable accessibilityRole={isChoice ? 'radio' : 'button'} accessibilityLabel={labelOf(node)} accessibilityState={isChoice ? { selected } : undefined} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} onPress={() => ctx.act(node)} style={({ pressed }) => [style, { minHeight: Math.max(typeof node.height === 'number' ? node.height : 0, 48), opacity: pressed ? 0.7 : 1, ...(selected ? { backgroundColor: ctx.colors.soft, borderRadius: 10, borderLeftWidth: 3, borderLeftColor: ctx.colors.accent, paddingLeft: 12 } : {}), ...(focused ? { outlineWidth: 2, outlineColor: ctx.colors.accent, outlineOffset: 2 } : {}) }]}>{children}</Pressable>;
+  if (interactive) return <Pressable accessibilityRole={isChoice ? 'radio' : 'button'} accessibilityLabel={node.localize === false ? labelOf(node) : t(labelOf(node))} accessibilityState={isChoice ? { selected } : undefined} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} onPress={() => ctx.act(node)} style={({ pressed }) => [style, { minHeight: Math.max(typeof node.height === 'number' ? node.height : 0, 48), opacity: pressed ? 0.7 : 1, ...(selected ? { backgroundColor: ctx.colors.soft, borderRadius: 10, borderLeftWidth: 3, borderLeftColor: ctx.colors.accent, paddingLeft: 12 } : {}), ...(focused ? { outlineWidth: 2, outlineColor: ctx.colors.accent, outlineOffset: 2 } : {}) }]}>{children}</Pressable>;
   return <View style={style}>{children}</View>;
 });

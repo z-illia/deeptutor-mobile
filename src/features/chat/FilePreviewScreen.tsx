@@ -254,7 +254,7 @@ export function FilePreviewScreen() {
                 key={f.id}
                 accessibilityRole="button"
                 accessibilityState={{ selected: active }}
-                accessibilityLabel={`Preview file ${f.filename}`}
+                accessibilityLabel={t("Preview file {value1}", { value1: String(f.filename) })}
                 onPress={() => {
                   setSelectedFileId(f.id);
                   openFilePreview(f);
@@ -292,7 +292,7 @@ export function FilePreviewScreen() {
                 key={st}
                 accessibilityRole="button"
                 accessibilityState={{ selected: active }}
-                accessibilityLabel={`Preview state ${st}`}
+                accessibilityLabel={t("Preview state {value1}", { value1: String(st) })}
                 onPress={() => setLoadState(st)}
                 style={[
                   styles.stateChip,
@@ -312,7 +312,7 @@ export function FilePreviewScreen() {
                     },
                   ]}
                 >
-                  {`State: ${st}`}
+                  {t("State: {value1}", { value1: String(st) })}
                 </Text>
               </Pressable>
             );
@@ -331,7 +331,7 @@ export function FilePreviewScreen() {
           ]}
         >
           <Text style={[styles.noticeText, { color: colors.foreground }]}>
-            {actionNotice}
+            {t(actionNotice)}
           </Text>
         </View>
       ) : null}
@@ -427,7 +427,7 @@ export function FilePreviewScreen() {
               <Text
                 style={[styles.surfaceHeaderText, { color: colors.foreground }]}
               >
-                {`${currentFile.filename} (${(currentFile.content ?? '').split('\n').length} lines)`}
+                {t("{value1} ({value2} lines)", { value1: String(currentFile.filename), value2: String((currentFile.content ?? '').split('\n').length) })}
               </Text>
             </View>
             {(currentFile.content ?? '').split('\n').map((line, idx) => (
@@ -456,7 +456,7 @@ export function FilePreviewScreen() {
               <Text
                 style={[styles.surfaceHeaderText, { color: colors.foreground }]}
               >
-                {`PDF Document · Page ${currentFile.pageNumber ?? 1} of 32 · Zoom ${zoomPercent}%`}
+                {t("PDF Document · Page {value1} of 32 · Zoom {value2}%", { value1: String(currentFile.pageNumber ?? 1), value2: String(zoomPercent) })}
               </Text>
               <View style={styles.pdfActions}>
                 <Pressable
@@ -520,7 +520,7 @@ export function FilePreviewScreen() {
               <Text
                 style={[styles.surfaceHeaderText, { color: colors.foreground }]}
               >
-                {`Spreadsheet Grid · ${currentFile.tableRows?.length ?? 0} rows`}
+                {t("Spreadsheet Grid · {value1} rows", { value1: String(currentFile.tableRows?.length ?? 0) })}
               </Text>
             </View>
             <View
@@ -629,7 +629,7 @@ export function FilePreviewScreen() {
               <Text
                 style={[styles.surfaceHeaderText, { color: colors.foreground }]}
               >
-                {`Office Document Extract (${currentFile.filename})`}
+                {t("Office Document Extract ({value1})", { value1: String(currentFile.filename) })}
               </Text>
             </View>
             <Text style={[styles.pdfPageText, { color: colors.foreground }]}>
@@ -650,7 +650,7 @@ export function FilePreviewScreen() {
             <Text
               style={[styles.stateSub, { color: colors.mutedForeground }]}
             >
-              {`File "${currentFile.filename}" (${currentFile.mimeType}, ${formatBytes(currentFile.sizeBytes)}) cannot be rendered inline. Use Download to inspect locally.`}
+              {t("File \"{value1}\" ({value2}, {value3}) cannot be rendered inline. Use Download to inspect locally.", { value1: String(currentFile.filename), value2: String(currentFile.mimeType), value3: String(formatBytes(currentFile.sizeBytes)) })}
             </Text>
             <Pressable
               accessibilityRole="button"

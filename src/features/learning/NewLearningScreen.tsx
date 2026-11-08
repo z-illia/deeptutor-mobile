@@ -64,9 +64,7 @@ export function NewLearningScreen() {
       router.push('/learning/mastery?create=1' as Href);
       return;
     }
-    setDeferredNotice(
-      `${item.title} creation flow (${item.createHref}) belongs to ${item.milestone}. Mastery Path creation is active in M4.1.`,
-    );
+    setDeferredNotice(t('This feature is not available yet.'));
   };
 
   return (
@@ -140,7 +138,7 @@ export function NewLearningScreen() {
         </View>
 
         {deferredNotice ? (
-          <InlineAlert tone="warning">{deferredNotice}</InlineAlert>
+          <InlineAlert tone="warning">{t(deferredNotice)}</InlineAlert>
         ) : null}
 
         {items.length === 0 ? (
@@ -181,7 +179,7 @@ export function NewLearningScreen() {
                 key={item.kind}
                 testID={`create-learning-card-${item.kind}`}
                 accessibilityRole="button"
-                accessibilityLabel={`${item.title} — ${t('Start')}`}
+                accessibilityLabel={`${t(item.title)} — ${t('Start')}`}
                 onPress={() => handleSelectSurface(item)}
                 style={({ pressed }) => ({
                   flexGrow: 1,

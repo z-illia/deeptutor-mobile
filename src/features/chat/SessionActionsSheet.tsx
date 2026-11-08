@@ -283,7 +283,7 @@ export function SessionActionsSheet({
                     key={ws.id || 'general'}
                     disabled={isRunning}
                     accessibilityRole="button"
-                    accessibilityLabel={`Move to ${ws.name}`}
+                    accessibilityLabel={t("Move to {value1}", { value1: String(ws.name) })}
                     accessibilityState={{ selected, disabled: isRunning }}
                     onPress={() => handleMoveWorkspace(ws.id)}
                     style={{
@@ -396,7 +396,7 @@ export function SessionActionsSheet({
           )}
         </DText>
         {deleteError ? (
-          <InlineAlert tone="danger">{deleteError}</InlineAlert>
+          <InlineAlert tone="danger">{t(deleteError)}</InlineAlert>
         ) : null}
       </ConfirmDialog>
 

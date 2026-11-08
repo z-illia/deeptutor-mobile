@@ -1,19 +1,23 @@
-import { createContext, useContext, useMemo, useState, type PropsWithChildren } from 'react';
+import { createContext, useContext, useMemo, type PropsWithChildren } from 'react';
 
-import messages from '@/i18n/foundation-messages.json';
+import { translateCopy, type Language, type CopyValues } from '@/i18n/copy';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { resolveDesign, type LayoutChoice, type ThemeChoice } from './tokens';
+import { usePreferencesStore } from '../preferences/store';
+import { resolveDesign } from './tokens';
 
-export type Language = keyof typeof messages;
-export type MessageKey = keyof typeof messages.en;
+export type { Language };
+export type MessageKey = string;
 
 function useDesignState() {
   const system = useColorScheme();
-  const [theme, setTheme] = useState<ThemeChoice>('system');
-  const [layout, setLayout] = useState<LayoutChoice>('modern');
-  const [language, setLanguage] = useState<Language>('en');
+  const theme = usePreferencesStore(state => state.theme);
+  const setTheme = usePreferencesStore(state => state.setTheme);
+  const layout = usePreferencesStore(state => state.layout);
+  const setLayout = usePreferencesStore(state => state.setLayout);
+  const language = usePreferencesStore(state => state.language);
+  const setLanguage = usePreferencesStore(state => state.setLanguage);
   const design = useMemo(() => resolveDesign(theme, layout, system), [theme, layout, system]);
-  return { ...design, theme, setTheme, setLayout, language, setLanguage, t: (key: MessageKey) => messages[language][key] || messages.en[key] };
+  return { ...design, theme, setTheme, setLayout, language, setLanguage, t: (key: MessageKey, values?: CopyValues) => translateCopy(language, key, values) };
 }
 
 type DesignState = ReturnType<typeof useDesignState>;

@@ -188,7 +188,7 @@ export function SessionViewerScreen() {
                 key={item.id}
                 accessibilityRole="button"
                 accessibilityState={{ selected: active }}
-                accessibilityLabel={`Switch Session Viewer to ${item.label}`}
+                accessibilityLabel={t("Switch Session Viewer to {value1}", { value1: t(item.label) })}
                 onPress={() => {
                   setSelectedSessionId(item.id);
                   setSimulateEmptyActivity(false);
@@ -209,7 +209,7 @@ export function SessionViewerScreen() {
                     { color: active ? colors.primary : colors.foreground },
                   ]}
                 >
-                  {item.label}
+                  {t(item.label)}
                 </Text>
               </Pressable>
             );
@@ -247,7 +247,7 @@ export function SessionViewerScreen() {
                 <Pressable
                   accessibilityRole="tab"
                   accessibilityState={{ selected: active }}
-                  accessibilityLabel={`Select viewer tab ${tab.title}`}
+                  accessibilityLabel={t("Select viewer tab {value1}", { value1: tab.kind === 'activity' ? t(tab.title) : tab.title })}
                   onPress={() => selectViewerTab(selectedSessionId, tab.id)}
                   style={styles.tabMain}
                 >
@@ -257,13 +257,13 @@ export function SessionViewerScreen() {
                       { color: active ? colors.primary : colors.foreground },
                     ]}
                   >
-                    {tab.title}
+                    {tab.kind === 'activity' ? t(tab.title) : tab.title}
                   </Text>
                 </Pressable>
                 {tab.closable ? (
                   <Pressable
                     accessibilityRole="button"
-                    accessibilityLabel={`Close viewer tab ${tab.title}`}
+                    accessibilityLabel={t("Close viewer tab {value1}", { value1: tab.kind === 'activity' ? t(tab.title) : tab.title })}
                     onPress={() => closeViewerTab(selectedSessionId, tab.id)}
                     style={styles.tabCloseBtn}
                   >
@@ -295,7 +295,7 @@ export function SessionViewerScreen() {
             >
               <RotateCcw size={12} color={colors.primary} />
               <Text style={[styles.reopenBtnText, { color: colors.primary }]}>
-                {`Reopen (${closedTabs[0].title})`}
+                {t("Reopen ({value1})", { value1: String(closedTabs[0].title) })}
               </Text>
             </Pressable>
           ) : null}
@@ -502,7 +502,7 @@ export function SessionViewerScreen() {
                       key={cap.id}
                       accessibilityRole="button"
                       accessibilityState={{ selected: active }}
-                      accessibilityLabel={`Select capability ${cap.label}`}
+                      accessibilityLabel={t("Select capability {value1}", { value1: String(cap.label) })}
                       onPress={() =>
                         setActiveCapability(selectedSessionId, cap.id)
                       }
@@ -580,7 +580,7 @@ export function SessionViewerScreen() {
                         { color: colors.foreground },
                       ]}
                     >
-                      {`Tools & Capabilities Used (${activitySummary.toolsUsed.length})`}
+                      {t("Tools & Capabilities Used ({value1})", { value1: String(activitySummary.toolsUsed.length) })}
                     </Text>
                   </View>
                   <View style={styles.badgeWrap}>
@@ -626,7 +626,7 @@ export function SessionViewerScreen() {
                         { color: colors.foreground },
                       ]}
                     >
-                      {`Referenced Context (${activitySummary.knowledgeBases.length + activitySummary.spaceReferences.length})`}
+                      {t("Referenced Context ({value1})", { value1: String(activitySummary.knowledgeBases.length + activitySummary.spaceReferences.length) })}
                     </Text>
                   </View>
                   {[
@@ -700,7 +700,7 @@ export function SessionViewerScreen() {
                         { color: colors.foreground },
                       ]}
                     >
-                      {`Session Artifacts & Files (${activitySummary.artifacts.length})`}
+                      {t("Session Artifacts & Files ({value1})", { value1: String(activitySummary.artifacts.length) })}
                     </Text>
                   </View>
                   {activitySummary.artifacts.map((art) => {
@@ -737,7 +737,7 @@ export function SessionViewerScreen() {
                         <View style={styles.artifactBtns}>
                           <Pressable
                             accessibilityRole="button"
-                            accessibilityLabel={`Open ${art.filename} in tab`}
+                            accessibilityLabel={t("Open {value1} in tab", { value1: String(art.filename) })}
                             onPress={() =>
                               openViewerTab(selectedSessionId, {
                                 id: `tab-file-${art.id}`,
@@ -764,7 +764,7 @@ export function SessionViewerScreen() {
 
                           <Pressable
                             accessibilityRole="button"
-                            accessibilityLabel={`Preview ${art.filename}`}
+                            accessibilityLabel={t("Preview {value1}", { value1: String(art.filename) })}
                             onPress={() =>
                               router.push(
                                 `/ui/file-preview?fileId=${encodeURIComponent(art.id)}&sessionId=${encodeURIComponent(selectedSessionId ?? '')}` as never,
@@ -990,7 +990,7 @@ export function SessionViewerScreen() {
               ]}
             >
               <Text style={[styles.refLabel, { color: colors.foreground }]}>
-                {`Offline Study Reference Snapshot: ${committedWebUrl}`}
+                {t("Offline Study Reference Snapshot: {value1}", { value1: String(committedWebUrl) })}
               </Text>
               <Text
                 style={[styles.refSub, { color: colors.mutedForeground }]}

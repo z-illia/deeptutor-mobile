@@ -42,7 +42,7 @@ export function AuthScreen({ register = false }: { register?: boolean }) {
         <Field label={t('Email or username')} value={username} onChangeText={setUsername} autoCapitalize="none" autoComplete="username" placeholder="you@example.com" editable={!f.busy} />
         <Field label={t('Password')} value={password} onChangeText={setPassword} secureTextEntry autoComplete={register ? 'new-password' : 'current-password'} editable={!f.busy} hint={register ? t('At least 8 characters') : undefined} onSubmitEditing={() => { if (!register) void submit(); }} />
         {register && <Field label={t('Confirm password')} value={confirm} onChangeText={setConfirm} secureTextEntry autoComplete="new-password" editable={!f.busy} onSubmitEditing={() => void submit()} />}
-        {!!error && <InlineAlert tone="danger">{error}</InlineAlert>}
+        {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
         <Button loading={!!f.busy} onPress={() => void submit()}>{t(f.busy ? register ? 'Creating account…' : 'Signing in…' : register ? 'Create account' : 'Sign in')}</Button>
       </Surface>
       <View style={{ alignItems: 'center', gap: 4 }}><DText muted>{t(register ? 'Already have an account?' : "Don't have an account?")}</DText><Button variant="ghost" onPress={() => router.replace({ pathname: register ? '/login' : '/register', params: { next } })}>{t(register ? 'Sign in' : 'Create one')}</Button><DText role="caption" muted>{t('DeepTutor · Agent-Native Learning')}</DText></View>

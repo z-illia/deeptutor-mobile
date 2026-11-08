@@ -171,7 +171,7 @@ export function ComposerResourcesSheet({
                 <Text
                   style={[styles.countBadgeText, { color: colors.foreground }]}
                 >
-                  {`${selectedRefs.length} selected`}
+                  {t("{value1} selected", { value1: String(selectedRefs.length) })}
                 </Text>
               </View>
             </View>
@@ -228,7 +228,7 @@ export function ComposerResourcesSheet({
                     key={tab.id}
                     accessibilityRole="button"
                     accessibilityState={{ selected: active }}
-                    accessibilityLabel={`Filter references by ${tab.label}`}
+                    accessibilityLabel={t("Filter references by {value1}", { value1: String(tab.label) })}
                     onPress={() => setCategory(tab.id)}
                     style={[
                       styles.categoryChip,
@@ -280,7 +280,7 @@ export function ComposerResourcesSheet({
               <Text
                 style={[styles.errorBannerText, { color: colors.destructive }]}
               >
-                {validationError}
+                {t(validationError)}
               </Text>
             </View>
           ) : null}
@@ -350,7 +350,7 @@ export function ComposerResourcesSheet({
                     key={item.id}
                     accessibilityRole="checkbox"
                     accessibilityState={{ checked: selected }}
-                    accessibilityLabel={`Select reference ${item.label}`}
+                    accessibilityLabel={t("Select reference {value1}", { value1: String(item.label) })}
                     onPress={() => handleToggleItem(item)}
                     style={[
                       styles.itemRow,
@@ -451,7 +451,7 @@ export function ComposerResourcesSheet({
                 <Pressable
                   key={st}
                   accessibilityRole="button"
-                  accessibilityLabel={`Reference catalog state ${st}`}
+                  accessibilityLabel={t("Reference catalog state {value1}", { value1: String(st) })}
                   onPress={() => setReferenceCatalogState(st)}
                   style={[
                     styles.miniStateBtn,

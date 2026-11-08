@@ -184,7 +184,7 @@ export function ModelSelector({
                 <Pressable
                   key={option.id || llmSelectionKey(option)}
                   accessibilityRole="button"
-                  accessibilityLabel={`Model ${primaryLabel}`}
+                  accessibilityLabel={t("Model {value1}", { value1: String(primaryLabel) })}
                   accessibilityState={{ selected }}
                   onPress={() => {
                     onSelect({
@@ -238,7 +238,7 @@ export function ModelSelector({
                       </DText>
                       {contextWindow ? (
                         <DText role="small" muted>
-                          · {contextWindow}
+                          · {t('Context')}: {contextWindow.replace(/ ctx$/, '')}
                         </DText>
                       ) : null}
                     </View>

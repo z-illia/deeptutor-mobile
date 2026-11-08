@@ -458,7 +458,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                 <Text
                   style={[styles.countPillText, { color: colors.foreground }]}
                 >
-                  {`${rawRecords.length} saved original${rawRecords.length === 1 ? '' : 's'}`}
+                  {t("{value1} saved original{value2}", { value1: String(rawRecords.length), value2: String(rawRecords.length === 1 ? '' : 's') })}
                 </Text>
               </View>
             </View>
@@ -477,7 +477,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
               <Text
                 style={[styles.noticeText, { color: colors.foreground }]}
               >
-                {statusNotice}
+                {t(statusNotice)}
               </Text>
               <Pressable
                 accessibilityRole="button"
@@ -500,7 +500,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
               ]}
             >
               <Text style={[styles.noticeText, { color: colors.foreground }]}>
-                {`Record "${focusedRecordStatus.record.title}" was moved to ${focusedRecordStatus.notebook.name}.`}
+                {t("Record \"{value1}\" was moved to {value2}.", { value1: String(focusedRecordStatus.record.title), value2: String(focusedRecordStatus.notebook.name) })}
               </Text>
               <Pressable
                 accessibilityRole="button"
@@ -610,7 +610,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                         key={kf.id}
                         accessibilityRole="button"
                         accessibilityState={{ selected: active }}
-                        accessibilityLabel={`Filter by ${kf.label}`}
+                        accessibilityLabel={t("Filter by {value1}", { value1: String(kf.label) })}
                         onPress={() => setKindFilter(kf.id)}
                         style={[
                           styles.kindChip,
@@ -700,7 +700,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                       >
                         <Pressable
                           accessibilityRole="button"
-                          accessibilityLabel={`Toggle favorite record ${rec.title}`}
+                          accessibilityLabel={t("Toggle favorite record {value1}", { value1: String(rec.title) })}
                           onPress={() => toggleExpandRecord(rec.id)}
                           style={styles.recordHeader}
                         >
@@ -781,7 +781,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                               {sessionId ? (
                                 <Pressable
                                   accessibilityRole="button"
-                                  accessibilityLabel={`Open original session for ${rec.title}`}
+                                  accessibilityLabel={t("Open original session for {value1}", { value1: String(rec.title) })}
                                   onPress={() =>
                                     router.push(
                                       `/chat?sessionId=${sessionId}` as never,
@@ -850,7 +850,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                             <View style={styles.recordActionsRow}>
                               <Pressable
                                 accessibilityRole="button"
-                                accessibilityLabel={`Use ${rec.title} in Chat`}
+                                accessibilityLabel={t("Use {value1} in Chat", { value1: String(rec.title) })}
                                 onPress={() =>
                                   router.push(
                                     `/chat?attachFavoriteId=${rec.id}` as never,
@@ -877,7 +877,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
 
                               <Pressable
                                 accessibilityRole="button"
-                                accessibilityLabel={`Edit details for ${rec.title}`}
+                                accessibilityLabel={t("Edit details for {value1}", { value1: String(rec.title) })}
                                 onPress={() => openEditRecordModal(rec)}
                                 style={[
                                   styles.recordActionBtn,
@@ -897,7 +897,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
 
                               <Pressable
                                 accessibilityRole="button"
-                                accessibilityLabel={`Move ${rec.title}`}
+                                accessibilityLabel={t("Move {value1}", { value1: String(rec.title) })}
                                 onPress={() => openRelocateModal('move', rec)}
                                 style={[
                                   styles.recordActionBtn,
@@ -920,7 +920,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
 
                               <Pressable
                                 accessibilityRole="button"
-                                accessibilityLabel={`Copy ${rec.title}`}
+                                accessibilityLabel={t("Copy {value1}", { value1: String(rec.title) })}
                                 onPress={() => openRelocateModal('copy', rec)}
                                 style={[
                                   styles.recordActionBtn,
@@ -940,7 +940,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
 
                               <Pressable
                                 accessibilityRole="button"
-                                accessibilityLabel={`Delete ${rec.title}`}
+                                accessibilityLabel={t("Delete {value1}", { value1: String(rec.title) })}
                                 onPress={() => {
                                   deleteRecord(notebookId, rec.id);
                                   setStatusNotice(`Deleted "${rec.title}".`);
@@ -1073,7 +1073,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                       <Pressable
                         key={swatch}
                         accessibilityRole="button"
-                        accessibilityLabel={`Select color ${swatch}`}
+                        accessibilityLabel={t("Select color {value1}", { value1: String(swatch) })}
                         onPress={() => setMetaColor(swatch)}
                         style={[
                           styles.swatchOption,
@@ -1095,7 +1095,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                   <Text
                     style={[styles.errorText, { color: colors.destructive }]}
                   >
-                    {metaError}
+                    {t(metaError)}
                   </Text>
                 ) : null}
               </View>
@@ -1224,7 +1224,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                   <Text
                     style={[styles.errorText, { color: colors.destructive }]}
                   >
-                    {recordEditError}
+                    {t(recordEditError)}
                   </Text>
                 ) : null}
 
@@ -1359,7 +1359,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                       key={nb.id}
                       accessibilityRole="radio"
                       accessibilityState={{ selected }}
-                      accessibilityLabel={`Select target collection ${nb.name}`}
+                      accessibilityLabel={t("Select target collection {value1}", { value1: String(nb.name) })}
                       onPress={() => setTargetNotebookId(nb.id)}
                       style={[
                         styles.targetCollectionOption,
@@ -1550,7 +1550,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                 <Text
                   style={[styles.stateBody, { color: colors.mutedForeground }]}
                 >
-                  {`Delete "${activeNotebook?.name ?? ''}" and its saved snapshots? Original chat sessions remain intact.`}
+                  {t("Delete \"{value1}\" and its saved snapshots? Original chat sessions remain intact.", { value1: String(activeNotebook?.name ?? '') })}
                 </Text>
               </View>
               <View
@@ -1626,7 +1626,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                 <Text
                   style={[styles.countPillText, { color: colors.foreground }]}
                 >
-                  {`${notebooks.length} folders · ${totalRecordCount} items`}
+                  {t("{value1} folders · {value2} items", { value1: String(notebooks.length), value2: String(totalRecordCount) })}
                 </Text>
               </View>
             </View>
@@ -1697,7 +1697,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
             ]}
           >
             <Text style={[styles.noticeText, { color: colors.foreground }]}>
-              {statusNotice}
+              {t(statusNotice)}
             </Text>
             <Pressable
               accessibilityRole="button"
@@ -1749,7 +1749,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                   key={st}
                   accessibilityRole="button"
                   accessibilityState={{ selected: active }}
-                  accessibilityLabel={`Switch Favorites state to ${st}`}
+                  accessibilityLabel={t("Switch Favorites state to {value1}", { value1: String(st) })}
                   onPress={() => setLibraryState(st)}
                   style={[
                     styles.statePill,
@@ -1771,7 +1771,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                       },
                     ]}
                   >
-                    {`State: ${st}`}
+                    {t("State: {value1}", { value1: String(st) })}
                   </Text>
                 </Pressable>
               );
@@ -1896,7 +1896,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                 >
                   <Pressable
                     accessibilityRole="button"
-                    accessibilityLabel={`Open collection ${nb.name}`}
+                    accessibilityLabel={t("Open collection {value1}", { value1: String(nb.name) })}
                     onPress={() => router.push(`/notebooks/${nb.id}` as never)}
                     style={styles.collectionCardPressable}
                   >
@@ -1963,7 +1963,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                             { color: colors.foreground },
                           ]}
                         >
-                          {`${records.length} item${records.length === 1 ? '' : 's'}`}
+                          {t("{value1} item{value2}", { value1: String(records.length), value2: String(records.length === 1 ? '' : 's') })}
                         </Text>
                       </View>
                     </View>
@@ -2019,7 +2019,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                   >
                     <Pressable
                       accessibilityRole="button"
-                      accessibilityLabel={`Edit collection ${nb.name}`}
+                      accessibilityLabel={t("Edit collection {value1}", { value1: String(nb.name) })}
                       onPress={() => openEditNotebookModal(nb)}
                       style={styles.footerLinkBtn}
                     >
@@ -2036,7 +2036,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
 
                     <Pressable
                       accessibilityRole="button"
-                      accessibilityLabel={`View items in ${nb.name}`}
+                      accessibilityLabel={t("View items in {value1}", { value1: String(nb.name) })}
                       onPress={() =>
                         router.push(`/notebooks/${nb.id}` as never)
                       }

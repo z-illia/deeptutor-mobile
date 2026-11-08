@@ -199,7 +199,7 @@ export function ChatComposer({
         ) : null}
 
         {attachmentError ? (
-          <InlineAlert tone="danger">{attachmentError}</InlineAlert>
+          <InlineAlert tone="danger">{t(attachmentError)}</InlineAlert>
         ) : null}
 
         <TextInput

@@ -58,3 +58,10 @@ docs/mobile-ui
 !/scripts/
 /scripts/*
 !/scripts/verify-mobile-redesign.cjs
+
+# Localization checks and reviewable coverage reports.
+!/scripts/audit-locales.cjs
+!/scripts/locale-contract.cjs
+!/scripts/verify-locales.cjs
+!/docs/localization-audit.md
+!/docs/localization-audit.json

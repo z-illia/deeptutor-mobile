@@ -242,7 +242,7 @@ export function ChatMessageList({
                   value={editDraft}
                   onChangeText={setEditDraft}
                   multiline
-                  accessibilityLabel="Edit message input"
+                  accessibilityLabel={t("Edit message input")}
                   style={{
                     minHeight: 72,
                     color: colors.foreground,
@@ -252,7 +252,7 @@ export function ChatMessageList({
                   }}
                 />
                 {editError ? (
-                  <InlineAlert tone="danger">{editError}</InlineAlert>
+                  <InlineAlert tone="danger">{t(editError)}</InlineAlert>
                 ) : null}
                 <View
                   style={{
@@ -332,7 +332,7 @@ export function ChatMessageList({
                       <Pressable
                         key={att.id}
                         accessibilityRole="button"
-                        accessibilityLabel={`Preview attachment ${att.name}`}
+                        accessibilityLabel={t("Preview attachment {value1}", { value1: String(att.name) })}
                         onPress={() =>
                           router.push(
                             `/ui/file-preview?fileId=${encodeURIComponent(att.name)}&sessionId=${encodeURIComponent(resolvedSessionId)}` as never,
@@ -424,7 +424,7 @@ export function ChatMessageList({
 
                 <Pressable
                   accessibilityRole="button"
-                  accessibilityLabel="Copy user message"
+                  accessibilityLabel={t("Copy user message")}
                   onPress={() => handleCopy(`user-${msg.id}`, msg.content)}
                   style={{
                     minHeight: 28,
@@ -636,7 +636,7 @@ export function ChatMessageList({
                   <Pressable
                     key={art.id}
                     accessibilityRole="button"
-                    accessibilityLabel={`Preview artifact ${art.filename}`}
+                    accessibilityLabel={t("Preview artifact {value1}", { value1: String(art.filename) })}
                     onPress={() =>
                       router.push(
                         `/ui/file-preview?fileId=${encodeURIComponent(art.id)}&sessionId=${encodeURIComponent(resolvedSessionId)}` as never,
@@ -709,8 +709,7 @@ export function ChatMessageList({
               >
                 <Square size={11} color={colors.mutedForeground} />
                 <DText role="small" muted>
-                  Stopped
-                </DText>
+                  {t("Stopped")}</DText>
               </View>
             ) : null}
 
@@ -916,7 +915,7 @@ export function ChatMessageList({
                         </DText>
                         <Pressable
                           accessibilityRole="button"
-                          accessibilityLabel="Confirm delete turn"
+                          accessibilityLabel={t("Confirm delete turn")}
                           onPress={() => {
                             onDeleteTurn(parentUserMsg.id);
                             setConfirmDeleteUserMsgId(null);
@@ -938,7 +937,7 @@ export function ChatMessageList({
                         </Pressable>
                         <Pressable
                           accessibilityRole="button"
-                          accessibilityLabel="Cancel delete turn"
+                          accessibilityLabel={t("Cancel delete turn")}
                           onPress={() => setConfirmDeleteUserMsgId(null)}
                           style={{
                             paddingHorizontal: 6,
@@ -953,7 +952,7 @@ export function ChatMessageList({
                     ) : (
                       <Pressable
                         accessibilityRole="button"
-                        accessibilityLabel="Delete turn"
+                        accessibilityLabel={t("Delete turn")}
                         onPress={() =>
                           setConfirmDeleteUserMsgId(parentUserMsg.id)
                         }

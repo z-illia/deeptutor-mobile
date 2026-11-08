@@ -254,7 +254,7 @@ function SaveToNotebookModalContent({
                   { color: colors.mutedForeground },
                 ]}
               >
-                {`Immutable snapshot stored in ${selectedNotebookIds.length} collection${selectedNotebookIds.length === 1 ? '' : 's'}.`}
+                {t("Immutable snapshot stored in {value1} collection{value2}.", { value1: String(selectedNotebookIds.length), value2: String(selectedNotebookIds.length === 1 ? '' : 's') })}
               </Text>
               <View style={styles.savedActionsRow}>
                 <Pressable
@@ -358,7 +358,7 @@ function SaveToNotebookModalContent({
                       <Text
                         style={[styles.label, { color: colors.foreground }]}
                       >
-                        {`Messages (${selectedMessages.length}/${messages.length})`}
+                        {t("Messages ({value1}/{value2})", { value1: String(selectedMessages.length), value2: String(messages.length) })}
                       </Text>
                       <View style={styles.presetRow}>
                         <Pressable
@@ -430,7 +430,7 @@ function SaveToNotebookModalContent({
                             key={`save-msg-${idx}`}
                             accessibilityRole="checkbox"
                             accessibilityState={{ checked }}
-                            accessibilityLabel={`Toggle message ${idx + 1}`}
+                            accessibilityLabel={t("Toggle message {value1}", { value1: String(idx + 1) })}
                             onPress={() => toggleMessageIndex(idx)}
                             style={[
                               styles.messageOptionRow,
@@ -556,7 +556,7 @@ function SaveToNotebookModalContent({
                           key={nb.id}
                           accessibilityRole="checkbox"
                           accessibilityState={{ checked: selected }}
-                          accessibilityLabel={`Select collection ${nb.name}`}
+                          accessibilityLabel={t("Select collection {value1}", { value1: String(nb.name) })}
                           onPress={() => toggleNotebookSelection(nb.id)}
                           style={[
                             styles.collectionItem,
@@ -591,7 +591,7 @@ function SaveToNotebookModalContent({
                                 { color: colors.mutedForeground },
                               ]}
                             >
-                              {`${nb.record_count} saved item${nb.record_count === 1 ? '' : 's'}`}
+                              {t("{value1} saved item{value2}", { value1: String(nb.record_count), value2: String(nb.record_count === 1 ? '' : 's') })}
                             </Text>
                           </View>
                           <View
@@ -633,7 +633,7 @@ function SaveToNotebookModalContent({
                     <Text
                       style={[styles.errorText, { color: colors.destructive }]}
                     >
-                      {errorMessage}
+                      {t(errorMessage)}
                     </Text>
                   </View>
                 ) : null}

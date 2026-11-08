@@ -207,7 +207,7 @@ export function OrganizedSessionList({
 
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={`Conversation actions ${title}`}
+            accessibilityLabel={t("Conversation actions {value1}", { value1: String(title) })}
             onPress={() => setActionTarget(session)}
             style={({ pressed }) => ({
               width: 34,

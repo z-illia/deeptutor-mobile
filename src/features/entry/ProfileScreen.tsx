@@ -39,7 +39,7 @@ export function ProfileScreen() {
       <View style={{ width: 72, height: 72, borderRadius: 36, backgroundColor: AVATAR_COLORS[color], alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>{descriptor.kind === 'image' ? <Image source={require('../../../assets/brand/color-logo.png')} accessibilityLabel={t('Avatar')} style={{ width: 72, height: 72 }} contentFit="cover" /> : <Icon size={32} color="#ffffff" />}</View>
       <View style={{ flex: 1 }}><DText role="label">{profile.username}</DText><DText muted>{t(profile.role === 'admin' ? 'Administrator' : profile.role === 'student' ? 'Student' : profile.role === 'teacher' ? 'Teacher' : 'User')}</DText><DText role="caption" muted>{t('Joined')}: {profile.joined}</DText></View>
     </View><Button variant="secondary" onPress={() => router.push('/session-handoff')}>{t('Public device sign-in')}</Button></Surface>
-    {!!error && <InlineAlert tone="danger">{error}</InlineAlert>}
+    {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
     <Surface><DText role="section">{t('Avatar')}</DText><DText muted>{t('Upload a picture or pick an icon')}</DText><Button variant="secondary" disabled={!!f.busy} onPress={() => setUpload(true)}>{t('Upload image')}</Button>
       {descriptor.kind === 'image' && <Button variant="ghost" disabled={!!f.busy} onPress={() => void setMarker('')}>{t('Remove photo')}</Button>}
       <DText role="small" muted>{t('Or pick an icon')}</DText><View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>{AVATAR_ICON_NAMES.map((entry) => { const Glyph = icons[entry as keyof typeof icons]; return <Button key={entry} variant="ghost" accessibilityLabel={`${t('Avatar')} ${entry}`} accessibilityState={{ selected: descriptor.kind !== 'image' && name === entry }} disabled={!!f.busy} onPress={() => void setMarker(`icon:${entry}:${color}`)} style={{ width: 48, paddingHorizontal: 0, backgroundColor: name === entry && descriptor.kind !== 'image' ? AVATAR_COLORS[color] : colors.muted }}><Glyph size={18} color={name === entry && descriptor.kind !== 'image' ? '#ffffff' : colors.foreground} /></Button>; })}</View>
@@ -50,13 +50,13 @@ export function ProfileScreen() {
       <Field label={t('Current password')} secureTextEntry value={current} onChangeText={setCurrent} autoComplete="current-password" editable={!f.busy} />
       <Field label={t('New password')} secureTextEntry value={password} onChangeText={setPassword} autoComplete="new-password" editable={!f.busy} />
       <Field label={t('Confirm new password')} secureTextEntry value={confirmation} onChangeText={setConfirmation} autoComplete="new-password" editable={!f.busy} onSubmitEditing={() => void changePassword()} />
-      {!!notice && <InlineAlert tone="success">{notice}</InlineAlert>}<Button loading={f.busy === 'password'} disabled={!!f.busy} onPress={() => void changePassword()}>{t('Update password')}</Button>
+      {!!notice && <InlineAlert tone="success">{t(notice)}</InlineAlert>}<Button loading={f.busy === 'password'} disabled={!!f.busy} onPress={() => void changePassword()}>{t('Update password')}</Button>
     </Surface>
     <Surface><DText role="section">{t('Sign out')}</DText><DText muted>{t('End your session on this device')}</DText><Button variant="danger" onPress={() => { f.signOut(); router.replace('/login'); }}>{t('Sign out')}</Button></Surface>
     <Dialog placement="bottom" open={upload} title={t('Upload image')} busy={!!f.busy} onClose={() => setUpload(false)}>
       <Button variant="secondary" disabled={!!f.busy} onPress={() => void uploadImage(18000, true)}>color-logo.png · 18 KB</Button>
       {__DEV__ && <><Button variant="ghost" onPress={() => void uploadImage(21 * 1024 * 1024, true)}>Development sample · 21 MB</Button><Button variant="ghost" onPress={() => void uploadImage(18000, false)}>Development sample · corrupt.png</Button></>}
-      {!!error && <InlineAlert tone="danger">{error}</InlineAlert>}
+      {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
     </Dialog>
   </PageScaffold>;
 }

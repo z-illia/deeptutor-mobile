@@ -29,7 +29,6 @@ import {
 } from './LearningProvider';
 import {
   filterLearningRecent,
-  LEARNING_SURFACES,
   visibleLearningSurfaces,
   type LearningKind,
   type LearningSurfaceDefinition,
@@ -110,9 +109,7 @@ export function LearningDashboardScreen() {
   const openSurface = (surface: LearningSurfaceDefinition, create = false) => {
     const summary = overview.surfaces.find((s) => s.kind === surface.kind);
     if (summary && !summary.available) {
-      setDeferredNotice(
-        `${surface.title} is currently unavailable in this workspace state.`,
-      );
+      setDeferredNotice(t('This feature is not available yet.'));
       return;
     }
     if (surface.kind === 'mastery') {
@@ -122,9 +119,7 @@ export function LearningDashboardScreen() {
       );
       return;
     }
-    setDeferredNotice(
-      `${surface.title} (${surface.milestone}) is scheduled for ${surface.milestone}. Mastery Path is active in M4.1.`,
-    );
+    setDeferredNotice(t('This feature is not available yet.'));
   };
 
   return (
@@ -227,7 +222,7 @@ export function LearningDashboardScreen() {
               key={candidate}
               testID={`learning-hub-state-${candidate}`}
               accessibilityRole="button"
-              accessibilityLabel={`Set hub state ${candidate}`}
+              accessibilityLabel={t("Set hub state {value1}", { value1: String(candidate) })}
               accessibilityState={{ selected: hubState === candidate }}
               onPress={() => setHubState(candidate)}
               style={{
@@ -260,7 +255,7 @@ export function LearningDashboardScreen() {
         </View>
 
         {deferredNotice ? (
-          <InlineAlert tone="warning">{deferredNotice}</InlineAlert>
+          <InlineAlert tone="warning">{t(deferredNotice)}</InlineAlert>
         ) : null}
 
         {hubState === 'loading' ? (
@@ -519,7 +514,7 @@ export function LearningDashboardScreen() {
                         key={rev.id}
                         testID={`todo-review-${rev.knowledge_point_id}`}
                         accessibilityRole="button"
-                        accessibilityLabel={`Start review for ${rev.knowledge_point_name} in ${rev.topic_name}`}
+                        accessibilityLabel={t("Start review for {value1} in {value2}", { value1: String(rev.knowledge_point_name), value2: String(rev.topic_name) })}
                         onPress={() =>
                           router.push(
                             `/learning/mastery/${encodeURIComponent(rev.path_id)}/sessions?mode=review&focus=${encodeURIComponent(rev.knowledge_point_name)}` as Href,
@@ -583,9 +578,7 @@ export function LearningDashboardScreen() {
                         accessibilityRole="button"
                         accessibilityLabel={`${book.title} — ${book.status_hint}`}
                         onPress={() =>
-                          setDeferredNotice(
-                            `${book.title}: Books reader & chapter compilation belong to M5.`,
-                          )
+                          setDeferredNotice(t('This feature is not available yet.'))
                         }
                         style={{
                           flexDirection: 'row',
@@ -768,22 +761,13 @@ export function LearningDashboardScreen() {
                       key={item.id}
                       testID={`learning-record-${item.id}`}
                       accessibilityRole="button"
-                      accessibilityLabel={`Open ${item.title}`}
+                      accessibilityLabel={t("Open {value1}", { value1: String(item.title) })}
                       onPress={() => {
                         if (item.kind === 'mastery') {
                           setDeferredNotice(null);
                           router.push(item.href as Href);
                         } else {
-                          const surface = LEARNING_SURFACES.find(
-                            (s) => s.kind === item.kind,
-                          );
-                          setDeferredNotice(
-                            `${item.title}: ${
-                              surface?.title ?? item.kind
-                            } detail view is scheduled for ${
-                              surface?.milestone ?? 'a later milestone'
-                            }.`,
-                          );
+                          setDeferredNotice(t('This feature is not available yet.'));
                         }
                       }}
                       style={({ pressed }) => ({

@@ -362,7 +362,7 @@ export function ChatHistoryScreen({ mode = 'history' }: ChatHistoryScreenProps) 
               {mode === 'history' ? (
                 <View style={{ flex: 1, minWidth: 200 }}>
                   <Choice
-                    label="Filter by archive status"
+                    label={t("Filter by archive status")}
                     value={archiveFilter}
                     options={[
                       { value: 'active', label: t('Active') },
