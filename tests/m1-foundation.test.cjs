@@ -49,7 +49,8 @@ test('shell fixtures keep all five audited shelves, original feature boundaries 
 });
 
 test('all ten source UI bundles supply the foundation vocabulary, including Ukrainian', () => {
-  const messages = JSON.parse(fs.readFileSync(path.join(root, 'src/i18n/foundation-messages.json')));
+  const languages = ['en', 'zh', 'fr', 'de', 'uk', 'pl', 'pt', 'vi', 'ja', 'tr'];
+  const messages = Object.fromEntries(languages.map(lang => [lang, JSON.parse(fs.readFileSync(path.join(root, `src/i18n/locales/${lang}.json`), 'utf8'))]));
   assert.equal(Object.keys(messages).length, 10);
   assert.equal(messages.uk.Retry, 'Повторити');
   assert.equal(messages.uk.Cancel, 'Скасувати');

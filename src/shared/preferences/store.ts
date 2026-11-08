@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { ThemeChoice, LayoutChoice } from '../design/tokens';
-import type messages from '@/i18n/foundation-messages.json';
+import type { Language } from '@/i18n/copy';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
@@ -8,9 +8,9 @@ export interface LocalTask { id: string; title: string; status: string }
 interface PreferencesState {
   workspace: string;
   theme: ThemeChoice;
-  language: keyof typeof messages;
+  language: Language;
   layout: LayoutChoice;
-  setLanguage: (language: keyof typeof messages) => void;
+  setLanguage: (language: Language) => void;
   setLayout: (layout: LayoutChoice) => void;
   values: Record<string, string>;
   tasks: Record<string, LocalTask[]>;

@@ -1,11 +1,16 @@
-import foundation from './foundation-messages.json';
-import entry from './m2-messages.json';
-import learning from './m4-messages.json';
-import mobile from './mobile-messages.json';
-import runtime from './runtime-messages.json';
-import complete from './complete-messages.json';
+import en from './locales/en.json';
+import zh from './locales/zh.json';
+import fr from './locales/fr.json';
+import de from './locales/de.json';
+import uk from './locales/uk.json';
+import pl from './locales/pl.json';
+import pt from './locales/pt.json';
+import vi from './locales/vi.json';
+import ja from './locales/ja.json';
+import tr from './locales/tr.json';
 
-export type Language = keyof typeof foundation;
+export const locales = { en, zh, fr, de, uk, pl, pt, vi, ja, tr } as const;
+export type Language = keyof typeof locales;
 export type CopyValues = Record<string, string | number>;
 export type Translate = (key: string, values?: CopyValues) => string;
 const cache = new Map<Language, Record<string, string>>();
@@ -13,15 +18,7 @@ const cache = new Map<Language, Record<string, string>>();
 export function translateCopy(language: Language, key: string, values?: CopyValues): string {
   let bundle = cache.get(language);
   if (!bundle) {
-    bundle = Object.create(null) as Record<string, string>;
-    const learningBundle = language === 'uk' ? learning.uk : {};
-    const sources: Record<string, string>[] = [runtime[language], foundation[language], entry[language], learningBundle, mobile[language], complete[language]];
-    for (const source of sources) {
-      for (const [original, translated] of Object.entries(source)) {
-        // An untranslated entry must not hide a translation from another bundle.
-        if (translated && (translated !== original || /[^\x00-\x7F]/.test(original))) bundle[original] = translated;
-      }
-    }
+    bundle = Object.assign(Object.create(null) as Record<string, string>, locales[language]);
     cache.set(language, bundle);
   }
   const direct = bundle[key];

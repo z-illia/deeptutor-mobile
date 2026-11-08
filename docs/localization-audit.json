@@ -342,8 +342,23 @@
     },
     {
       "file": "src/features/entry/AuthScreen.tsx",
-      "line": 45,
+      "line": 36,
+      "expression": "authError(cause)"
+    },
+    {
+      "file": "src/features/entry/AuthScreen.tsx",
+      "line": 50,
+      "expression": "f.error"
+    },
+    {
+      "file": "src/features/entry/AuthScreen.tsx",
+      "line": 51,
       "expression": "error"
+    },
+    {
+      "file": "src/features/entry/Boundary.tsx",
+      "line": 14,
+      "expression": "auth.error"
     },
     {
       "file": "src/features/entry/ProfileScreen.tsx",
@@ -447,27 +462,27 @@
     },
     {
       "file": "src/features/learning/LearningDashboardScreen.tsx",
-      "line": 259,
+      "line": 258,
       "expression": "deferredNotice"
     },
     {
       "file": "src/features/learning/LearningDashboardScreen.tsx",
-      "line": 430,
+      "line": 429,
       "expression": "surface.title"
     },
     {
       "file": "src/features/learning/LearningDashboardScreen.tsx",
-      "line": 443,
+      "line": 442,
       "expression": "surface.description"
     },
     {
       "file": "src/features/learning/LearningDashboardScreen.tsx",
-      "line": 679,
+      "line": 678,
       "expression": "surface.title"
     },
     {
       "file": "src/features/learning/LearningDashboardScreen.tsx",
-      "line": 699,
+      "line": 698,
       "expression": "surface.title"
     },
     {
@@ -863,8 +878,14 @@
   "literalProps": [
     {
       "file": "src/features/entry/AuthScreen.tsx",
-      "line": 42,
+      "line": 46,
       "key": "you@example.com",
+      "kind": "literal-prop"
+    },
+    {
+      "file": "src/features/entry/AuthScreen.tsx",
+      "line": 48,
+      "key": "http://deeptutor.local:8001",
       "kind": "literal-prop"
     },
     {
@@ -900,7 +921,7 @@
   ],
   "locales": {
     "zh": {
-      "missingUniqueKeys": 9,
+      "missingUniqueKeys": 10,
       "missingLocalizedCalls": [],
       "mobileScreens": [
         {
@@ -1676,7 +1697,7 @@
       ]
     },
     "fr": {
-      "missingUniqueKeys": 9,
+      "missingUniqueKeys": 10,
       "missingLocalizedCalls": [],
       "mobileScreens": [
         {
@@ -2452,7 +2473,7 @@
       ]
     },
     "de": {
-      "missingUniqueKeys": 9,
+      "missingUniqueKeys": 10,
       "missingLocalizedCalls": [],
       "mobileScreens": [
         {
@@ -3228,7 +3249,7 @@
       ]
     },
     "uk": {
-      "missingUniqueKeys": 9,
+      "missingUniqueKeys": 10,
       "missingLocalizedCalls": [],
       "mobileScreens": [
         {
@@ -4004,7 +4025,7 @@
       ]
     },
     "pl": {
-      "missingUniqueKeys": 9,
+      "missingUniqueKeys": 10,
       "missingLocalizedCalls": [],
       "mobileScreens": [
         {
@@ -4780,7 +4801,7 @@
       ]
     },
     "pt": {
-      "missingUniqueKeys": 9,
+      "missingUniqueKeys": 10,
       "missingLocalizedCalls": [],
       "mobileScreens": [
         {
@@ -5556,7 +5577,7 @@
       ]
     },
     "vi": {
-      "missingUniqueKeys": 9,
+      "missingUniqueKeys": 10,
       "missingLocalizedCalls": [],
       "mobileScreens": [
         {
@@ -6332,7 +6353,7 @@
       ]
     },
     "ja": {
-      "missingUniqueKeys": 9,
+      "missingUniqueKeys": 10,
       "missingLocalizedCalls": [],
       "mobileScreens": [
         {
@@ -7108,7 +7129,7 @@
       ]
     },
     "tr": {
-      "missingUniqueKeys": 9,
+      "missingUniqueKeys": 10,
       "missingLocalizedCalls": [],
       "mobileScreens": [
         {

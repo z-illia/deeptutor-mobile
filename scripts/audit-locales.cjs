@@ -3,8 +3,7 @@ const path = require('node:path');
 const ts = require('typescript');
 const root = path.resolve(__dirname, '..');
 const read = file => JSON.parse(fs.readFileSync(path.join(root, file), 'utf8'));
-const languages = Object.keys(read('src/i18n/foundation-messages.json'));
-const bundles = ['foundation', 'm2', 'm4', 'mobile', 'runtime', 'complete'];
+const languages = ['en', 'zh', 'fr', 'de', 'uk', 'pl', 'pt', 'vi', 'ja', 'tr'];
 const contract = read('src/i18n/locale-contract.json');
 const unchanged = new Set([...contract.invariants, ...contract.authored]);
 const entries = [];
@@ -47,17 +46,16 @@ for (const screen of screens) for (const key of [screen.name.split(' / ')[1], ..
 }
 for (const entry of entries) sourceKeys.add(entry.key);
 if (process.argv.includes('--extract')) {
-  const runtime = {};
   for (const language of languages) {
     const source = read(`docs/mobile-ui/audit/source/web/locales/${language}/app.json`);
-    runtime[language] = Object.fromEntries([...sourceKeys].sort().filter(key => source[key] && source[key] !== key).map(key => [key, source[key]]));
+    const target = read(`src/i18n/locales/${language}.json`);
+    for (const key of [...sourceKeys].sort()) {
+      if (source[key] && source[key] !== key && !target[key]) target[key] = source[key];
+    }
+    fs.writeFileSync(path.join(root, `src/i18n/locales/${language}.json`), JSON.stringify(target, null, 2) + '\n');
   }
-  fs.writeFileSync(path.join(root, 'src/i18n/runtime-messages.json'), JSON.stringify(runtime, null, 2) + '\n');
 }
-const merged = Object.fromEntries(languages.map(language => [language, {}]));
-for (const name of bundles) for (const [language, bundle] of Object.entries(read(`src/i18n/${name}-messages.json`))) {
-  for (const [key, value] of Object.entries(bundle)) if (value && (value !== key || name === 'complete')) merged[language][key] = value;
-}
+const merged = Object.fromEntries(languages.map(language => [language, read(`src/i18n/locales/${language}.json`)]));
 const report = {
   note: 'Static coverage of localized calls and all mobile specifications. Technical strings, code and authored content are explicit invariants. Dynamic lookups require interaction testing; see scripts/verify-locales.cjs.',
   mobileScreens: screens.length,

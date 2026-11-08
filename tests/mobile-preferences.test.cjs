@@ -60,8 +60,7 @@ test('mobile copy translates controls and falls back for unknown text and keeps 
 
 test('shared locale lookup uses translated values across bundles without English entries masking them', () => {
   const { translateCopy } = load('src/i18n/copy.ts', {
-    './m2-messages.json': { en: {}, uk: { 'Regression label': 'Regression label' } },
-    './m4-messages.json': { uk: { 'Regression label': 'Переклад' } },
+    './locales/uk.json': { ...load('src/i18n/locales/uk.json'), 'Regression label': 'Переклад' },
   });
   assert.equal(translateCopy('uk', 'Regression label'), 'Переклад');
   assert.equal(translateCopy('uk', 'Apply appearance'), 'Застосувати оформлення');
@@ -70,9 +69,9 @@ test('shared locale lookup uses translated values across bundles without English
 
 test('every supported locale covers the application contract and preserves interpolation placeholders', () => {
   const contract = load('src/i18n/locale-contract.json');
-  const complete = load('src/i18n/complete-messages.json');
-  const expectedLanguages = Object.keys(load('src/i18n/foundation-messages.json'));
-  assert.deepEqual(Object.keys(complete).sort(), expectedLanguages.sort());
+  const expectedLanguages = ['en', 'zh', 'fr', 'de', 'uk', 'pl', 'pt', 'vi', 'ja', 'tr'];
+  const complete = Object.fromEntries(expectedLanguages.map(lang => [lang, load(`src/i18n/locales/${lang}.json`)]));
+  assert.deepEqual(Object.keys(complete).sort(), expectedLanguages.slice().sort());
   for (const language of expectedLanguages) {
     for (const key of contract.keys) {
       assert.equal(typeof complete[language][key], 'string', `${language}: ${key}`);
