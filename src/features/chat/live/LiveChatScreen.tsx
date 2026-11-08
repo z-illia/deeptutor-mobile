@@ -3,14 +3,17 @@ import { useCopy } from '@/features/entry/copy';
 import { BottomNavigation } from '@/features/mobile/BottomNavigation';
 import { useDesign } from '@/shared/design/DesignProvider';
 import { Button, Field, IconButton } from '@/shared/ui/Controls';
-import { InlineAlert, LoadingState } from '@/shared/ui/Feedback';
+import { InlineAlert, LoadingState, StatusChip } from '@/shared/ui/Feedback';
 import { DText } from '@/shared/ui/Text';
 import { router, useLocalSearchParams } from 'expo-router';
-import { ArrowUp, ChevronLeft, History, Plus, Square, X } from 'lucide-react-native';
+import { ArrowUp, ChevronLeft, History, Plus, Square } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
-import { FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, View } from 'react-native';
+import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChatMarkdown } from '../ChatMarkdown';
+import { ModelSelectionDialog } from '../ModelSelectionDialog';
+import { FullScreenModal } from '@/shared/ui/FullScreenModal';
+import { ListRow } from '@/shared/ui/ListRow';
 import { commandId } from './protocol';
 import { useLiveChat } from './useLiveChat';
 
@@ -34,7 +37,6 @@ function ConversationScreen({ sessionId, showHistory }: { sessionId: string | nu
   const followBottom = useRef(true);
   const newChat = () => router.push({ pathname: '/chat', params: { new: commandId() } });
   const openHistory = () => { setHistoryOpen(true); void chat.refreshHistory(); };
-  const rowStyle = { minHeight: 52, padding: 14, borderBottomWidth: 1, borderColor: colors.border };
   return <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, gap: 8, minHeight: 60, borderBottomWidth: 1, borderColor: colors.border }}>
@@ -86,15 +88,20 @@ function ConversationScreen({ sessionId, showHistory }: { sessionId: string | nu
       </View>
     </KeyboardAvoidingView>
     <BottomNavigation activeScreen={12} />
-    <Modal visible={historyOpen} animationType="slide" onRequestClose={() => setHistoryOpen(false)} onShow={() => { if (showHistory) void chat.refreshHistory(); }}>
-      <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
-        <View style={{ padding: 16, flexDirection: 'row', alignItems: 'center' }}><DText accessibilityRole="header" style={{ flex: 1, fontSize: 22 }}>{t('Recent conversations')}</DText><IconButton label={t('Close')} onPress={() => setHistoryOpen(false)}><X size={22} color={colors.foreground} /></IconButton></View>
+    <FullScreenModal open={historyOpen} title={t('Recent conversations')} onClose={() => setHistoryOpen(false)} onShow={() => { if (showHistory) void chat.refreshHistory(); }}>
         {!!chat.historyError && <InlineAlert tone="danger">{t(chat.historyError)}</InlineAlert>}
-        <FlatList data={chat.sessions.filter(item => (!item.workspace_mode || item.workspace_mode === 'chat') && (!item.session_type || item.session_type === 'chat'))} keyExtractor={item => item.session_id} refreshing={chat.historyLoading} onRefresh={() => void chat.refreshHistory()} ListEmptyComponent={!chat.historyLoading ? <DText muted style={{ padding: 20 }}>{t('No conversations yet')}</DText> : <LoadingState />} renderItem={({ item }) => <Pressable accessibilityRole="button" style={rowStyle} onPress={() => { setHistoryOpen(false); router.push(`/chat/${encodeURIComponent(item.session_id)}`); }}><DText numberOfLines={2}>{item.title || t('New chat')}</DText></Pressable>} ListFooterComponent={<View style={{ padding: 16, gap: 8 }}>{!!chat.historyError && <Button onPress={() => void chat.refreshHistory()}>{t('Retry')}</Button>}{chat.hasMore && <Button loading={chat.historyLoading} onPress={() => void chat.refreshHistory(true)}>{t('Load more')}</Button>}</View>} />
-      </SafeAreaView>
-    </Modal>
-    <Modal visible={modelsOpen} animationType="slide" onRequestClose={() => setModelsOpen(false)}>
-      <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}><View style={{ padding: 16, flexDirection: 'row', alignItems: 'center' }}><DText accessibilityRole="header" style={{ flex: 1, fontSize: 22 }}>{t('Choose model')}</DText><IconButton label={t('Close')} onPress={() => setModelsOpen(false)}><X size={22} color={colors.foreground} /></IconButton></View><ScrollView>{chat.models.length === 0 && <DText style={{ padding: 20 }}>{t('Server default model')}</DText>}{chat.models.map(model => <Pressable key={`${model.profile_id}:${model.model_id}`} accessibilityRole="radio" accessibilityState={{ checked: model.profile_id === chat.model?.profile_id && model.model_id === chat.model?.model_id }} onPress={() => { chat.setModel(model); setModelsOpen(false); }} style={rowStyle}><DText>{model.model_name}</DText><DText muted>{model.profile_name}</DText></Pressable>)}</ScrollView></SafeAreaView>
-    </Modal>
+        <FlatList contentContainerStyle={{ paddingHorizontal: 16, gap: 8 }} data={chat.sessions.filter(item => (!item.workspace_mode || item.workspace_mode === 'chat') && (!item.session_type || item.session_type === 'chat'))} keyExtractor={item => item.session_id} refreshing={chat.historyLoading} onRefresh={() => void chat.refreshHistory()} ListEmptyComponent={!chat.historyLoading ? <DText muted style={{ padding: 20 }}>{t('No conversations yet')}</DText> : <LoadingState />} renderItem={({ item }) => <ListRow title={item.title || t('New chat')} onPress={() => { setHistoryOpen(false); router.push(`/chat/${encodeURIComponent(item.session_id)}`); }} />} ListFooterComponent={<View style={{ padding: 16, gap: 8 }}>{!!chat.historyError && <Button onPress={() => void chat.refreshHistory()}>{t('Retry')}</Button>}{chat.hasMore && <Button loading={chat.historyLoading} onPress={() => void chat.refreshHistory(true)}>{t('Load more')}</Button>}</View>} />
+    </FullScreenModal>
+    <ModelSelectionDialog
+      fullScreen
+      open={modelsOpen}
+      onClose={() => setModelsOpen(false)}
+      selectedKey={chat.model ? JSON.stringify([chat.model.profile_id, chat.model.model_id]) : undefined}
+      options={chat.models.map(model => ({ key: JSON.stringify([model.profile_id, model.model_id]), label: model.model_name, description: model.profile_name, badge: model.is_active_default ? <StatusChip tone="info">{t('Default')}</StatusChip> : undefined }))}
+      onSelect={key => {
+        const model = chat.models.find(item => JSON.stringify([item.profile_id, item.model_id]) === key);
+        if (model) chat.setModel(model);
+      }}
+    />
   </SafeAreaView>;
 }

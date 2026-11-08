@@ -1,16 +1,14 @@
 import { useState } from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
+import { Pressable } from 'react-native';
 import {
   AlertCircle,
-  Check,
   ChevronDown,
   Cpu,
   RefreshCw,
 } from 'lucide-react-native';
 import { useCopy } from '@/features/entry/copy';
 import { useDesign } from '@/shared/design/DesignProvider';
-import { geometry } from '@/shared/design/tokens';
-import { Dialog } from '@/shared/ui/Dialog';
+import { ModelSelectionDialog } from './ModelSelectionDialog';
 import { StatusChip } from '@/shared/ui/Feedback';
 import { DText } from '@/shared/ui/Text';
 import type { CatalogLoadState } from './ChatProvider';
@@ -166,101 +164,21 @@ export function ModelSelector({
         <ChevronDown size={13} color={colors.mutedForeground} />
       </Pressable>
 
-      <Dialog
+      <ModelSelectionDialog
         open={open}
-        title={t('Choose a model')}
         onClose={() => setOpen(false)}
-      >
-        <ScrollView style={{ maxHeight: 360 }}>
-          <View style={{ gap: 6 }}>
-            {options.map((option) => {
-              const selected = sameLLMSelection(option, selectedModel);
-              const primaryLabel =
-                option.model || option.model_name || option.name || '';
-              const secondaryLabel = option.provider_label || option.provider;
-              const contextWindow = formatContextWindow(option.context_window);
-
-              return (
-                <Pressable
-                  key={option.id || llmSelectionKey(option)}
-                  accessibilityRole="button"
-                  accessibilityLabel={t("Model {value1}", { value1: String(primaryLabel) })}
-                  accessibilityState={{ selected }}
-                  onPress={() => {
-                    onSelect({
-                      provider: option.provider,
-                      model: option.model,
-                    });
-                    setOpen(false);
-                  }}
-                  style={({ pressed }) => ({
-                    paddingHorizontal: 12,
-                    paddingVertical: 10,
-                    borderRadius: geometry.radius.md,
-                    borderWidth: 1,
-                    borderColor: selected ? colors.primary : colors.border,
-                    backgroundColor: selected
-                      ? colors.accent
-                      : pressed
-                        ? colors.secondary
-                        : colors.card,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: 8,
-                  })}
-                >
-                  <View style={{ flex: 1, gap: 2 }}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        gap: 8,
-                        flexWrap: 'wrap',
-                      }}
-                    >
-                      <DText role={selected ? 'section' : 'label'}>
-                        {primaryLabel}
-                      </DText>
-                      {option.is_active_default ? (
-                        <StatusChip tone="info">{t('Default')}</StatusChip>
-                      ) : null}
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        gap: 6,
-                      }}
-                    >
-                      <DText role="small" muted>
-                        {secondaryLabel}
-                      </DText>
-                      {contextWindow ? (
-                        <DText role="small" muted>
-                          · {t('Context')}: {contextWindow.replace(/ ctx$/, '')}
-                        </DText>
-                      ) : null}
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      width: 22,
-                      height: 22,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    {selected ? (
-                      <Check size={16} color={colors.primary} />
-                    ) : null}
-                  </View>
-                </Pressable>
-              );
-            })}
-          </View>
-        </ScrollView>
-      </Dialog>
+        selectedKey={llmSelectionKey(selectedModel)}
+        options={options.map(option => ({
+          key: llmSelectionKey(option),
+          label: option.model || option.model_name || option.name || '',
+          description: [option.provider_label || option.provider, formatContextWindow(option.context_window) ? `${t('Context')}: ${formatContextWindow(option.context_window)?.replace(/ ctx$/, '')}` : ''].filter(Boolean).join(' · '),
+          badge: option.is_active_default ? <StatusChip tone="info">{t('Default')}</StatusChip> : undefined,
+        }))}
+        onSelect={key => {
+          const option = options.find(item => llmSelectionKey(item) === key);
+          if (option) onSelect({ provider: option.provider, model: option.model });
+        }}
+      />
     </>
   );
 }

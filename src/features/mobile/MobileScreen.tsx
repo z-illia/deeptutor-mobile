@@ -1,14 +1,15 @@
-import { useCallback, useMemo, useRef, useState, useSyncExternalStore, type ElementRef } from 'react';
-import { FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { useMemo, useState, useSyncExternalStore } from 'react';
+import { FlatList, KeyboardAvoidingView, Platform, Pressable, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, type Href } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as Clipboard from 'expo-clipboard';
-import { ChevronLeft, Layers, UserRound, X } from 'lucide-react-native';
+import { ChevronLeft, Layers, UserRound } from 'lucide-react-native';
 import { useChat } from '@/features/chat/ChatProvider';
 import { useFixtures } from '@/features/entry/FixtureProvider';
-import { useOverlayFocus } from '@/shared/ui/use-overlay-focus';
-import { allNodes, disclosure, labelOf, mobilePalette, screenByNumber, textOf, type DesignNode, type MobileColors } from './model';
+import { Button } from '@/shared/ui/Controls';
+import { Dialog as SharedDialog } from '@/shared/ui/Dialog';
+import { allNodes, disclosure, labelOf, mobilePalette, screenByNumber, textOf, type DesignNode } from './model';
 import { destination, selectionScreens } from './navigation';
 import { NativeLayer, type LayerContext } from './NativeLayers';
 import { useDesign, type Language } from '@/shared/design/DesignProvider';
@@ -20,11 +21,6 @@ type Dialog = { title: string; message?: string; choices?: string[]; choose?: (v
 const route = (number: number): Href => `/mobile/${number}` as Href;
 const placeholder = (value: string) => /…|^Choose |^Type |^Enter |^Search |^Find /.test(value);
 const subscribeClient = () => () => {};
-
-function MobileButton({ title, onPress, colors, secondary = false }: { title: string; onPress: () => void; colors: MobileColors; secondary?: boolean }) {
-  const t = useMobileCopy();
-  return <Pressable accessibilityRole="button" onPress={onPress} style={({ pressed }) => ({ minHeight: 52, borderRadius: 12, borderWidth: secondary ? 1 : 0, borderColor: colors.line, backgroundColor: secondary ? colors.surface : colors.action, padding: 14, opacity: pressed ? 0.7 : 1, justifyContent: 'center', alignItems: 'center' })}><Text style={{ fontFamily: 'Inter', fontWeight: '600', fontSize: 16, color: secondary ? colors.accent : colors['on-action'], textAlign: 'center' }}>{t(title)}</Text></Pressable>;
-}
 
 export function MobileScreen({ number }: { number: number }) {
   const clientReady = useSyncExternalStore(subscribeClient, () => true, () => false);
@@ -40,9 +36,6 @@ export function MobileScreen({ number }: { number: number }) {
   const [dialogValue, setDialogValue] = useState('');
   const [transient, setTransient] = useState<Record<string, string>>({});
   const [error, setError] = useState('');
-  const dialogRoot = useRef<ElementRef<typeof View>>(null);
-  const closeDialog = useCallback(() => setDialog(null), [setDialog]);
-  useOverlayFocus(dialog !== null, dialogRoot, closeDialog, false);
   const scope = `${state.workspace}:${number}:`;
   const values = useMemo(() => Object.fromEntries(Object.entries(state.values).filter(([key]) => key.startsWith(scope)).map(([key, value]) => [key.slice(scope.length), value])), [scope, state.values]);
   const mergedValues: Record<string, string> = { ...values, ...(number === 82 ? { 'Interface language field': languageNames[design.language] } : {}), ...(number === 83 ? { 'Theme field': { system: 'System', snow: 'Light', cream: 'Cream', dark: 'Dark', glass: 'Glass' }[design.theme] } : {}), ...transient };
@@ -217,7 +210,7 @@ export function MobileScreen({ number }: { number: number }) {
   if ([12, 13, 25].includes(number)) {
     for (const key of ['Ask DeepTutor field', 'Message field', 'Message in progress field']) ctx.values[key] = state.values[draftKey] ?? '';
   }
-  if (!spec) return <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg, padding: 20, gap: 24 }}><Text style={{ color: colors.ink, fontFamily: 'Inter', fontSize: 22 }}>{t("Screen unavailable")}</Text><MobileButton colors={colors} title={t("Back to Learn")} onPress={() => router.replace(route(1))} /></SafeAreaView>;
+  if (!spec) return <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg, padding: 20, gap: 24 }}><Text style={{ color: colors.ink, fontFamily: 'Inter', fontSize: 22 }}>{t("Screen unavailable")}</Text><Button onPress={() => router.replace(route(1))} style={{ minHeight: 52 }}>{t("Back to Learn")}</Button></SafeAreaView>;
   const title = number === 13 && sessionId ? chat.sessions.find(session => session.session_id === sessionId)?.title || spec.name.split(' / ')[1] : spec.name.split(' / ')[1];
   const isRoot = mobileTabs.some(tab => tab.number === number);
   const body = spec.content.children ?? [];
@@ -241,7 +234,7 @@ export function MobileScreen({ number }: { number: number }) {
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 12, paddingRight: 20, paddingBottom: 12, gap: 8 }}>
         <Pressable accessibilityRole="button" accessibilityLabel={t(isRoot ? 'Switch workspace' : 'Back')} onPress={() => isRoot ? open(62) : back()} style={{ minWidth: 48, minHeight: 48, justifyContent: 'center', alignItems: 'center' }}>{isRoot ? <Layers size={22} color={colors.ink} /> : <ChevronLeft size={22} color={colors.ink} />}</Pressable>
         <Text accessibilityRole="header" style={{ fontFamily: 'Inter', fontWeight: '600', fontSize: 22, lineHeight: 31, color: colors.ink, flex: 1 }}>{number === 13 && sessionId ? title : t(title)}</Text>
-        {isRoot ? <Pressable accessibilityRole="button" accessibilityLabel={t('Account and settings')} onPress={() => open(61)} style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.soft, alignItems: 'center', justifyContent: 'center' }}><UserRound size={22} color={colors.accent} /></Pressable> : spec.header.children?.some(node => /More actions/.test(node.name)) ? <MobileButton title="···" colors={colors} secondary onPress={() => open(number === 13 ? 22 : 126)} /> : null}
+        {isRoot ? <Pressable accessibilityRole="button" accessibilityLabel={t('Account and settings')} onPress={() => open(61)} style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.soft, alignItems: 'center', justifyContent: 'center' }}><UserRound size={22} color={colors.accent} /></Pressable> : spec.header.children?.some(node => /More actions/.test(node.name)) ? <Button variant="secondary" onPress={() => open(number === 13 ? 22 : 126)} style={{ minHeight: 52 }}>···</Button> : null}
       </View>
       <FlatList key={number} data={visible} keyExtractor={node => node.id} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={{ paddingTop: 12, paddingHorizontal: 20, paddingBottom: 24, gap: 24 }} initialNumToRender={12} windowSize={5}
         ListHeaderComponent={error ? <Text accessibilityRole="alert" style={{ fontFamily: 'Inter', color: colors.danger, fontSize: 16, lineHeight: 24 }}>{t(error)}</Text> : undefined}
@@ -249,25 +242,20 @@ export function MobileScreen({ number }: { number: number }) {
           if (item.name === 'Context' && context && textOf(context) === 'Software Development') return <Text style={{ color: colors.muted, fontFamily: 'Inter', fontSize: 14, lineHeight: 20 }}>{t(state.workspace)}</Text>;
           if (number === 13 && item.name === 'Sources & session activity row' && sessionId) return <View style={{ gap: 20 }}><Text style={{ fontFamily: 'Inter', color: colors.muted, fontSize: 12 }}>{t("DEMO CONVERSATION · replies are simulated")}</Text>{messages.map(message => <View key={message.id} style={{ padding: message.role === 'user' ? 16 : 0, borderRadius: 12, backgroundColor: message.role === 'user' ? colors.soft : 'transparent', gap: 8 }}>{message.role === 'assistant' && <Text style={{ color: colors.accent, fontFamily: 'Inter', fontSize: 12, fontWeight: '600' }}>DEEPTUTOR</Text>}{paragraph(message.content)}{!!message.error && <Text accessibilityRole="alert" style={{ color: colors.danger }}>{t(message.error)}</Text>}</View>)}<NativeLayer node={item} ctx={ctx} /></View>;
           if (number === 38 && item.name === 'Correct · At each statement notice' && state.values[`${state.workspace}:practice-correct`] === 'false') return <View style={{ padding: 16, borderRadius: 12, backgroundColor: colors['error-surface'], gap: 8 }}><Text accessibilityRole="alert" style={{ color: colors.danger, fontFamily: 'Inter', fontSize: 16, fontWeight: '600' }}>{t("Not quite. Try the example again.")}</Text>{paragraph(t('Read committed takes a new snapshot at each statement. Two statements can see different committed data.'))}</View>;
-          if (number === 52 && item.name === 'Tasks section' && localTasks.length > 0) return <View style={{ gap: 12 }}><Text accessibilityRole="header" style={{ fontFamily: 'Inter', fontWeight: '600', fontSize: 18, color: colors.ink }}>{t("Tasks")}</Text>{taskCards}<MobileButton title={t("Add a task")} colors={colors} onPress={() => act({ id: 'add-task', type: 'text', name: 'Add a task', content: 'Add a task' })} /><MobileButton title={t("Task board")} colors={colors} secondary onPress={() => open(56)} /></View>;
+          if (number === 52 && item.name === 'Tasks section' && localTasks.length > 0) return <View style={{ gap: 12 }}><Text accessibilityRole="header" style={{ fontFamily: 'Inter', fontWeight: '600', fontSize: 18, color: colors.ink }}>{t("Tasks")}</Text>{taskCards}<Button onPress={() => act({ id: 'add-task', type: 'text', name: 'Add a task', content: 'Add a task' })} style={{ minHeight: 52 }}>{t("Add a task")}</Button><Button variant="secondary" onPress={() => open(56)} style={{ minHeight: 52 }}>{t("Task board")}</Button></View>;
           if (number === 56 && /Empty|No tasks/.test(item.name) && localTasks.length) return null;
           return <NativeLayer node={item} ctx={ctx} />;
         }}
-        ListFooterComponent={<View style={{ gap: 16 }}>{number === 56 && localTasks.length > 0 && taskCards}{number === 29 && <MobileButton colors={colors} title={t("Save note")} onPress={() => act({ id: 'save-note', type: 'frame', name: 'Save note', children: [{ id: 'save-note-label', type: 'text', name: 'Label', content: 'Save note' }] })} />}{!!query && !allNodes(spec.content).some(node => / row$/.test(node.name) && [textOf(node), ...textOf(node).split('\n').map(text => t(text))].join('\n').toLowerCase().includes(query.toLowerCase())) && <Text accessibilityRole="status" style={{ fontFamily: 'Inter', color: colors.muted, fontSize: 16 }}>{t("No results. Try a different search.")}</Text>}</View>}
+        ListFooterComponent={<View style={{ gap: 16 }}>{number === 56 && localTasks.length > 0 && taskCards}{number === 29 && <Button onPress={() => act({ id: 'save-note', type: 'frame', name: 'Save note', children: [{ id: 'save-note-label', type: 'text', name: 'Label', content: 'Save note' }] })} style={{ minHeight: 52 }}>{t("Save note")}</Button>}{!!query && !allNodes(spec.content).some(node => / row$/.test(node.name) && [textOf(node), ...textOf(node).split('\n').map(text => t(text))].join('\n').toLowerCase().includes(query.toLowerCase())) && <Text accessibilityRole="status" style={{ fontFamily: 'Inter', color: colors.muted, fontSize: 16 }}>{t("No results. Try a different search.")}</Text>}</View>}
       />
       {spec.tabs && <BottomNavigation activeScreen={number} />}
     </KeyboardAvoidingView>
-    <Modal visible={dialog !== null} transparent animationType="fade" onRequestClose={() => setDialog(null)}>
-      <View style={{ flex: 1, justifyContent: 'center', padding: 20, backgroundColor: '#00000070' }}><SafeAreaView ref={dialogRoot} accessibilityViewIsModal style={{ backgroundColor: colors.surface, maxHeight: '85%', borderRadius: 16, padding: 20, width: '100%', maxWidth: 560, alignSelf: 'center', gap: 16 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}><Text accessibilityRole="header" style={{ flex: 1, fontFamily: 'Inter', fontWeight: '600', fontSize: 22, color: colors.ink }}>{t(dialog?.title ?? '')}</Text><Pressable accessibilityRole="button" accessibilityLabel={t('Close dialog')} onPress={() => setDialog(null)} style={{ minWidth: 48, minHeight: 48, alignItems: 'center', justifyContent: 'center' }}><X color={colors.ink} size={22} /></Pressable></View>
-        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: 12 }}>
+    <SharedDialog open={dialog !== null} title={t(dialog?.title ?? '')} onClose={() => setDialog(null)}>
           {!!dialog?.message && paragraph(t(dialog.message))}
           {dialog?.input !== undefined && <TextInput autoFocus accessibilityLabel={t(dialog.title)} multiline value={dialogValue} onChangeText={setDialogValue} style={{ minHeight: 120, color: colors.ink, fontFamily: 'Inter', fontSize: 16, padding: 12, borderWidth: 1, borderColor: colors.line }} />}
-          {dialog?.choices?.map(choice => <MobileButton key={choice} title={choice} colors={colors} secondary onPress={() => { dialog.choose?.(choice); setDialog(null); }} />)}
-          {dialog?.submit && <MobileButton title={t("Save")} colors={colors} onPress={() => { dialog.submit?.(dialogValue); setDialog(null); }} />}
-          <MobileButton title={t("Done")} colors={colors} onPress={() => setDialog(null)} />
-        </ScrollView>
-      </SafeAreaView></View>
-    </Modal>
+          {dialog?.choices?.map(choice => <Button key={choice} variant="secondary" onPress={() => { dialog.choose?.(choice); setDialog(null); }} style={{ minHeight: 52 }}>{t(choice)}</Button>)}
+          {dialog?.submit && <Button onPress={() => { dialog.submit?.(dialogValue); setDialog(null); }} style={{ minHeight: 52 }}>{t("Save")}</Button>}
+          <Button onPress={() => setDialog(null)} style={{ minHeight: 52 }}>{t("Done")}</Button>
+    </SharedDialog>
   </SafeAreaView>;
 }
