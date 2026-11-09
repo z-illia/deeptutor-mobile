@@ -41,17 +41,18 @@ export interface SessionActionsSheetProps {
   isRunning?: boolean;
   includeHeaderExtras?: boolean;
   messages?: ChatMessageItem[];
+  workspaceOptions?: { id: string; name: string }[];
   onClose: () => void;
   onStartInlineRename?: (session: SessionSummary) => void;
   onRename: (
     sessionId: string,
     title: string,
-  ) => { ok: boolean; error?: string };
+  ) => { ok: boolean; error?: string } | Promise<{ ok: boolean; error?: string }>;
   onOrganize: (
     sessionId: string,
     patch: SessionOrganizationPatch,
-  ) => { ok: boolean; error?: string };
-  onDelete: (sessionId: string) => { ok: boolean; error?: string };
+  ) => { ok: boolean; error?: string } | Promise<{ ok: boolean; error?: string }>;
+  onDelete: (sessionId: string) => { ok: boolean; error?: string } | Promise<{ ok: boolean; error?: string }>;
 }
 
 export function SessionActionsSheet({
@@ -60,6 +61,7 @@ export function SessionActionsSheet({
   isRunning = false,
   includeHeaderExtras = false,
   messages = [],
+  workspaceOptions,
   onClose,
   onStartInlineRename,
   onRename,
@@ -75,7 +77,9 @@ export function SessionActionsSheet({
   const [renameError, setRenameError] = useState('');
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+  const [busy, setBusy] = useState(false);
   const [markdownPreview, setMarkdownPreview] = useState<string | null>(null);
+  const availableWorkspaces = workspaceOptions ?? workspaces;
 
   if (!session) return null;
 
@@ -98,57 +102,80 @@ export function SessionActionsSheet({
     setRenameOpen(true);
   };
 
-  const handleCommitRename = () => {
-    const res = onRename(session.session_id, renameDraft);
-    if (!res.ok) {
-      setRenameError(t(res.error || 'Rename failed'));
-      notify(t(res.error || 'Rename failed'), 'danger');
-      return;
+  const handleCommitRename = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const res = await onRename(session.session_id, renameDraft);
+      if (!res.ok) {
+        setRenameError(t(res.error || 'Rename failed'));
+        notify(t(res.error || 'Rename failed'), 'danger');
+        return;
+      }
+      setRenameOpen(false);
+      notify(t('Saved'), 'success');
+    } finally {
+      setBusy(false);
     }
-    setRenameOpen(false);
-    notify(t('Saved'), 'success');
   };
 
-  const handlePinToggle = () => {
-    const res = onOrganize(session.session_id, { pinned: !isPinned });
+  const handlePinToggle = async () => {
+    if (busy) return;
+    setBusy(true);
     onClose();
-    if (!res.ok) {
-      notify(t(res.error || 'Failed to save'), 'danger');
-      return;
+    try {
+      const res = await onOrganize(session.session_id, { pinned: !isPinned });
+      if (!res.ok) {
+        notify(t(res.error || 'Failed to save'), 'danger');
+        return;
+      }
+      notify(isPinned ? t('Unpin') : t('Pin'), 'info');
+    } finally {
+      setBusy(false);
     }
-    notify(isPinned ? t('Unpin') : t('Pin'), 'info');
   };
 
-  const handleArchiveToggle = () => {
-    const res = onOrganize(session.session_id, { archived: !isArchived });
+  const handleArchiveToggle = async () => {
+    if (busy) return;
+    setBusy(true);
     onClose();
-    if (!res.ok) {
-      notify(t(res.error || 'Failed to save'), 'danger');
-      return;
+    try {
+      const res = await onOrganize(session.session_id, { archived: !isArchived });
+      if (!res.ok) {
+        notify(t(res.error || 'Failed to save'), 'danger');
+        return;
+      }
+      notify(
+        isArchived ? t('Restore from archive') : t('Archived'),
+        'info',
+      );
+    } finally {
+      setBusy(false);
     }
-    notify(
-      isArchived ? t('Restore from archive') : t('Archived'),
-      'info',
-    );
   };
 
-  const handleMoveWorkspace = (targetWorkspaceId: string) => {
-    if (isRunning || targetWorkspaceId === currentWorkspaceId) {
+  const handleMoveWorkspace = async (targetWorkspaceId: string) => {
+    if (busy || isRunning || targetWorkspaceId === currentWorkspaceId) {
       onClose();
       return;
     }
-    const res = onOrganize(session.session_id, {
-      workspace_id: targetWorkspaceId,
-    });
+    setBusy(true);
     onClose();
-    if (!res.ok) {
-      notify(t(res.error || 'Failed to save'), 'danger');
-      return;
+    try {
+      const res = await onOrganize(session.session_id, {
+        workspace_id: targetWorkspaceId,
+      });
+      if (!res.ok) {
+        notify(t(res.error || 'Failed to save'), 'danger');
+        return;
+      }
+      const targetName =
+        availableWorkspaces.find((w) => w.id === targetWorkspaceId)?.name ??
+        t('General workspace');
+      notify(`${t('Move to workspace')}: ${targetName}`, 'info');
+    } finally {
+      setBusy(false);
     }
-    const targetName =
-      workspaces.find((w) => w.id === targetWorkspaceId)?.name ??
-      t('General workspace');
-    notify(`${t('Move to workspace')}: ${targetName}`, 'info');
   };
 
   const handleSaveToNotebook = () => {
@@ -182,15 +209,21 @@ export function SessionActionsSheet({
     notify(t('Copied'), 'success');
   };
 
-  const handleConfirmDelete = () => {
-    const res = onDelete(session.session_id);
-    if (!res.ok) {
-      setDeleteError(t(res.error || 'Failed to save'));
-      notify(t(res.error || 'Failed to save'), 'danger');
-      return;
+  const handleConfirmDelete = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const res = await onDelete(session.session_id);
+      if (!res.ok) {
+        setDeleteError(t(res.error || 'Failed to save'));
+        notify(t(res.error || 'Failed to save'), 'danger');
+        return;
+      }
+      setDeleteOpen(false);
+      notify(t('Conversation deleted'), 'info');
+    } finally {
+      setBusy(false);
     }
-    setDeleteOpen(false);
-    notify(t('Conversation deleted'), 'info');
   };
 
   const actionButtonStyle = (danger = false, disabled = false) => ({
@@ -276,16 +309,16 @@ export function SessionActionsSheet({
                   {t('Move to workspace')}
                 </DText>
               </View>
-              {workspaces.map((ws) => {
+              {availableWorkspaces.map((ws) => {
                 const selected = ws.id === currentWorkspaceId;
                 return (
                   <Pressable
                     key={ws.id || 'general'}
-                    disabled={isRunning}
+                    disabled={isRunning || busy}
                     accessibilityRole="button"
                     accessibilityLabel={t("Move to {value1}", { value1: String(ws.name) })}
-                    accessibilityState={{ selected, disabled: isRunning }}
-                    onPress={() => handleMoveWorkspace(ws.id)}
+                    accessibilityState={{ selected, disabled: isRunning || busy }}
+                    onPress={() => void handleMoveWorkspace(ws.id)}
                     style={{
                       minHeight: 36,
                       paddingHorizontal: 10,
@@ -364,10 +397,10 @@ export function SessionActionsSheet({
         onClose={() => setRenameOpen(false)}
         footer={
           <>
-            <Button variant="secondary" onPress={() => setRenameOpen(false)}>
+            <Button variant="secondary" disabled={busy} onPress={() => setRenameOpen(false)}>
               {t('Cancel')}
             </Button>
-            <Button onPress={handleCommitRename}>{t('Save')}</Button>
+            <Button loading={busy} disabled={busy} onPress={() => void handleCommitRename()}>{t('Save')}</Button>
           </>
         }
       >
@@ -384,7 +417,8 @@ export function SessionActionsSheet({
         open={deleteOpen}
         title={t('Delete chat')}
         confirmLabel={t('Delete')}
-        onConfirm={handleConfirmDelete}
+        busy={busy}
+        onConfirm={() => void handleConfirmDelete()}
         onCancel={() => {
           setDeleteOpen(false);
           setDeleteError('');

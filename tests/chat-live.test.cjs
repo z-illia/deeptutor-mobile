@@ -74,11 +74,14 @@ test('real socket sends v2 commands, deduplicates replay and cancels the admitte
 test('HTTP repository reads real paginated requests and propagates auth failures', async () => {
   const requests = [];
   const server = http.createServer((req, res) => {
-    requests.push(req.url);
+    requests.push(`${req.method} ${req.url}`);
     res.setHeader('Content-Type', 'application/json');
     const url = new URL(req.url, 'http://test');
-    if (url.pathname === '/api/sessions') res.end(JSON.stringify({ sessions: [{ session_id: 's1', title: 'Stored conversation' }] }));
-    else if (url.pathname === '/api/sessions/s1') res.end(JSON.stringify({ session_id: 's1', messages: [{ id: 1, role: 'user', content: 'Q' }] }));
+    if (req.method === 'GET' && url.pathname === '/api/sessions') res.end(JSON.stringify({ sessions: [{ session_id: 's1', title: 'Stored conversation', updated_at: 1700000000, preferences: { archived: true, pinned: true } }] }));
+    else if (req.method === 'GET' && url.pathname === '/api/sessions/s1') res.end(JSON.stringify({ session_id: 's1', messages: [{ id: 1, role: 'user', content: 'Q' }] }));
+    else if (req.method === 'PATCH' && url.pathname === '/api/sessions/s1') res.end(JSON.stringify({ session: { session_id: 's1', title: 'Renamed' } }));
+    else if (req.method === 'PATCH' && url.pathname === '/api/sessions/s1/organization') res.end(JSON.stringify({ session: { session_id: 's1', preferences: { archived: false } } }));
+    else if (req.method === 'DELETE' && url.pathname === '/api/sessions/s1') res.end(JSON.stringify({ deleted: true }));
     else if (url.pathname === '/api/settings/llm-options') res.end(JSON.stringify({ options: [], active: null }));
     else { res.statusCode = 401; res.end('{"detail":"Unauthorized"}'); }
   });
@@ -87,10 +90,21 @@ test('HTTP repository reads real paginated requests and propagates auth failures
   const repository = load('src/features/chat/live/repository.ts', { '@/api/client': { api }, '@/shared/markdown/diagnostics': load('src/shared/markdown/diagnostics.ts') });
   try {
     assert.equal((await repository.listConversations(undefined, 50))[0].session_id, 's1');
+    const summaries = await repository.listWorkspaceSessionSummaries('ws-1');
+    assert.equal(summaries[0].session_id, 's1');
+    assert.equal(summaries[0].preferences.archived, true);
+    assert.equal(summaries[0].preferences.pinned, true);
+    await repository.renameConversation('s1', 'Renamed', 'ws-1');
+    await repository.organizeConversation('s1', { archived: false }, 'ws-1');
+    await repository.deleteConversation('s1', 'ws-1');
     assert.equal((await repository.getConversation('s1')).messages[0].content, 'Q');
     assert.deepEqual((await repository.listChatModels()).options, []);
     await assert.rejects(repository.getConversation('missing'), error => error.response.status === 401);
-    assert.equal(requests[0], '/api/sessions?limit=50&offset=50');
+    assert.equal(requests[0], 'GET /api/sessions?limit=50&offset=50');
+    assert.equal(requests[1], 'GET /api/sessions?limit=200&offset=0&dt_workspace=ws-1');
+    assert.equal(requests[2], 'PATCH /api/sessions/s1?dt_workspace=ws-1');
+    assert.equal(requests[3], 'PATCH /api/sessions/s1/organization?dt_workspace=ws-1');
+    assert.equal(requests[4], 'DELETE /api/sessions/s1?dt_workspace=ws-1');
   } finally { await new Promise(resolve => server.close(resolve)); }
 });
 
