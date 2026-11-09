@@ -52,6 +52,7 @@ docs/mobile-ui
 !/docs/
 /docs/*
 !/docs/DESIGN_IMPLEMENTATION_MATRIX.md
+!/docs/WEB_DESIGN_AUDIT.md
 !/docs/mobile-ui/
 /docs/mobile-ui/*
 !/docs/mobile-ui/pen-redesign/

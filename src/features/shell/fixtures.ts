@@ -10,7 +10,7 @@ export const shelves: readonly { id: ShelfId; label: string; account?: boolean }
 const entries: readonly [ShelfId, string, string][] = [
   ['home', 'Chat', '/chat'], ['home', 'Calendar', '/calendar'], ['home', 'Task Board', '/kanban'], ['home', 'Co-Writer', '/co-writer'],
   ['learning', 'navigation.createLearning', '/learning/new'], ['learning', 'navigation.allLearning', '/learning'], ['learning', 'Books', '/learning/books'], ['learning', 'Mastery Path', '/learning/mastery'], ['learning', 'Practice', '/learning/practice'], ['learning', 'Immersive Reading', '/learning/reading'],
-  ['resources', 'navigation.allResources', '/space'], ['resources', 'Chat History', '/space/chat-history'], ['resources', 'Favorites', '/notebooks'], ['resources', 'Learning journal', '/space/journal'], ['resources', 'Question Bank', '/space/questions'], ['resources', 'Knowledge Center', '/knowledge-bases'],
+  ['resources', 'navigation.allResources', '/mobile/26'], ['resources', 'Chat History', '/space/chat-history'], ['resources', 'Favorites', '/notebooks'], ['resources', 'Learning journal', '/space/journal'], ['resources', 'Question Bank', '/space/questions'], ['resources', 'Knowledge Center', '/knowledge-bases'],
   ['partners', 'navigation.partners', '/partners'],
   ['personalization', 'navigation.allPersonalization', '/personalization'], ['personalization', 'My Agents', '/agents'], ['personalization', 'Personas', '/space/personas'], ['personalization', 'Skills', '/space/skills'], ['personalization', 'MCP Services', '/space/mcp'], ['personalization', 'CLI Apps', '/space/cli-apps'], ['personalization', 'Memory', '/memory'],
 ];

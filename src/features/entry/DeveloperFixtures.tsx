@@ -28,7 +28,7 @@ export function DeveloperFixtures() {
     <Toggle label="Fixture operation failure" value={f.failOperation} onChange={f.setFailOperation} /><Toggle label="Fixture optional Whisper" value={f.whisper} onChange={f.setWhisper} />
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
       <Button variant="secondary" onPress={() => { chat.resetChatFixtures(); fav.resetFavoritesFixtures(); learning.resetLearningFixtures(); }}>Reset chat fixtures</Button>
-      {['/login', '/register', '/profile', '/space', '/personalization', '/settings/general', '/settings/appearance', '/ui/search', '/chat', '/chat/session-general-1', '/chat/session-general-2', '/space/chat-history', '/settings/archive', '/ui/session-viewer', '/ui/file-preview', '/notebooks', '/notebooks/nb-linear-algebra', '/learning', '/learning/new', '/learning/mastery', '/learning/mastery/path-general', '/learning/mastery/path-general/sessions/session-general-mastery-1'].map((path) => <Button key={path} variant="secondary" onPress={() => router.push(path as Href)}>{path}</Button>)}
+      {['/login', '/register', '/profile', '/mobile/26', '/personalization', '/settings/general', '/settings/appearance', '/ui/search', '/chat', '/chat/session-general-1', '/chat/session-general-2', '/space/chat-history', '/settings/archive', '/ui/session-viewer', '/ui/file-preview', '/notebooks', '/notebooks/nb-linear-algebra', '/learning', '/learning/new', '/learning/mastery', '/learning/mastery/path-general', '/learning/mastery/path-general/sessions/session-general-mastery-1'].map((path) => <Button key={path} variant="secondary" onPress={() => router.push(path as Href)}>{path}</Button>)}
     </View>
   </Surface>;
 }
