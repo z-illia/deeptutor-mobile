@@ -1,5 +1,7 @@
 # Learning implementation and verification
 
+Study Session supersession: [current 390×958 approved frame and implementation](STUDY_SESSION_UPDATE.md), including contextual starter cards, bottom sheets and native-module file attachments. Earlier Study-specific dimensions/limitations below describe the prior iteration.
+
 Updated 2026-11-09. Overall: **PARTIAL**. Core Learning discovery, real mastery-session messaging and persistence work against the development backend. This is not a claim that every designed feature has been completed or tested on Android.
 
 ## Final design sources

@@ -8,7 +8,7 @@ export type Topic = {
   metadata: { goal: string; description: string; emoji: string };
   sources: Source[]; session_count: number; updated_at: number;
   map: { counts: { mastered: number; total: number }; modules: Module[]; complete: boolean; due_reviews: number };
-  next: { action: string; knowledge_point_id: string; knowledge_point_name: string; session_id: string; reason: string };
+  next: { pending_prompt?: string; action: string; knowledge_point_id: string; knowledge_point_name: string; session_id: string; reason: string };
   reviews: { id: string; knowledge_point_name: string; due: boolean; reason: string }[];
   review_settings?: { desired_retention: number; strategy?: { template_id: string; name: string } | null };
   learner_profile: { prior_knowledge: string; target_level: string; time_budget: string; preferences: string; notes: string } | null;

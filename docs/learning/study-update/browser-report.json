@@ -1,0 +1,15 @@
+{
+  "checks": [
+    "strategy sends contextual mastery turn; rejection preserves unsent answer",
+    "real history selection/removal updates attached count",
+    "real Expo web picker reads a file; pending file can be removed without sending",
+    "leave confirmation navigates to existing path; reopening restores unsent answer and full reload restores server history",
+    "responsive width 320, bounded multiline composer",
+    "responsive width 390, bounded multiline composer",
+    "responsive width 480, bounded multiline composer",
+    "no starters on Mastery Path"
+  ],
+  "errors": [],
+  "turnSubmissions": "intercepted; no backend mutation",
+  "liveCatalogs": true
+}

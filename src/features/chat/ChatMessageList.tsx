@@ -25,6 +25,7 @@ import { alpha, geometry } from '@/shared/design/tokens';
 import { Button } from '@/shared/ui/Controls';
 import { InlineAlert, StatusChip, useFeedback } from '@/shared/ui/Feedback';
 import { DText } from '@/shared/ui/Text';
+import { RichMarkdownRenderer } from '@/shared/markdown/RichMarkdownRenderer';
 import { AskUserQuestionCard } from './AskUserQuestionCard';
 import { ContextReferenceTree } from './ContextReferenceTree';
 import { QuizViewerCard } from './QuizViewerCard';
@@ -47,58 +48,6 @@ export interface ChatMessageListProps {
   onDiscardFailedSubmission: (messageId: number) => void;
   onRetryFailedSubmission: (messageId: number) => void;
   onTogglePlayAloud: (messageId: number) => void;
-}
-
-type MarkdownSegment =
-  | { kind: 'code'; language: string; code: string }
-  | { kind: 'text'; lines: string[] };
-
-function parseMarkdownSegments(raw: string): MarkdownSegment[] {
-  const lines = raw.split('\n');
-  const segments: MarkdownSegment[] = [];
-  let inCode = false;
-  let codeLang = '';
-  let codeLines: string[] = [];
-  let textLines: string[] = [];
-
-  for (const line of lines) {
-    if (line.trim().startsWith('```')) {
-      if (!inCode) {
-        if (textLines.length > 0) {
-          segments.push({ kind: 'text', lines: textLines });
-          textLines = [];
-        }
-        inCode = true;
-        codeLang = line.trim().slice(3).trim() || 'code';
-        codeLines = [];
-      } else {
-        segments.push({
-          kind: 'code',
-          language: codeLang,
-          code: codeLines.join('\n'),
-        });
-        inCode = false;
-        codeLang = '';
-        codeLines = [];
-      }
-    } else if (inCode) {
-      codeLines.push(line);
-    } else {
-      textLines.push(line);
-    }
-  }
-
-  if (inCode) {
-    segments.push({
-      kind: 'code',
-      language: codeLang || 'code',
-      code: codeLines.join('\n'),
-    });
-  } else if (textLines.length > 0) {
-    segments.push({ kind: 'text', lines: textLines });
-  }
-
-  return segments;
 }
 
 function BranchNavigator({
@@ -198,8 +147,6 @@ export function ChatMessageList({
 
   const scale = settings.active.scale;
   const lineSpacing = settings.active.spacing;
-  const showLineNumbers = settings.active.lineNumbers;
-  const wrapLines = settings.active.wrap;
   const learningFontSize = (16 * scale) / 100;
   const learningLineHeight =
     learningFontSize *
@@ -475,7 +422,6 @@ export function ChatMessageList({
         }
 
         // Assistant message
-        const segments = parseMarkdownSegments(msg.content);
         const parentUserMsg =
           msg.parentMessageId !== null
             ? messages.find(
@@ -496,133 +442,7 @@ export function ChatMessageList({
               paddingVertical: 4,
             }}
           >
-            {segments.map((seg, segIdx) => {
-              if (seg.kind === 'code') {
-                const codeLines = seg.code.split('\n');
-                const copyKey = `code-${msg.id}-${segIdx}`;
-                return (
-                  <View
-                    key={copyKey}
-                    style={{
-                      borderRadius: geometry.radius.md,
-                      borderWidth: 1,
-                      borderColor: colors.border,
-                      backgroundColor: colors.secondary,
-                      overflow: 'hidden',
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        paddingHorizontal: 12,
-                        paddingVertical: 6,
-                        borderBottomWidth: 1,
-                        borderBottomColor: colors.border,
-                        backgroundColor: colors.card,
-                      }}
-                    >
-                      <DText role="code" muted>
-                        {seg.language}
-                      </DText>
-                      <Pressable
-                        accessibilityRole="button"
-                        accessibilityLabel={t('Copy code')}
-                        onPress={() => handleCopy(copyKey, seg.code)}
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          gap: 4,
-                          paddingHorizontal: 6,
-                          paddingVertical: 2,
-                        }}
-                      >
-                        {copiedId === copyKey ? (
-                          <Check size={13} color={colors.success} />
-                        ) : (
-                          <Copy size={13} color={colors.mutedForeground} />
-                        )}
-                        <DText role="small" muted>
-                          {copiedId === copyKey ? t('Copied') : t('Copy code')}
-                        </DText>
-                      </Pressable>
-                    </View>
-                    <View style={{ padding: 12, gap: 2 }}>
-                      {codeLines.map((line, lineIdx) => (
-                        <View
-                          key={`${lineIdx}-${line}`}
-                          style={{
-                            flexDirection: 'row',
-                            gap: 10,
-                          }}
-                        >
-                          {showLineNumbers ? (
-                            <DText
-                              role="code"
-                              muted
-                              style={{ minWidth: 22, textAlign: 'right' }}
-                            >
-                              {lineIdx + 1}
-                            </DText>
-                          ) : null}
-                          <DText
-                            role="code"
-                            numberOfLines={wrapLines ? undefined : 1}
-                            style={{ flex: 1 }}
-                          >
-                            {line}
-                          </DText>
-                        </View>
-                      ))}
-                    </View>
-                  </View>
-                );
-              }
-
-              return (
-                <View key={`text-${msg.id}-${segIdx}`} style={{ gap: 6 }}>
-                  {seg.lines.map((line, lineIdx) => {
-                    const trimmedLine = line.trim();
-                    if (!trimmedLine) return null;
-                    if (trimmedLine.startsWith('### ')) {
-                      return (
-                        <DText
-                          key={`${lineIdx}-${trimmedLine}`}
-                          role="section"
-                          style={{ marginTop: 4 }}
-                        >
-                          {trimmedLine.slice(4)}
-                        </DText>
-                      );
-                    }
-                    if (trimmedLine.startsWith('## ')) {
-                      return (
-                        <DText
-                          key={`${lineIdx}-${trimmedLine}`}
-                          role="section"
-                          style={{ marginTop: 6 }}
-                        >
-                          {trimmedLine.slice(3)}
-                        </DText>
-                      );
-                    }
-                    return (
-                      <DText
-                        key={`${lineIdx}-${trimmedLine}`}
-                        role="learning"
-                        style={{
-                          fontSize: learningFontSize,
-                          lineHeight: learningLineHeight,
-                        }}
-                      >
-                        {trimmedLine}
-                      </DText>
-                    );
-                  })}
-                </View>
-              );
-            })}
+            <RichMarkdownRenderer content={msg.content} />
 
             {msg.artifacts && msg.artifacts.length > 0 ? (
               <View

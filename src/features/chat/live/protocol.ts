@@ -11,7 +11,8 @@ export type ChatEvent = {
   metadata?: Record<string, unknown>;
 };
 export type ChatModel = { profile_id: string; model_id: string; model_name: string; profile_name?: string; is_active_default?: boolean };
-export type ChatRow = { id: number; parent_message_id?: number | null; role: string; content: string; created_at?: string; events?: ChatEvent[] };
+export type OutgoingAttachment = { type: string; base64?: string; url?: string; filename?: string; mime_type?: string; id?: string };
+export type ChatRow = { id: number; parent_message_id?: number | null; role: string; content: string; created_at?: string; events?: ChatEvent[]; attachments?: OutgoingAttachment[] };
 export type Conversation = { session_id: string; title: string; messages?: ChatRow[]; preferences?: Record<string, unknown> & { llm_selection?: { profile_id: string; model_id: string }; selected_branches?: Record<string, number>; archived?: boolean }; workspace_mode?: string; session_type?: string; updated_at?: string };
 
 export function websocketUrl(baseUrl: string): string {

@@ -1,5 +1,7 @@
 # Learning API mapping
 
+Current Study Session override: [approved-design update and expanded resource contracts](STUDY_SESSION_UPDATE.md). File attachments, history, Favorites and Question Bank references are now implemented. Earlier incomplete resource/file statements below are historical.
+
 Updated 2026-11-09. Backend: `http://deeptutor.local`. Paths below include `/api`; the shared Axios client already supplies that prefix. No backend/security configuration was changed.
 
 ## Contract evidence and scope

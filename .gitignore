@@ -71,3 +71,14 @@ docs/mobile-ui
 !/docs/LEARNING_IMPLEMENTATION_STATUS.md
 !/docs/learning/
 !/scripts/learning-preview-proxy.cjs
+
+# Approved Study Session implementation handoff.
+!/docs/STUDY_SESSION_UPDATE.md
+!/docs/mobile-ui/SCREEN_MAPPING.md
+!/docs/mobile-ui/NAVIGATION_ARCHITECTURE.md
+!/docs/mobile-ui/COMPONENT_MAPPING.md
+!/docs/mobile-ui/IMPLEMENTATION_PLAN.md
+!/docs/mobile-ui/TRACEABILITY_MATRIX.md
+
+# Rich content architecture and sanitized rendering comparisons.
+!/docs/rich-content/

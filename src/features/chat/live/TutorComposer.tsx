@@ -20,6 +20,8 @@ const modes = [ ['chat', 'Explain'], ['solve', 'Solve'] ] as const;
 
 export interface TutorComposerProps {
   compact?: boolean;
+  onMoreActions?: (openSessionSetup: () => void) => void;
+  moreActionsOpen?: boolean;
   workspace?: string;
   resourceCount?: number;
   onResources?: () => void;
@@ -41,13 +43,14 @@ export interface TutorComposerProps {
 export function TutorComposer(props: TutorComposerProps) {
   const { colors, dark } = useDesign();
   const t = useCopy();
-  const [height, setHeight] = useState(64);
+  const [height, setHeight] = useState(props.compact ? 52 : 64);
   const [panel, setPanel] = useState<Panel | null>(null);
   const [options, setOptions] = useState<Option[]>([]);
   const [fetching, setFetching] = useState(false);
   const [failure, setFailure] = useState('');
   const [retry, setRetry] = useState(0);
   const locked = props.loading || props.busy;
+  const toolLocked = (name: string) => name === 'More tools' && props.onMoreActions ? props.loading : locked;
   const config = props.configuration;
   const configure = (patch: TutorConfiguration) => props.onConfigure({ ...config, ...patch });
   const openPanel = (next: Panel) => {
@@ -84,15 +87,15 @@ export function TutorComposer(props: TutorComposerProps) {
   return <View>
     <View style={{ padding: props.compact ? 20 : 16, gap: 8, minHeight: props.compact ? undefined : 204, borderTopWidth: 1, borderColor: colors.border }}>
       {props.waiting && <InlineAlert>{t('Your tutor is waiting for your reply.')}</InlineAlert>}
-      <Field label={t(props.compact ? 'Your answer' : 'Message')} labelStyle={{ fontFamily: 'Geist', fontSize: 14 }} placeholder={t(props.compact ? 'Explain your reasoning…' : 'Ask DeepTutor…')} value={props.value} onChangeText={props.onChangeText} multiline submitBehavior="newline"
+      <Field label={t(props.compact ? 'Your answer' : 'Message')} labelStyle={{ fontFamily: 'Geist', fontSize: 14 }} placeholder={t(props.compact ? 'Explain your reasoning...' : 'Ask DeepTutor…')} value={props.value} onChangeText={props.onChangeText} multiline submitBehavior="newline"
         editable={!props.loading && (!props.busy || props.waiting)}
-        onContentSizeChange={event => setHeight(Math.min(props.compact ? 140 : 160, Math.max(props.compact ? 52 : 64, event.nativeEvent.contentSize.height + 12)))}
-        style={{ borderColor: dark ? '#746D66' : colors.input, height: props.value ? Math.max(props.compact ? 52 : 64, height) : props.compact ? 52 : 64, maxHeight: props.compact ? 140 : 160, minHeight: props.compact ? 52 : 64, paddingVertical: 12, textAlignVertical: 'top' }}
+        onContentSizeChange={event => setHeight(Math.min(props.compact ? 112 : 160, Math.max(props.compact ? 52 : 64, event.nativeEvent.contentSize.height + 12)))}
+        style={{ borderColor: dark ? '#746D66' : colors.input, height: props.value ? Math.max(props.compact ? 52 : 64, height) : props.compact ? 52 : 64, maxHeight: props.compact ? 112 : 160, minHeight: props.compact ? 52 : 64, paddingVertical: 12, textAlignVertical: 'top' }}
         trailing={<Button accessibilityLabel={t(stop ? 'Stop response' : 'Send')} disabled={!stop && (!props.value.trim() || props.loading || props.error || (props.busy && !props.waiting))} onPress={stop ? props.onStop : props.onSend} style={{ width: 40, height: 40, minWidth: 40, minHeight: 40, paddingHorizontal: 0, paddingVertical: 0, borderRadius: 999 }}>{stop ? <Square size={16} color={colors.primaryForeground} fill={colors.primaryForeground} /> : <ArrowUp size={18} color={colors.primaryForeground} />}</Button>}
       />
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, height: props.compact ? 44 : 36, justifyContent: 'flex-end' }}>
         {props.compact && <Pressable accessibilityRole="button" accessibilityLabel={`Resources, ${props.resourceCount ?? 0} attached`} onPress={props.onResources} style={[toolStyle, { width: 44, height: 44, position: 'relative' }]}><Paperclip size={18} color={colors.primary} />{(props.resourceCount ?? 0) > 0 && <View style={{ position: 'absolute', top: 0, right: 0, minWidth: 16, height: 16, borderRadius: 8, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' }}><DText style={{ fontSize: 10, lineHeight: 14, color: colors.primaryForeground }}>{props.resourceCount}</DText></View>}</Pressable>}
-        {(!props.compact ? ([['Mode', SlidersHorizontal, 15], ['Skills', Sparkles, 15], ['Connections', Plug, 17], ['More tools', Ellipsis, 18]] as const) : ([['More tools', Ellipsis, 18]] as const)).map(([name, Icon, size]) => <Pressable key={name} accessibilityRole="button" accessibilityLabel={t(name)} disabled={locked} accessibilityState={{ disabled: locked, expanded: panel === name }} onPress={() => openPanel(name)} style={({ pressed }) => [toolStyle, { width: props.compact ? 44 : 34, height: props.compact ? 44 : 34, backgroundColor: name === 'More tools' && !props.compact ? colors.primary : toolBackground, opacity: locked ? 0.5 : pressed ? 0.7 : 1 }]}><Icon size={size} color={name === 'More tools' && !props.compact ? colors.primaryForeground : colors.primary} /></Pressable>)}
+        {(!props.compact ? ([['Mode', SlidersHorizontal, 15], ['Skills', Sparkles, 15], ['Connections', Plug, 17], ['More tools', Ellipsis, 18]] as const) : ([['More tools', Ellipsis, 18]] as const)).map(([name, Icon, size]) => <Pressable key={name} accessibilityRole="button" accessibilityLabel={t(name === 'More tools' && props.onMoreActions ? 'More actions' : name)} disabled={toolLocked(name)} accessibilityState={{ disabled: toolLocked(name), expanded: name === 'More tools' && props.onMoreActions ? props.moreActionsOpen : panel === name }} onPress={() => name === 'More tools' && props.onMoreActions ? props.onMoreActions(() => openPanel('More tools')) : openPanel(name)} style={({ pressed }) => [toolStyle, { width: props.compact ? 44 : 34, height: props.compact ? 44 : 34, backgroundColor: name === 'More tools' && !props.compact ? colors.primary : toolBackground, opacity: toolLocked(name) ? 0.5 : pressed ? 0.7 : 1 }]}><Icon size={size} color={name === 'More tools' && !props.compact ? colors.primaryForeground : colors.primary} /></Pressable>)}
         {!props.compact && <Pressable accessibilityRole="button" accessibilityLabel={props.modelName} accessibilityHint={t('Choose model')} disabled={locked} onPress={props.onChooseModel} style={[toolStyle, { width: undefined, flex: 1, minWidth: 0, paddingHorizontal: 8, flexDirection: 'row', gap: 4, opacity: locked ? 0.5 : 1 }]}>
           <DText numberOfLines={1} style={{ flex: 1, fontSize: 11, color: colors.mutedForeground }}>{props.modelName}</DText><ChevronDown size={14} color={colors.mutedForeground} />
         </Pressable>}

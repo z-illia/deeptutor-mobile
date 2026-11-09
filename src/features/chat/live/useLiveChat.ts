@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { isAxiosError } from 'axios';
 import { api } from '@/api/client';
-import { answerChunk, ChatConnection, commandId, visibleMessages, websocketUrl, type ChatEvent, type ChatModel, type ChatRow, type Conversation } from './protocol';
+import { answerChunk, ChatConnection, commandId, visibleMessages, websocketUrl, type ChatEvent, type ChatModel, type ChatRow, type Conversation, type OutgoingAttachment } from './protocol';
 import { configurationFromPreferences, type TutorConfiguration } from './configuration';
 import { getConversation, listChatModels, listConversations } from './repository';
 
@@ -17,9 +17,12 @@ export function chatError(cause: unknown): string {
 
 export type LearningChatContext = { mastery_path_id?: string; mastery_session_mode?: string; workspace_id: string; workspace_mode?: string; reading_material_id?: string; reading_material_revision?: number; reading_workspace_id?: string };
 
-export function useLiveChat(initialId: string | null, learning?: LearningChatContext) {
+export type ChatDraft = { text: string; configuration?: TutorConfiguration; attachments?: OutgoingAttachment[] };
+export function useLiveChat(initialId: string | null, learning?: LearningChatContext, initialDraft?: ChatDraft) {
   const workspaceId = learning?.workspace_id;
-  const [configuration, setConfiguration] = useState<TutorConfiguration>({});
+  const [restoredConfiguration] = useState(initialDraft?.configuration);
+  const [configuration, setConfiguration] = useState<TutorConfiguration>(initialDraft?.configuration ?? {});
+  const [configurationEdited, setConfigurationEdited] = useState(!!initialDraft?.configuration);
   const [messages, setMessages] = useState<ChatRow[]>([]);
   const [sessions, setSessions] = useState<Conversation[]>([]);
   const [models, setModels] = useState<ChatModel[]>([]);
@@ -28,7 +31,8 @@ export function useLiveChat(initialId: string | null, learning?: LearningChatCon
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [waiting, setWaiting] = useState(false);
-  const [draft, setDraft] = useState('');
+  const [draft, setDraft] = useState(initialDraft?.text ?? '');
+  const [pendingAttachments, setPendingAttachments] = useState<OutgoingAttachment[]>(initialDraft?.attachments ?? []);
   const [error, setError] = useState('');
   const [historyError, setHistoryError] = useState('');
   const [historyLoading, setHistoryLoading] = useState(false);
@@ -46,6 +50,9 @@ export function useLiveChat(initialId: string | null, learning?: LearningChatCon
   const cancelRequested = useRef(false);
   const parentId = useRef<number | null>(null);
   const [revision, setRevision] = useState(0);
+  const failedDraft = useRef('');
+  const turnFailed = useRef(false);
+  const sentFiles = useRef(false);
   const finish = () => { lock.current = false; replyLock.current = false; setBusy(false); setWaiting(false); };
 
   useEffect(() => {
@@ -87,12 +94,15 @@ export function useLiveChat(initialId: string | null, learning?: LearningChatCon
       // Cancellation is followed by `done`, which refreshes the persisted conversation.
       // Treat it as a normal end of the turn so the composer remains usable.
       if (event.type === 'error' && !/^Turn cancel(?:led|ed)[.!]?$/i.test(event.content?.trim() ?? '')) {
+        turnFailed.current = true; setDraft(value => value || failedDraft.current);
         setError(event.content || 'The response failed. Reopen the conversation before trying again.');
       }
       if (event.type === 'protocol_error' || (event.type === 'command_ack' && event.accepted === false)) {
+        turnFailed.current = true; setDraft(value => value || failedDraft.current);
         setError(event.message || 'The server rejected this chat command.'); finish();
       }
       if (event.type === 'done') {
+        if (!turnFailed.current) { setConfigurationEdited(false); if (sentFiles.current) setPendingAttachments([]); }
         finish();
         // Read persisted IDs and the server-selected branch before the next turn.
         if (sessionId.current) {
@@ -107,7 +117,7 @@ export function useLiveChat(initialId: string | null, learning?: LearningChatCon
       }
     };
     const socket = new ChatConnection(websocketUrl(String(api.defaults.baseURL)) + (workspaceId !== undefined ? `?dt_workspace=${encodeURIComponent(workspaceId)}` : ''), onEvent, message => {
-      if (active) { clearTimeout(checkTimer); activeReply?.(); setError(message); finish(); }
+      if (active) { clearTimeout(checkTimer); activeReply?.(); if (lock.current || replyLock.current) { turnFailed.current = true; setDraft(value => value || failedDraft.current); } setError(message); finish(); }
     });
     connection.current = socket;
     void Promise.all([
@@ -121,7 +131,7 @@ export function useLiveChat(initialId: string | null, learning?: LearningChatCon
         if (!active) return;
         const rows = visibleMessages(data);
         savedModel = data.preferences?.llm_selection;
-        setConfiguration({ ...configurationFromPreferences(data.preferences), ...(Array.isArray(data.preferences?.knowledge_bases) ? { knowledge_bases: data.preferences.knowledge_bases as string[] } : {}) });
+        setConfiguration({ ...configurationFromPreferences(data.preferences), ...restoredConfiguration });
         setMessages(rows); setTitle(data.title || 'New chat'); parentId.current = rows.at(-1)?.id ?? null;
         await socket.connect();
         if (!active) return;
@@ -134,7 +144,7 @@ export function useLiveChat(initialId: string | null, learning?: LearningChatCon
       if (active && selection && catalog) setModel(catalog.options.find(option => option.profile_id === selection.profile_id && option.model_id === selection.model_id) ?? null);
     }).catch(cause => { if (active) { clearTimeout(checkTimer); setError(chatError(cause)); } }).finally(() => { if (active) setLoading(false); });
     return () => { active = false; clearTimeout(checkTimer); mounted.current = false; abort.abort(); socket.close(); connection.current = null; };
-  }, [initialId, revision, workspaceId]);
+  }, [initialId, revision, workspaceId, restoredConfiguration]);
 
   const refreshHistory = async (more = false) => {
     if (historyLock.current) return;
@@ -145,31 +155,36 @@ export function useLiveChat(initialId: string | null, learning?: LearningChatCon
     } catch (cause) { if (mounted.current) setHistoryError(chatError(cause)); }
     finally { historyLock.current = false; if (mounted.current) setHistoryLoading(false); }
   };
-  const send = async (language: string, submission?: { content: string; mastery_answer?: { question_id: string; text: string; answers?: Record<string, string> }; mastery_skip?: { question_id: string } }) => {
+  const send = async (language: string, submission?: { content: string; preserveDraft?: boolean; mastery_session_mode?: 'study'; mastery_answer?: { question_id: string; text: string; answers?: Record<string, string> }; mastery_skip?: { question_id: string } }) => {
     const content = (submission?.content ?? draft).trim();
-    if (!content || replyLock.current || error || loading || (lock.current && !waiting) || !connection.current) return;
+    if (!content || replyLock.current || error || loading || (lock.current && !waiting) || !connection.current) return false;
     const replying = waiting;
     if (replying) replyLock.current = true;
     if (!replying) { lock.current = true; turnId.current = ''; cancelRequested.current = false; }
+    turnFailed.current = false; failedDraft.current = submission?.preserveDraft ? draft : content; sentFiles.current = !replying && pendingAttachments.length > 0;
     setBusy(true); setWaiting(false); setError('');
     const userId = --localId.current;
     assistantId.current = --localId.current;
-    setMessages(old => [...old, { id: userId, role: 'user', content }, { id: assistantId.current, role: 'assistant', content: '' }]);
-    setDraft('');
+    setMessages(old => [...old, { id: userId, role: 'user', content, ...(sentFiles.current ? { attachments: pendingAttachments } : {}) }, { id: assistantId.current, role: 'assistant', content: '' }]);
+    if (!submission?.preserveDraft) setDraft('');
     try {
       await connection.current.send(replying ? {
         type: 'submit_user_reply', turn_id: turnId.current, text: content, command_id: commandId(),
       } : {
         type: 'start_turn', content, session_id: sessionId.current, capability: 'chat', ...configuration, language,
+        ...(pendingAttachments.length ? { attachments: pendingAttachments } : {}),
         ...(submission?.mastery_answer ? { mastery_answer: submission.mastery_answer } : {}),
         ...(submission?.mastery_skip ? { mastery_skip: submission.mastery_skip } : {}),
         ...(learning ? { ...learning, capability: learning.mastery_path_id ? 'mastery_path' : 'chat' } : {}),
+        ...(submission?.mastery_session_mode ? { mastery_session_mode: submission.mastery_session_mode } : {}),
         client_submission_id: commandId(),
         ...(sessionId.current ? { parent_message_id: parentId.current } : {}),
         ...(model ? { llm_selection: { profile_id: model.profile_id, model_id: model.model_id } } : {}),
       });
+      return true;
     } catch (cause) {
-      if (mounted.current) { setError(chatError(cause)); setDraft(content); finish(); }
+      if (mounted.current) { turnFailed.current = true; setError(chatError(cause)); setDraft(value => value || failedDraft.current); finish(); }
+      return false;
     }
   };
   const stop = async () => {
@@ -177,5 +192,5 @@ export function useLiveChat(initialId: string | null, learning?: LearningChatCon
     try { await connection.current?.send({ type: 'cancel_turn', turn_id: turnId.current, command_id: commandId() }); }
     catch (cause) { if (mounted.current) setError(chatError(cause)); }
   };
-  return { configuration, setConfiguration, messages, sessions, models, model, setModel, title, loading, busy, waiting, draft, setDraft, error, historyError, historyLoading, hasMore, serverSessionId, refreshHistory, send, stop, reload: () => { lock.current = false; setBusy(false); setWaiting(false); setLoading(true); setError(''); setRevision(old => old + 1); } };
+  return { pendingAttachments, setPendingAttachments, configurationEdited, configuration, setConfiguration: (update: TutorConfiguration | ((previous: TutorConfiguration) => TutorConfiguration)) => { setConfiguration(update); setConfigurationEdited(true); }, messages, sessions, models, model, setModel, title, loading, busy, waiting, draft, setDraft, error, historyError, historyLoading, hasMore, serverSessionId, refreshHistory, send, stop, reload: () => { lock.current = false; setBusy(false); setWaiting(false); setLoading(true); setError(''); setRevision(old => old + 1); } };
 }
