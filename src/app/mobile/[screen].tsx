@@ -1,3 +1,4 @@
+import { ResourceHubScreen } from '@/features/resources/ResourceHubScreen';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { EntryBoundary } from '@/features/entry/Boundary';
 import { MobileWorkspaceScreen } from '@/features/workspaces/MobileWorkspaceScreen';
@@ -9,6 +10,7 @@ import { MobileScreen } from '@/features/mobile/MobileScreen';
 
 export default function MobileRoute() {
   const { screen, notebookId, recordId } = useLocalSearchParams<{ screen: string; notebookId?: string; recordId?: string }>();
+  if ([26, 65].includes(Number(screen))) return <EntryBoundary><ResourceHubScreen key={screen} personalization={Number(screen) === 65} /></EntryBoundary>;
   if ([82, 83].includes(Number(screen))) return <EntryBoundary><MobileSettingsScreen key={screen} appearance={Number(screen) === 83} /></EntryBoundary>;
   if ([31, 32].includes(Number(screen))) return <EntryBoundary><MobileFavoritesScreen key={`${screen}:${notebookId ?? ''}:${recordId ?? ''}`} create={Number(screen) === 32} /></EntryBoundary>;
   if ([63, 64, 138].includes(Number(screen))) return <EntryBoundary><ProfileScreen key={screen} view={Number(screen) === 64 ? 'password' : Number(screen) === 138 ? 'avatar' : 'profile'} /></EntryBoundary>;

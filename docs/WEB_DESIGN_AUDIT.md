@@ -4,6 +4,8 @@
 
 ## Замінено
 
+Лічильники Бібліотеки 26 і персоналізації 65 також інтегровані з API; генератор `readTiles` видалено. Окремі loading/error стани та серверні нулі описані в [контракті лічильників](RESOURCE_COUNTS_API_MAPPING.md).
+
 Старі `SettingsScreen`, `FavoritesScreen`, `SaveToNotebookModal`, `ChatHistoryScreen`, `WorkspaceScreen`, `OverviewScreen` видалені. Нові реалізації використовують мобільну навігаційну панель, Inter, поля та рядки з макетів, safe areas і прокручування. `PageScaffold` та `AppShell` більше не обгортають ці екрани.
 
 | Розділ | Основний маршрут | Старі посилання, що тепер лише перенаправляють |

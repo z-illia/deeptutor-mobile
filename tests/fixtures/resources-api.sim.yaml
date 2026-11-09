@@ -1,0 +1,6 @@
+simulation: resources-client
+routing: path
+mocks:
+  - name: resources
+    routeKey: resources
+    path: ./resources-api-mock

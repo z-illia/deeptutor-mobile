@@ -2593,5 +2593,8 @@
   "Failed to search. Please try again.": "Arama başarısız oldu. Tekrar deneyin.",
   "Invalid search data received from the server.": "Sunucu geçersiz arama verisi döndürdü.",
   "Search is not available on this server.": "Bu sunucuda arama kullanılamıyor.",
-  "Search query must be 200 characters or fewer.": "Arama sorgusu en fazla 200 karakter olmalıdır."
+  "Search query must be 200 characters or fewer.": "Arama sorgusu en fazla 200 karakter olmalıdır.",
+  "Authored notes": "Kişisel notlar",
+  "Failed to load resource counts": "Kaynak sayıları yüklenemedi",
+  "Invalid resource data received from the server.": "Sunucu geçersiz kaynak verisi döndürdü."
 }

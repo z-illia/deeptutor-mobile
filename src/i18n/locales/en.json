@@ -2593,5 +2593,8 @@
   "Failed to search. Please try again.": "Failed to search. Please try again.",
   "Invalid search data received from the server.": "Invalid search data received from the server.",
   "Search is not available on this server.": "Search is not available on this server.",
-  "Search query must be 200 characters or fewer.": "Search query must be 200 characters or fewer."
+  "Search query must be 200 characters or fewer.": "Search query must be 200 characters or fewer.",
+  "Authored notes": "Authored notes",
+  "Failed to load resource counts": "Failed to load resource counts",
+  "Invalid resource data received from the server.": "Invalid resource data received from the server."
 }

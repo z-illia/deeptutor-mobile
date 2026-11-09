@@ -47,14 +47,6 @@ test('M2 password/avatar validation preserves source thresholds and errors',()=>
  assert.equal(model.passwordError('fixture-password','new-password','new-password','fixture-password'),null);
  assert.equal(model.avatarError(20*1024*1024,true),null);assert.equal(model.avatarError(20*1024*1024+1,true),'Image is too large');assert.equal(model.avatarError(1024,false),'Could not decode image');
 });
-test('M2 resource counts distinguish failed and pending probes from zero; account counts survive workspace changes',()=>{
- const {readTiles}=load('src/features/resources/repository.ts');
- const a=readTiles(true,'fixture-ws-a','ready',false),b=readTiles(true,'fixture-ws-b','ready',false);assert.deepEqual(a,b);
- assert.notDeepEqual(readTiles(false,'fixture-ws-a','ready',false),readTiles(false,'fixture-ws-b','ready',false));
- assert.equal(readTiles(false,'','error',false)[0].count.status,'error');assert.equal(readTiles(false,'','error',false)[1].count.status,'ready');
- assert.equal(readTiles(false,'','empty',false)[0].count.value,0);assert.equal(readTiles(false,'','loading',true).some(row=>row.key==='whisper'),false);
- assert.equal(readTiles(false,'','ready',true).some(row=>row.key==='whisper'),true);assert.equal(readTiles(false,'','ready',false).some(row=>row.key==='whisper'),false);
-});
 test('Navigation search contains only app pages, translated filtering and permission gating; no fixture entities',()=>{
  const {searchRecords}=load('src/features/search/repository.ts');
  assert.equal(searchRecords('Mathematics','fixture-ws-a',()=>true).length,0);
@@ -72,5 +64,5 @@ test('M2 appearance retains all source syntax themes and exact fixed preview tex
 test('M2 source copy has Ukrainian/English labels and fixture files import no live transport',()=>{
  const messages={en:require('../src/i18n/locales/en.json'),uk:require('../src/i18n/locales/uk.json')};assert.equal(messages.uk['Email or username'],require('../docs/mobile-ui/audit/source/web/locales/uk/app.json')['Email or username']);
  assert.notEqual(messages.uk['Appearance'],messages.en['Appearance']);
- for(const owner of ['entry','resources','search','settings']) for(const name of fs.readdirSync(path.join(root,'src/features',owner))) if(/\.(tsx?|json)$/.test(name)&&name!=='code-preview.json'&&!(['settings','search'].includes(owner)&&name==='api.ts')) assert.doesNotMatch(fs.readFileSync(path.join(root,'src/features',owner,name),'utf8'),/from\s+['"][^'"]*(?:api\/client|axios)|\bfetch\s*\(|new WebSocket/);
+ for(const owner of ['entry','resources','search','settings']) for(const name of fs.readdirSync(path.join(root,'src/features',owner))) if(/\.(tsx?|json)$/.test(name)&&name!=='code-preview.json'&&!(['settings','search','resources'].includes(owner)&&name==='api.ts')) assert.doesNotMatch(fs.readFileSync(path.join(root,'src/features',owner,name),'utf8'),/from\s+['"][^'"]*(?:api\/client|axios)|\bfetch\s*\(|new WebSocket/);
 });

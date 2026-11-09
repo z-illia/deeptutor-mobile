@@ -2593,5 +2593,8 @@
   "Failed to search. Please try again.": "Tìm kiếm thất bại. Vui lòng thử lại.",
   "Invalid search data received from the server.": "Máy chủ trả về dữ liệu tìm kiếm không hợp lệ.",
   "Search is not available on this server.": "Máy chủ này không hỗ trợ tìm kiếm.",
-  "Search query must be 200 characters or fewer.": "Truy vấn tìm kiếm không được vượt quá 200 ký tự."
+  "Search query must be 200 characters or fewer.": "Truy vấn tìm kiếm không được vượt quá 200 ký tự.",
+  "Authored notes": "Ghi chú tự viết",
+  "Failed to load resource counts": "Không thể tải số lượng tài nguyên",
+  "Invalid resource data received from the server.": "Máy chủ trả về dữ liệu tài nguyên không hợp lệ."
 }

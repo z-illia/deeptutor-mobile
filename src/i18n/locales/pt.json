@@ -2593,5 +2593,8 @@
   "Failed to search. Please try again.": "A pesquisa falhou. Tente novamente.",
   "Invalid search data received from the server.": "O servidor retornou dados de pesquisa inválidos.",
   "Search is not available on this server.": "A pesquisa não está disponível neste servidor.",
-  "Search query must be 200 characters or fewer.": "A pesquisa deve ter no máximo 200 caracteres."
+  "Search query must be 200 characters or fewer.": "A pesquisa deve ter no máximo 200 caracteres.",
+  "Authored notes": "Notas autorais",
+  "Failed to load resource counts": "Não foi possível carregar a quantidade de recursos",
+  "Invalid resource data received from the server.": "O servidor retornou dados de recursos inválidos."
 }

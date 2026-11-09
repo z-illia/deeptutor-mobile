@@ -2593,5 +2593,8 @@
   "Failed to search. Please try again.": "Не вдалося виконати пошук. Спробуйте ще раз.",
   "Invalid search data received from the server.": "Сервер повернув некоректні дані пошуку.",
   "Search is not available on this server.": "Пошук недоступний на цьому сервері.",
-  "Search query must be 200 characters or fewer.": "Пошуковий запит має містити не більше 200 символів."
+  "Search query must be 200 characters or fewer.": "Пошуковий запит має містити не більше 200 символів.",
+  "Authored notes": "Авторські нотатки",
+  "Failed to load resource counts": "Не вдалося завантажити кількість ресурсів",
+  "Invalid resource data received from the server.": "Сервер повернув некоректні дані ресурсів."
 }

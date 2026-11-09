@@ -2593,5 +2593,8 @@
   "Failed to search. Please try again.": "検索に失敗しました。もう一度お試しください。",
   "Invalid search data received from the server.": "サーバーから無効な検索データを受信しました。",
   "Search is not available on this server.": "このサーバーでは検索を利用できません。",
-  "Search query must be 200 characters or fewer.": "検索語は200文字以内にしてください。"
+  "Search query must be 200 characters or fewer.": "検索語は200文字以内にしてください。",
+  "Authored notes": "自分のノート",
+  "Failed to load resource counts": "リソース数を読み込めませんでした",
+  "Invalid resource data received from the server.": "サーバーから無効なリソースデータを受信しました。"
 }

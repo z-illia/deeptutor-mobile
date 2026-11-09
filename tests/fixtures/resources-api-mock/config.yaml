@@ -1,0 +1,9 @@
+version: 1
+name: resources-verification
+slug: resources-verification
+protocol: http
+interceptRequests: true
+scenarios:
+  - name: default
+    path: ./default.cjs
+    default: true

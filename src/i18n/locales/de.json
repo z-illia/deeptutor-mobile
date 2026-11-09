@@ -2593,5 +2593,8 @@
   "Failed to search. Please try again.": "Suche fehlgeschlagen. Bitte erneut versuchen.",
   "Invalid search data received from the server.": "Der Server hat ungültige Suchdaten zurückgegeben.",
   "Search is not available on this server.": "Die Suche ist auf diesem Server nicht verfügbar.",
-  "Search query must be 200 characters or fewer.": "Die Suchanfrage darf höchstens 200 Zeichen enthalten."
+  "Search query must be 200 characters or fewer.": "Die Suchanfrage darf höchstens 200 Zeichen enthalten.",
+  "Authored notes": "Eigene Notizen",
+  "Failed to load resource counts": "Ressourcenanzahl konnte nicht geladen werden",
+  "Invalid resource data received from the server.": "Der Server hat ungültige Ressourcendaten zurückgegeben."
 }

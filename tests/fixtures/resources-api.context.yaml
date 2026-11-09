@@ -1,0 +1,19 @@
+purpose:
+  stands_in_for: Existing source-defined DeepTutor catalogs used to count workspace and account resources.
+  unblocks: Real HTTP verification of mobile Library and Personalization counters without modifying real user resources.
+assumptions:
+  - id: counter-contracts
+    status: supported
+    claim: Resource counts can be derived from existing list and total contracts with the documented ownership and pagination rules.
+    reason: Reused source web dashboard loaders and API clients; session routing explicitly supports limit 200, offset and dt_workspace. The CLI is signed out, so published owner mock lookup was skipped and this mock was built from local source contracts.
+    verification: Node tests check raw pagination offsets, deduplication, archived/nested filtering, scope propagation, question totals, malformed and cross-workspace responses, personal MCP ownership and granted/enabled CLI filtering.
+    source: docs/RESOURCE_COUNTS_API_MAPPING.md; src/features/resources/api.ts; tests/resources-api.test.cjs
+    updated_at: '2026-11-09'
+  - id: mobile-counter-behavior
+    status: supported
+    claim: The app displays independently loaded server counts, distinguishes zero from failure and isolates the modeled user/workspace changes against this stand-in.
+    reason: Playwright exercised the real app over HTTP through the local Postman simulation and checked its control state and rendered counters.
+    verification: Browser checks passed for independent loading, zero arrays, malformed/403 recovery, refresh, user change, workspace zero counts, pagination to 203 active root conversations, personal MCP and CLI filtering. These results establish client behavior against the fixture, not live authenticated backend data or native-device UX.
+    source: tests/browser/verify-resource-counts.cjs; tests/fixtures/resources-api-mock/default.cjs
+    updated_at: '2026-11-09'
+fingerprints: []

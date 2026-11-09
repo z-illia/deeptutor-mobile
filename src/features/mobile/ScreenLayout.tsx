@@ -13,13 +13,14 @@ export function MobileText({ muted, style, ...props }: TextProps & { muted?: boo
   const { colors } = useDesign();
   return <Text {...props} style={[{ fontFamily: 'Inter', fontSize: muted ? 14 : 16, lineHeight: muted ? 20 : 23, color: muted ? colors.mutedForeground : colors.foreground }, style]} />;
 }
-export function MobilePage({ title, children, footer, fallback = '/mobile/61', tab }: { title: string; children: ReactNode; footer?: ReactNode; fallback?: Href; tab?: number }) {
+export function MobilePage({ title, children, footer, fallback = '/mobile/61', tab, headerLeft, headerRight }: { title: string; children: ReactNode; footer?: ReactNode; fallback?: Href; tab?: number; headerLeft?: ReactNode; headerRight?: ReactNode }) {
   const { colors } = useDesign(); const t = useCopy();
   return <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center', paddingLeft: 12, paddingRight: 20, paddingBottom: 12 }}>
-        <Pressable accessibilityRole="button" accessibilityLabel={t('Back')} onPress={() => router.canGoBack() ? router.back() : router.replace(fallback)} style={{ width: 48, height: 48, alignItems: 'center', justifyContent: 'center' }}><ChevronLeft size={24} color={colors.foreground} /></Pressable>
+        {headerLeft ?? <Pressable accessibilityRole="button" accessibilityLabel={t('Back')} onPress={() => router.canGoBack() ? router.back() : router.replace(fallback)} style={{ width: 48, height: 48, alignItems: 'center', justifyContent: 'center' }}><ChevronLeft size={24} color={colors.foreground} /></Pressable>}
         <MobileText accessibilityRole="header" style={{ flex: 1, fontSize: 22, lineHeight: 31, fontWeight: '600' }}>{title}</MobileText>
+        {headerRight}
       </View>
       <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 24, gap: 24 }}>{children}</ScrollView>
       {footer && <View style={{ padding: 20, gap: 12, borderTopWidth: 1, borderColor: colors.border }}>{footer}</View>}

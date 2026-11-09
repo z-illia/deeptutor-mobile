@@ -54,6 +54,7 @@ docs/mobile-ui
 !/docs/DESIGN_IMPLEMENTATION_MATRIX.md
 !/docs/WEB_DESIGN_AUDIT.md
 !/docs/SEARCH_API_MAPPING.md
+!/docs/RESOURCE_COUNTS_API_MAPPING.md
 !/docs/mobile-ui/
 /docs/mobile-ui/*
 !/docs/mobile-ui/pen-redesign/

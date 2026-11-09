@@ -2593,5 +2593,8 @@
   "Failed to search. Please try again.": "搜索失败，请重试。",
   "Invalid search data received from the server.": "服务器返回的搜索数据无效。",
   "Search is not available on this server.": "此服务器不支持搜索。",
-  "Search query must be 200 characters or fewer.": "搜索查询不能超过200个字符。"
+  "Search query must be 200 characters or fewer.": "搜索查询不能超过200个字符。",
+  "Authored notes": "个人笔记",
+  "Failed to load resource counts": "无法加载资源数量",
+  "Invalid resource data received from the server.": "服务器返回的资源数据无效。"
 }
