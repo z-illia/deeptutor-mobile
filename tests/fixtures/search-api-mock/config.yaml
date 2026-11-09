@@ -1,0 +1,10 @@
+version: 1
+name: search-verification
+slug: search-verification
+protocol: http
+port: 4500
+interceptRequests: true
+scenarios:
+  - name: default
+    path: ./default.cjs
+    default: true

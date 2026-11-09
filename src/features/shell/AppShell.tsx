@@ -64,7 +64,7 @@ export function AppShell({ children }: PropsWithChildren) {
   const sidebar = (phone = false) => <SafeAreaView edges={['top', 'bottom']} style={{ height: '100%', width: phone ? Math.min(geometry.phoneSidebar, width * 0.85) : collapsed ? geometry.rail : sidebarWidth(preferredWidth, width), backgroundColor: colors.secondary, borderRightWidth: 1, borderColor: colors.border }}>
     <View style={{ paddingHorizontal: 8, paddingTop: 8, flexDirection: collapsed && !phone ? 'column' : 'row', alignItems: 'center' }}>
       <Pressable accessibilityRole="button" accessibilityLabel={t('Workspace')} onPress={() => { setDrawer(false); setWorkspaceSheet(true); }} style={{ flex: collapsed && !phone ? undefined : 1, flexDirection: 'row', alignItems: 'center', minHeight: 48, minWidth: 48, gap: 4 }}><Image source={require('../../../assets/brand/color-logo.png')} style={{ width: 22, height: 22, marginHorizontal: 8 }} accessibilityLabel="DeepTutor" />{(!collapsed || phone) && <><DText role="section" numberOfLines={1} style={{ flex: 1 }}>{workspaceName}</DText><ChevronDown size={14} color={colors.mutedForeground} /></>}</Pressable>
-      {!collapsed && <IconButton label={t('Search')} onPress={() => { setDrawer(false); router.navigate('/ui/search'); }}><Search size={16} color={colors.mutedForeground} /></IconButton>}
+      {!collapsed && <IconButton label={t('Search')} onPress={() => { setDrawer(false); router.navigate('/search'); }}><Search size={16} color={colors.mutedForeground} /></IconButton>}
       <IconButton label={phone ? t('Close') : t(collapsed ? 'Expand sidebar' : 'Collapse sidebar')} onPress={() => phone ? setDrawer(false) : setCollapsed((old) => !old)}>{collapsed ? <ChevronsRight size={16} color={colors.mutedForeground} /> : <ChevronsLeft size={16} color={colors.mutedForeground} />}</IconButton>
     </View>
     <View accessibilityRole="tablist" accessibilityLabel="DeepTutor" style={{ flexDirection: collapsed && !phone ? 'column' : 'row', flexWrap: 'wrap', margin: 8, gap: 0 }}>
@@ -126,7 +126,7 @@ export function AppShell({ children }: PropsWithChildren) {
           {compact && <Image source={require('../../../assets/brand/color-logo.png')} style={{ width: 20, height: 20 }} accessibilityLabel="DeepTutor" />}
           {compact ? <Image source={require('../../../assets/brand/color-word.png')} style={{ width: 90, height: 24 }} contentFit="contain" accessibilityLabel="DeepTutor" /> : <View style={{ backgroundColor: colors.muted, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 4, flexDirection: 'row', gap: 8, alignItems: 'center' }}><MessageCircle size={16} color={colors.mutedForeground} /><DText role="small">{page ? t(page.label) : t('Chat')}</DText></View>}
           <View style={{ flex: 1 }} />
-          {compact && <IconButton label={t('Search')} onPress={() => router.navigate('/ui/search')}><Search size={18} color={colors.foreground} /></IconButton>}
+          {compact && <IconButton label={t('Search')} onPress={() => router.navigate('/search')}><Search size={18} color={colors.foreground} /></IconButton>}
           {__DEV__ && <IconButton label="Component preview" onPress={() => router.push('/explore')}><SlidersHorizontal size={17} color={colors.mutedForeground} /></IconButton>}
         </View>
         {children || <View style={{ flex: 1, alignItems: 'flex-start', paddingHorizontal: 8, paddingTop: 4 }}>

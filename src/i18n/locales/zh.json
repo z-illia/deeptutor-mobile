@@ -2589,5 +2589,9 @@
   "Move": "移动",
   "No matching records": "没有匹配的记录",
   "Search collections": "搜索收藏集",
-  "Selection Tutor": "选文导师"
+  "Selection Tutor": "选文导师",
+  "Failed to search. Please try again.": "搜索失败，请重试。",
+  "Invalid search data received from the server.": "服务器返回的搜索数据无效。",
+  "Search is not available on this server.": "此服务器不支持搜索。",
+  "Search query must be 200 characters or fewer.": "搜索查询不能超过200个字符。"
 }

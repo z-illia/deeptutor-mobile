@@ -2589,5 +2589,9 @@
   "Move": "Move",
   "No matching records": "No matching records",
   "Search collections": "Search collections",
-  "Selection Tutor": "Selection Tutor"
+  "Selection Tutor": "Selection Tutor",
+  "Failed to search. Please try again.": "Failed to search. Please try again.",
+  "Invalid search data received from the server.": "Invalid search data received from the server.",
+  "Search is not available on this server.": "Search is not available on this server.",
+  "Search query must be 200 characters or fewer.": "Search query must be 200 characters or fewer."
 }

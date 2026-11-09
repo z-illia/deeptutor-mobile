@@ -161,7 +161,7 @@ An audited surface can be a screen, alias, sheet, embedded component or adapter.
 
 | Stable screen ID | Audit IDs | Mobile path(s), proposed unless already implemented | Status / next ownership |
 |---|---|---|---|
-| `MS-SEARCH` | S02 | `/ui/search` | Retained M1–M2 implementation; M8 integration |
+| `MS-SEARCH` | S02 | `/search` | Mobile UI + server search/catalog integration; `/ui/search` compatibility redirect |
 | `MS-CHAT` | S04, S05 | `/chat or /chat/[sessionId]` | Planned M3 |
 | `MS-SESSION-VIEWER` | S07 | `/ui/session-viewer` | Planned M3 |
 | `MS-FILE-PREVIEW` | S08 | `/ui/file-preview` | Planned M3 |

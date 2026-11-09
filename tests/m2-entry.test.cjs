@@ -55,10 +55,10 @@ test('M2 resource counts distinguish failed and pending probes from zero; accoun
  assert.equal(readTiles(false,'','empty',false)[0].count.value,0);assert.equal(readTiles(false,'','loading',true).some(row=>row.key==='whisper'),false);
  assert.equal(readTiles(false,'','ready',true).some(row=>row.key==='whisper'),true);assert.equal(readTiles(false,'','ready',false).some(row=>row.key==='whisper'),false);
 });
-test('M2 search preserves record types, workspace identity, translated filtering and permission gating',()=>{
+test('Navigation search contains only app pages, translated filtering and permission gating; no fixture entities',()=>{
  const {searchRecords}=load('src/features/search/repository.ts');
- const a=searchRecords('Mathematics','fixture-ws-a',()=>true);assert.deepEqual([...new Set(a.map(r=>r.kind))].sort(),['group','learning','partner','session']);assert.ok(a.every(r=>r.id!=='session-b'));
- const b=searchRecords('Mathematics','fixture-ws-b',()=>true);assert.ok(b.some(r=>r.id==='session-b'));assert.ok(b.every(r=>r.id!=='path-a'));
+ assert.equal(searchRecords('Mathematics','fixture-ws-a',()=>true).length,0);
+ assert.ok(searchRecords('','',()=>true).every(r=>r.kind==='page'));
  assert.equal(searchRecords('xxxxx','',()=>true).length,0);
  assert.ok(searchRecords('налаштування','',()=>true,key=>key==='Settings'?'Налаштування':key).some(r=>r.id==='settings'));
  assert.ok(searchRecords('agents','',href=>model.allowedDestination('learner',href)).every(r=>r.href!=='/agents'));
@@ -72,5 +72,5 @@ test('M2 appearance retains all source syntax themes and exact fixed preview tex
 test('M2 source copy has Ukrainian/English labels and fixture files import no live transport',()=>{
  const messages={en:require('../src/i18n/locales/en.json'),uk:require('../src/i18n/locales/uk.json')};assert.equal(messages.uk['Email or username'],require('../docs/mobile-ui/audit/source/web/locales/uk/app.json')['Email or username']);
  assert.notEqual(messages.uk['Appearance'],messages.en['Appearance']);
- for(const owner of ['entry','resources','search','settings']) for(const name of fs.readdirSync(path.join(root,'src/features',owner))) if(/\.(tsx?|json)$/.test(name)&&name!=='code-preview.json'&&!(owner==='settings'&&name==='api.ts')) assert.doesNotMatch(fs.readFileSync(path.join(root,'src/features',owner,name),'utf8'),/from\s+['"][^'"]*(?:api\/client|axios)|\bfetch\s*\(|new WebSocket/);
+ for(const owner of ['entry','resources','search','settings']) for(const name of fs.readdirSync(path.join(root,'src/features',owner))) if(/\.(tsx?|json)$/.test(name)&&name!=='code-preview.json'&&!(['settings','search'].includes(owner)&&name==='api.ts')) assert.doesNotMatch(fs.readFileSync(path.join(root,'src/features',owner,name),'utf8'),/from\s+['"][^'"]*(?:api\/client|axios)|\bfetch\s*\(|new WebSocket/);
 });

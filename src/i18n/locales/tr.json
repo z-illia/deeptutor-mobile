@@ -2589,5 +2589,9 @@
   "Move": "Taşı",
   "No matching records": "Eşleşen kayıt yok",
   "Search collections": "Koleksiyonlarda ara",
-  "Selection Tutor": "Seçili metin öğretmeni"
+  "Selection Tutor": "Seçili metin öğretmeni",
+  "Failed to search. Please try again.": "Arama başarısız oldu. Tekrar deneyin.",
+  "Invalid search data received from the server.": "Sunucu geçersiz arama verisi döndürdü.",
+  "Search is not available on this server.": "Bu sunucuda arama kullanılamıyor.",
+  "Search query must be 200 characters or fewer.": "Arama sorgusu en fazla 200 karakter olmalıdır."
 }

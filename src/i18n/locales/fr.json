@@ -2589,5 +2589,9 @@
   "Move": "Déplacer",
   "No matching records": "Aucun enregistrement correspondant",
   "Search collections": "Rechercher des collections",
-  "Selection Tutor": "Tuteur de sélection"
+  "Selection Tutor": "Tuteur de sélection",
+  "Failed to search. Please try again.": "La recherche a échoué. Réessayez.",
+  "Invalid search data received from the server.": "Les données de recherche reçues du serveur sont invalides.",
+  "Search is not available on this server.": "La recherche est indisponible sur ce serveur.",
+  "Search query must be 200 characters or fewer.": "La recherche ne doit pas dépasser 200 caractères."
 }

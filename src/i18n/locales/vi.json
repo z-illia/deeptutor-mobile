@@ -2589,5 +2589,9 @@
   "Move": "Di chuyển",
   "No matching records": "Không có mục phù hợp",
   "Search collections": "Tìm bộ sưu tập",
-  "Selection Tutor": "Gia sư văn bản được chọn"
+  "Selection Tutor": "Gia sư văn bản được chọn",
+  "Failed to search. Please try again.": "Tìm kiếm thất bại. Vui lòng thử lại.",
+  "Invalid search data received from the server.": "Máy chủ trả về dữ liệu tìm kiếm không hợp lệ.",
+  "Search is not available on this server.": "Máy chủ này không hỗ trợ tìm kiếm.",
+  "Search query must be 200 characters or fewer.": "Truy vấn tìm kiếm không được vượt quá 200 ký tự."
 }

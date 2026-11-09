@@ -1,5 +1,6 @@
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { EntryBoundary } from '@/features/entry/Boundary';
-import { SearchScreen } from '@/features/search/SearchScreen';
-import { useDesign } from '@/shared/design/DesignProvider';
-export default function Screen() { const { colors } = useDesign(); return <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}><EntryBoundary><SearchScreen /></EntryBoundary></SafeAreaView>; }
+import { Redirect, useLocalSearchParams } from 'expo-router';
+export default function Screen() {
+  const { q } = useLocalSearchParams<{ q?: string | string[] }>();
+  const query = Array.isArray(q) ? q[0] : q;
+  return <Redirect href={{ pathname: '/search', params: query ? { q: query } : {} }} />;
+}

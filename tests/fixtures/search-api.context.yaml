@@ -1,0 +1,19 @@
+purpose:
+  stands_in_for: Source-derived DeepTutor sessions search/list, mastery-path index and partner navigation HTTP APIs.
+  unblocks: Mobile /search integration without live account credentials or writes to real user data.
+assumptions:
+  - id: search-source-contract
+    status: supported
+    claim: The client can search persisted conversation titles/messages with GET /api/sessions/search and load topic and partner catalogs using their existing APIs.
+    reason: Matched local backend router/store definitions and the source web client. The search limit is 200 characters; sessions have total/limit/offset and match_excerpt; workspace middleware uses dt_workspace.
+    verification: Inspected sessions.py, session/search.py, sqlite_store.py, partners.py and web/lib/session-api.ts in /home/zillia/Work/deeptutor-source. Live unauthenticated GET /api/sessions/search returned 401; successful authenticated live results remain unverified. Owning-team mock lookup skipped because Postman CLI is signed out; this mock is local and source-derived.
+    source: src/features/search/api.ts; tests/search.test.cjs; tests/fixtures/search-api-mock/default.cjs
+    updated_at: '2026-11-09'
+  - id: mobile-search-simulation
+    status: supported
+    claim: The real mobile search client handles the modeled query, pagination, cancellation, scope and source-failure scenarios against the source-derived stand-in.
+    reason: Playwright ran the application over real HTTP to the local Postman simulation; its controls were read back to ensure error injection was active.
+    verification: Browser run on 2026-11-09 passed the legacy alias/query, 55 full-text results across two pages, slow-to-fast cancellation, independent partner/session failures and retry, 401 login redirect retaining q, unsupported/malformed responses, empty/recent queries, 200-character validation, Library entry, exact session routing, workspace isolation and 320px overflow check. This proves client behavior against the mock, not live authenticated results.
+    source: tests/browser/verify-search.cjs; tests/fixtures/search-api-mock/default.cjs; src/features/search/useSearch.ts
+    updated_at: '2026-11-09'
+fingerprints: []

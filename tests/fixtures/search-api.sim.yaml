@@ -1,0 +1,6 @@
+simulation: search-client
+routing: path
+mocks:
+  - name: search
+    routeKey: search
+    path: ./search-api-mock
