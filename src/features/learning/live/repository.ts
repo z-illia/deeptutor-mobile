@@ -13,7 +13,7 @@ export type Topic = {
   review_settings?: { desired_retention: number; strategy?: { template_id: string; name: string } | null };
   learner_profile: { prior_knowledge: string; target_level: string; time_budget: string; preferences: string; notes: string } | null;
 };
-export type StudySession = { session_id: string; title: string; message_count: number; last_message: string; status: string; updated_at: number };
+export type StudySession = { session_id: string; title: string; message_count: number; last_message: string; status: string; updated_at: number; has_pending_question?: boolean };
 export type Book = { id: string; title: string; description: string; status: string; chapter_count: number; page_count: number; revision: number; proposal?: { title: string; description?: string; chapters?: { title: string }[] } | null; can_edit?: boolean; reading?: { current_page_id: string; percent: number; visited_pages: number; total_pages: number } };
 export type Page = { id: string; title: string; status: string; order: number; blocks: { id: string; type: string; title: string; status: string; payload: Record<string, unknown>; error: string }[] };
 export type Material = { material_id: string; title: string; filename: string; status: string; progress: number; render_mode: string; error_detail?: string };
@@ -61,4 +61,22 @@ export function bookBlockContent(payload: Record<string, unknown>): string {
   }
   if (typeof payload.key_takeaway === 'string') parts.push(payload.key_takeaway);
   return parts.join('\n\n');
+}
+
+/** Read both under the same workspace; a failed history read must not start a new chat. */
+export async function getTopicWithSessions(id: string, workspace: string, signal?: AbortSignal) {
+  const [topic, history] = await Promise.all([
+    get<Topic>(topicPath(id), workspace, signal),
+    get<{ sessions: StudySession[] }>(`${topicPath(id)}/sessions`, workspace, signal),
+  ]);
+  if (!Array.isArray(history.sessions)) throw new Error('Invalid conversation list received from the server.');
+  return { topic, sessions: history.sessions };
+}
+
+/** Session history is returned newest first, as in the web continuation flow. */
+export function continuationSessionId(next: Topic['next'], sessions: StudySession[]): string | undefined {
+  if (next.action === 'answer_pending') {
+    return next.session_id || sessions.find(session => session.has_pending_question)?.session_id || sessions[0]?.session_id;
+  }
+  return sessions[0]?.session_id || next.session_id || undefined;
 }

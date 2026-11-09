@@ -1,28 +1,28 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { FlatList, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
-import { ArrowLeftRight, ChevronLeft, Clock3, Lightbulb, LogOut } from 'lucide-react-native';
 import { useAuth } from '@/features/auth/AuthProvider';
-import { useDesign } from '@/shared/design/DesignProvider';
-import { Button, IconButton } from '@/shared/ui/Controls';
-import { InlineAlert, LoadingState } from '@/shared/ui/Feedback';
-import { BottomSheet } from '@/shared/ui/BottomSheet';
 import { ChatMarkdown } from '@/features/chat/ChatMarkdown';
 import { ModelSelectionDialog } from '@/features/chat/ModelSelectionDialog';
 import { TutorComposer } from '@/features/chat/live/TutorComposer';
 import { chatError, useLiveChat, type ChatDraft, type LearningChatContext } from '@/features/chat/live/useLiveChat';
+import { useDesign } from '@/shared/design/DesignProvider';
+import { BottomSheet } from '@/shared/ui/BottomSheet';
+import { Button, IconButton } from '@/shared/ui/Controls';
+import { InlineAlert, LoadingState } from '@/shared/ui/Feedback';
+import { router } from 'expo-router';
+import { ArrowLeftRight, ChevronLeft, Clock3, Lightbulb, LogOut } from 'lucide-react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { FlatList, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { DText } from './LearningText';
-import { get, mutate, topicPath, type Topic } from './repository';
-import { useLearningData } from './useLearningData';
-import { collectMasteryGrades, collectMasteryQuestions, collectMasterySkips } from './mastery-question';
-import { MasteryQuestionCard } from './MasteryQuestionCard';
 import { learningHref } from './LiveLearningScreen';
+import { MasteryQuestionCard } from './MasteryQuestionCard';
 import { StudyActionRow } from './StudyActionRow';
-import { splitCurrentQuestion, studyPrompt, type StudyStrategy } from './study-actions';
-import { activeResourceCount } from './study-resources';
 import { StudyResourcesSheet } from './StudyResourcesSheet';
+import { collectMasteryGrades, collectMasteryQuestions, collectMasterySkips } from './mastery-question';
+import { get, mutate, topicPath, type Topic } from './repository';
+import { splitCurrentQuestion, studyPrompt, type StudyStrategy } from './study-actions';
 import { readStudyDraft, saveStudyDraft } from './study-drafts';
+import { activeResourceCount } from './study-resources';
+import { useLearningData } from './useLearningData';
 
 export function LiveStudyScreen({ workspace, pathId, sessionId, mode, prompt, reading, onLeave }: { workspace: string; pathId: string; sessionId: string | null; mode?: string; prompt?: string; reading?: LearningChatContext; onLeave?: () => void }) {
   const { colors, language } = useDesign();
@@ -106,7 +106,7 @@ export function LiveStudyScreen({ workspace, pathId, sessionId, mode, prompt, re
       <FlatList ref={list} data={chat.messages} keyExtractor={item => String(item.id)} keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 20, gap: 24, flexGrow: 1 }}
         onScroll={({ nativeEvent: e }) => { follow.current = e.contentSize.height - e.contentOffset.y - e.layoutMeasurement.height < 100; }} scrollEventThrottle={100}
         onContentSizeChange={() => { if (follow.current) list.current?.scrollToEnd({ animated: false }); }}
-        ListHeaderComponent={<View style={{ gap: 16, marginBottom: 24 }}><DText muted>{topic.data?.name ?? 'Read & understand'}</DText>{!!topic.data?.next.knowledge_point_name && <><DText style={{ fontSize: 28, lineHeight: 39, fontWeight: '600' }}>{topic.data.next.knowledge_point_name}</DText><View style={{ backgroundColor: colors.secondary, padding: 16, borderRadius: 12, gap: 6 }}><DText style={{ color: colors.primary, fontSize: 16, fontWeight: '600' }}>Your next knowledge point</DText><DText muted>{topic.data.next.reason || 'Path progress changes only after assessment.'}</DText></View></>}{!chat.messages.length && <DText muted>{topic.data?.next.reason || 'Ask your tutor to begin. Your conversation will be saved.'}</DText>}</View>}
+        ListHeaderComponent={<View style={{ gap: 16, marginBottom: 24 }}><DText muted>{topic.data?.name ?? 'Read & understand'}</DText>{!!topic.data?.next.knowledge_point_name && <><DText style={{ fontSize: 23, lineHeight: 39, fontWeight: '600' }}>{topic.data.next.knowledge_point_name}</DText><View style={{ backgroundColor: colors.secondary, padding: 16, borderRadius: 12, gap: 6 }}><DText style={{ color: colors.primary, fontSize: 16, fontWeight: '600' }}>Your next knowledge point</DText><DText muted>{topic.data.next.reason || 'Path progress changes only after assessment.'}</DText></View></>}{!chat.messages.length && <DText muted>{topic.data?.next.reason || 'Ask your tutor to begin. Your conversation will be saved.'}</DText>}</View>}
         ListFooterComponent={!lastAssistantId && starters ? starters : undefined}
         renderItem={({ item }) => {
           const activeAssistant = item.role === 'assistant' && item.id === lastAssistantId;

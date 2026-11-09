@@ -10,7 +10,7 @@ import { InlineAlert } from '@/shared/ui/Feedback';
 import { DText, ListRow } from './LearningText';
 import { FullScreenModal } from '@/shared/ui/FullScreenModal';
 import { Heading, LearningLayout } from './LearningLayout';
-import { get, listTopics, mutate, progressPath, topicPath, type Book, type Material, type StudySession, type Topic } from './repository';
+import { continuationSessionId, getTopicWithSessions, get, listTopics, mutate, progressPath, topicPath, type Book, type Material, type StudySession, type Topic } from './repository';
 import { useLearningData } from './useLearningData';
 import { ReaderScreen } from './ReaderScreen';
 import { BookTools } from './BookTools';
@@ -50,8 +50,9 @@ function LearningContent({ view, workspace, pathId, moduleId }: { view: string; 
   const [notice, setNotice] = useState('');
   const load = useCallback(async (signal: AbortSignal) => {
     if (['topic', 'module', 'review', 'profile', 'goal', 'sessions', 'strategies'].includes(view)) {
-      const topic = await get<Topic>(topicPath(pathId), workspace, signal);
-      const sessions = view === 'sessions' ? (await get<{ sessions: StudySession[] }>(`${topicPath(pathId)}/sessions`, workspace, signal)).sessions : [];
+      const { topic, sessions } = view === 'topic' || view === 'sessions'
+        ? await getTopicWithSessions(pathId, workspace, signal)
+        : { topic: await get<Topic>(topicPath(pathId), workspace, signal), sessions: [] as StudySession[] };
       const strategies = view === 'strategies' || view === 'review' ? (await get<{ strategies: { template_id: string; name: string }[] }>('/mastery-paths/review-strategies', workspace, signal)).strategies : [];
       return { topics: [] as Topic[], topic, sessions, strategies, books: [] as Book[], materials: [] as Material[], canCreate: undefined as boolean | undefined };
     }
@@ -115,7 +116,7 @@ function LearningContent({ view, workspace, pathId, moduleId }: { view: string; 
     {topic && view === 'topic' && <>
       <DText muted>Mastery path</DText><Heading>{topic.name}</Heading>
       <DText>{topic.map.counts.mastered} / {topic.map.counts.total} knowledge points mastered</DText>
-      <View style={{ gap: 12 }}><DText role="label">Pick up where you left off</DText><DText muted>{topic.next.reason || topic.metadata.description || topic.metadata.goal}</DText><Button onPress={() => study(undefined, undefined, topic.next.session_id || undefined)}>Continue current session</Button></View>
+      <View style={{ gap: 12 }}><DText role="label">Pick up where you left off</DText><DText muted>{topic.next.reason || topic.metadata.description || topic.metadata.goal}</DText><Button disabled={state.loading || !!state.error} onPress={() => study(undefined, undefined, continuationSessionId(topic.next, state.data?.sessions ?? []))}>Continue current session</Button></View>
       <DText role="label">{topic.map.modules.length} modules</DText>
       {!topic.map.modules.length && <DText muted>Your outline will be designed with the tutor.</DText>}
       {topic.map.modules.map((module, index) => row(`${String(index + 1).padStart(2, '0')}  ${module.name}`, `${module.mastered} / ${module.total} knowledge points`, () => nav('module', { moduleId: module.id })))}
