@@ -7,6 +7,12 @@ import { MobileFavoritesScreen } from '@/features/favorites/MobileFavoritesScree
 import { MobileConversationLibrary } from '@/features/chat/MobileConversationLibrary';
 import { ProfileScreen } from '@/features/entry/ProfileScreen';
 import { MobileScreen } from '@/features/mobile/MobileScreen';
+import {
+  ImportConversationsScreen,
+  MemoryEvidenceScreen,
+  MemoryOverviewScreen,
+  MemoryWorkbenchScreen,
+} from '@/features/memory/MobileMemoryScreens';
 import { EditNoteScreen, NotebookListScreen, ReviewNoteEditScreen } from '@/features/notes/MobileNotebookScreens';
 import { CalendarScreen, PlanOverviewScreen, TaskAppearanceScreen, TaskBoardScreen, TaskDetailsScreen } from '@/features/plan/MobilePlanScreens';
 import { ImportQuestionsScreen, LearningJournalScreen, ManageTagsScreen, PracticeQuestionScreen, QuestionBankScreen } from '@/features/questions/MobileLibraryScreens';
@@ -30,6 +36,10 @@ export default function MobileRoute() {
   if (num === 56) return <EntryBoundary><TaskBoardScreen /></EntryBoundary>;
   if (num === 57) return <EntryBoundary><TaskDetailsScreen key={`${screen}:${taskId ?? ''}`} /></EntryBoundary>;
   if (num === 129) return <EntryBoundary><TaskAppearanceScreen /></EntryBoundary>;
+  if (num === 78) return <EntryBoundary><MemoryOverviewScreen /></EntryBoundary>;
+  if (num === 79) return <EntryBoundary><MemoryWorkbenchScreen /></EntryBoundary>;
+  if (num === 80) return <EntryBoundary><MemoryEvidenceScreen /></EntryBoundary>;
+  if (num === 123) return <EntryBoundary><ImportConversationsScreen /></EntryBoundary>;
   if ([63, 64, 138].includes(num)) return <EntryBoundary><ProfileScreen key={screen} view={num === 64 ? 'password' : num === 138 ? 'avatar' : 'profile'} /></EntryBoundary>;
   if (num === 62) return <EntryBoundary><MobileWorkspaceScreen /></EntryBoundary>;
   if (num === 58) return <EntryBoundary><Redirect href="/learning/live?view=progress" /></EntryBoundary>;
