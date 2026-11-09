@@ -6,8 +6,8 @@ export async function listConversations(signal?: AbortSignal, offset = 0) {
   if (!Array.isArray(data.sessions)) throw new Error('Invalid conversation list received from the server.');
   return data.sessions;
 }
-export async function getConversation(id: string, signal?: AbortSignal) {
-  const { data } = await api.get<Conversation>(`/sessions/${encodeURIComponent(id)}`, { signal });
+export async function getConversation(id: string, signal?: AbortSignal, workspace?: string) {
+  const { data } = await api.get<Conversation>(`/sessions/${encodeURIComponent(id)}`, { signal, ...(workspace !== undefined ? { params: { dt_workspace: workspace } } : {}) });
   if (!Array.isArray(data.messages)) throw new Error('Invalid conversation received from the server.');
   return data;
 }

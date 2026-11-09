@@ -14,7 +14,7 @@ export function Button({ children, variant = 'primary', size = 'md', loading = f
     onFocus={(event) => { setFocused(true); props.onFocus?.(event); }} onBlur={(event) => { setFocused(false); props.onBlur?.(event); }}
     style={(state) => [{ minHeight: geometry.touch, minWidth: geometry.touch, paddingHorizontal: size === 'sm' ? 12 : size === 'lg' ? 20 : 16, paddingVertical: 8, borderRadius: size === 'sm' ? 8 : 12, borderWidth: 1, borderColor: focused ? colors.ring : variant === 'secondary' ? colors.border : 'transparent', backgroundColor: state.pressed && variant === 'ghost' ? colors.accent : background, opacity: disabled || loading ? 0.5 : state.pressed ? 0.9 : 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: focused ? `0 0 0 2px ${alpha(colors.ring, 0.3)}` : undefined }, typeof style === 'function' ? style(state) : style]}>
     {loading ? <ActivityIndicator color={foreground} size="small" /> : icon}
-    {typeof children === 'string' ? <DText style={{ color: foreground, fontFamily: 'GeistMedium', fontSize: size === 'sm' ? 12 : size === 'lg' ? 16 : 14 }}>{children}</DText> : children}
+    {typeof children === 'string' || typeof children === 'number' || (Array.isArray(children) && children.every(child => child == null || typeof child === 'string' || typeof child === 'number' || child === false)) ? <DText style={{ color: foreground, fontFamily: 'GeistMedium', fontSize: size === 'sm' ? 12 : size === 'lg' ? 16 : 14 }}>{children}</DText> : children}
   </Pressable>;
 }
 

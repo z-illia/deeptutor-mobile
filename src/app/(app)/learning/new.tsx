@@ -1,5 +1,2 @@
-import { NewLearningScreen } from '@/features/learning/NewLearningScreen';
-
-export default function NewLearningRoute() {
-  return <NewLearningScreen />;
-}
+import { LiveLearningScreen } from '@/features/learning/live/LiveLearningScreen';
+export default function LearningRoute() { return <LiveLearningScreen view="new" />; }

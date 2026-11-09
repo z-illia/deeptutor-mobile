@@ -65,3 +65,9 @@ docs/mobile-ui
 !/scripts/verify-locales.cjs
 !/docs/localization-audit.md
 !/docs/localization-audit.json
+
+# Reviewable Learning implementation contracts and sanitized verification.
+!/docs/LEARNING_API_MAPPING.md
+!/docs/LEARNING_IMPLEMENTATION_STATUS.md
+!/docs/learning/
+!/scripts/learning-preview-proxy.cjs

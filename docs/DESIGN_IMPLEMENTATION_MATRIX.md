@@ -1,5 +1,7 @@
 # DeepTutor mobile design implementation matrix
 
+Learning update (2026-11-09): [Learning implementation/status matrix](LEARNING_IMPLEMENTATION_STATUS.md) and [verified API mapping](LEARNING_API_MAPPING.md) supersede the older Learning rows and fixture-only claims below. Production Learning now uses live native screens and the shared chat transport. Core read/navigation/streaming flows were tested; advanced readers, assessments, resource types and native-device checks remain PARTIAL/BLOCKED as documented. The current Study Session source is 390×850.
+
 Source: `file:///home/zillia/Documents/deep-tutor-app-2.pen`, inspected read-only through Pencil MCP on 2026-11-08.
 
 This extends the existing `docs/mobile-ui/SCREEN_MAPPING.md` and `pen-audit/SCREEN_COVERAGE.md`; their earlier companion-only scope is superseded for this redesign. Existing routes/providers remain available.
@@ -8,11 +10,11 @@ This extends the existing `docs/mobile-ui/SCREEN_MAPPING.md` and `pen-audit/SCRE
 
 **154 native presentations exist; no screen is certified complete end to end.** Local flow means specific offline interactions work, not all actions or backend integration. Draft/navigation means native controls and mapped links exist, with domain operations pending. No API endpoints were added. Unsupported operations explicitly report that no server action occurred.
 
-All routes use Expo Router `/mobile/[screen]`, `MobileScreen`, `NativeLayer` and `NativeField`. Text, views, pressables, fields, switches and SVG icons are native. No WebView or full-screen bitmap is used. OS safe areas, keyboard and status bar replace the canvas illustrations. Content uses viewport scrolling rather than fixed canvas heights.
+The historical numbered presentations use Expo Router `/mobile/[screen]`, `MobileScreen`, `NativeLayer` and `NativeField`; production Learning now uses the live native routes documented above. Text, views, pressables, fields, switches and SVG icons are native. No WebView or full-screen bitmap is used. OS safe areas, keyboard and status bar replace the canvas illustrations. Content uses viewport scrolling rather than fixed canvas heights.
 
 Light and dark trees have identical layout/content after excluding identifiers, names, positions and colors. Extracted semantic tokens supply both themes. Inter and its license are bundled; the 308 trees contain no image fills, and all icons use the existing Lucide dependency.
 
-Dependencies: Expo 58.0.23; React Native 0.88.1; strict TypeScript 6; existing Expo Router/provider tree; AsyncStorage-backed Zustand local drafts. ChatProvider supplies simulated sending/history/rename/pin/archive/delete. No real backend integrations are complete. Passwords, credentials and HTTP headers are not persisted.
+Dependencies: Expo 58.0.23; React Native 0.88.1; strict TypeScript 6; existing Expo Router/provider tree; AsyncStorage-backed Zustand local drafts. ChatProvider supplies simulated sending/history/rename/pin/archive/delete. This historical paragraph describes the fixture baseline. Current Learning integrations and their live evidence are documented in the linked status matrix. Passwords, credentials and HTTP headers are not persisted.
 
 ## Complete frame mapping
 
@@ -20,17 +22,17 @@ Dimensions are resolved canvas bounds. Compared means selected browser/Pencil vi
 
 | # | Light ID | Dark ID | Design / purpose | Dimensions | Route / component | Status | Navigation targets | Visual |
 |---|---|---|---|---|---|---|---|---|
-| 1 | `Ov0zp` | `e2o6q` | Learning / Learn | 390×1234 | `/mobile/1` · MobileScreen | Native; drafts/navigation; domain pending | Four primary tabs; 2, 3, 5, 9, 10, 33, 39 | Compared in browser |
-| 2 | `rT3o8` | `hvR8U` | Learning / New activity | 390×844 | `/mobile/2` · MobileScreen | Native; drafts/navigation; domain pending | 3, 9, 10, 33 | Individual comparison pending |
-| 3 | `QaJ68` | `DefJ1` | Learning / Backend engineering | 390×1486 | `/mobile/3` · MobileScreen | Native; drafts/navigation; domain pending | 4, 5, 6, 7, 8, 131, 132, 133, 134, 135, 136 | Individual comparison pending |
-| 4 | `KbCsA` | `IQnCc` | Learning / Node.js & TypeScript | 390×844 | `/mobile/4` · MobileScreen | Native; drafts/navigation; domain pending | 5, 12 | Compared in browser |
-| 5 | `g3IkH` | `FqRwt` | Learning / Study session | 390×1092 | `/mobile/5` · MobileScreen | Native; drafts/navigation; domain pending | 20, 126 | Individual comparison pending |
-| 6 | `Okd9c` | `ubH7b` | Learning / Review plan | 390×844 | `/mobile/6` · MobileScreen | Native; drafts/navigation; domain pending | 127 | Individual comparison pending |
-| 7 | `q5CRfW` | `NFIba` | Learning / Learning profile | 390×854 | `/mobile/7` · MobileScreen | Native; drafts/navigation; domain pending | 12, 137 | Individual comparison pending |
-| 8 | `mTwiq` | `N9RlAh` | Learning / Path sessions | 390×844 | `/mobile/8` · MobileScreen | Native; drafts/navigation; domain pending | 5, 126 | Individual comparison pending |
-| 9 | `IPmHP` | `mIKUD` | Learning / Books | 390×844 | `/mobile/9` · MobileScreen | Native; drafts/navigation; domain pending | Runtime local action / pending domain flow | Individual comparison pending |
-| 10 | `CH5Jk` | `ZnZ4h` | Learning / Immersive reading | 390×844 | `/mobile/10` · MobileScreen | Native; drafts/navigation; domain pending | 40 | Individual comparison pending |
-| 11 | `BkhA4` | `NeYvW` | Learning / Read & understand | 390×1374 | `/mobile/11` · MobileScreen | Native; drafts/navigation; domain pending | 12, 37 | Individual comparison pending |
+| 1 | `Ov0zp` | `e2o6q` | Learning / Learn | 390×1234 | `/learning` / `view=overview` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | Four primary tabs; 2, 3, 5, 9, 10, 33, 39 | Compared in browser |
+| 2 | `rT3o8` | `hvR8U` | Learning / New activity | 390×844 | `/learning` / `view=new` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 3, 9, 10, 33 | Individual comparison pending |
+| 3 | `QaJ68` | `DefJ1` | Learning / Backend engineering | 390×1486 | `/learning` / `view=topic` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 4, 5, 6, 7, 8, 131, 132, 133, 134, 135, 136 | Individual comparison pending |
+| 4 | `KbCsA` | `IQnCc` | Learning / Node.js & TypeScript | 390×844 | `/learning` / `view=module` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 5, 12 | Compared in browser |
+| 5 | `g3IkH` | `FqRwt` | Learning / Study session | 390×850 | `/learning` / `view=study` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 20, 126 | Individual comparison pending |
+| 6 | `Okd9c` | `ubH7b` | Learning / Review plan | 390×844 | `/learning` / `view=review` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 127 | Individual comparison pending |
+| 7 | `q5CRfW` | `NFIba` | Learning / Learning profile | 390×854 | `/learning` / `view=profile` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 12, 137 | Individual comparison pending |
+| 8 | `mTwiq` | `N9RlAh` | Learning / Path sessions | 390×844 | `/learning` / `view=sessions` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 5, 126 | Individual comparison pending |
+| 9 | `IPmHP` | `mIKUD` | Learning / Books | 390×844 | `/learning` / `view=books` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | Runtime local action / pending domain flow | Individual comparison pending |
+| 10 | `CH5Jk` | `ZnZ4h` | Learning / Immersive reading | 390×844 | `/learning` / `view=reading` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 40 | Individual comparison pending |
+| 11 | `BkhA4` | `NeYvW` | Learning / Read & understand | 390×1374 | `/learning` / `view=reader` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 12, 37 | Individual comparison pending |
 | 12 | `I4bWau` | `Xmj8E` | Tutor / Tutor | 390×1241 | `/mobile/12` · MobileScreen | Native; local flow + pending domain actions | Four primary tabs; 16, 23, 27 | Compared in browser |
 | 13 | `kEc9H` | `eAAWE` | Tutor / Isolation levels | 390×1091 | `/mobile/13` · MobileScreen | Native; local flow + pending domain actions | 15, 20 | Individual comparison pending |
 | 14 | `KM9sk` | `thxA8` | Tutor / Connection interrupted | 390×844 | `/mobile/14` · MobileScreen | Native; drafts/navigation; domain pending | 18, 20 | Individual comparison pending |
@@ -77,7 +79,7 @@ Dimensions are resolved canvas bounds. Compared means selected browser/Pencil vi
 | 55 | `OH9dr` | `P4G8pC` | Plan / 1–7 November | 390×1114 | `/mobile/55` · MobileScreen | Native; drafts/navigation; domain pending | Runtime local action / pending domain flow | Individual comparison pending |
 | 56 | `ni17R` | `uW0hU` | Plan / Task board | 390×844 | `/mobile/56` · MobileScreen | Native; drafts/navigation; domain pending | 53, 57, 129 | Individual comparison pending |
 | 57 | `g1pSV` | `DvSsV` | Plan / Task details | 390×908 | `/mobile/57` · MobileScreen | Native; local flow + pending domain actions | Runtime local action / pending domain flow | Compared in browser |
-| 58 | `PrI2K` | `ZutbM` | Plan / Learning progress | 390×844 | `/mobile/58` · MobileScreen | Native; drafts/navigation; domain pending | 1 | Individual comparison pending |
+| 58 | `PrI2K` | `ZutbM` | Plan / Learning progress | 390×844 | `/learning` / `view=progress` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 1 | Individual comparison pending |
 | 59 | `K6gVi` | `A3jtP` | Knowledge / Knowledge engines | 390×1344 | `/mobile/59` · MobileScreen | Native; drafts/navigation; domain pending | 60 | Individual comparison pending |
 | 60 | `UCi5v` | `seMLo` | Knowledge / Engine configuration | 390×1248 | `/mobile/60` · MobileScreen | Native; drafts/navigation; domain pending | Runtime local action / pending domain flow | Individual comparison pending |
 | 61 | `iAdAa` | `vaQ3x` | Account / Account | 390×844 | `/mobile/61` · MobileScreen | Native; drafts/navigation; domain pending | 62, 63, 65, 81, 146 | Compared in browser |
@@ -145,18 +147,18 @@ Dimensions are resolved canvas bounds. Compared means selected browser/Pencil vi
 | 123 | `v2qn7k` | `jM68L` | Personalization / Import conversations | 390×844 | `/mobile/123` · MobileScreen | Native; drafts/navigation; domain pending | Runtime local action / pending domain flow | Individual comparison pending |
 | 124 | `Tog9e` | `WWQmb` | Tutor / Research options | 390×844 | `/mobile/124` · MobileScreen | Native; drafts/navigation; domain pending | Runtime local action / pending domain flow | Individual comparison pending |
 | 125 | `FyVjG` | `maNQI` | Tutor / Who answers | 390×916 | `/mobile/125` · MobileScreen | Native; drafts/navigation; domain pending | 67, 72, 99 | Individual comparison pending |
-| 126 | `YKHMT` | `C9U3t` | Learning / Learning actions | 390×1104 | `/mobile/126` · MobileScreen | Native; drafts/navigation; domain pending | 3, 4, 5, 37, 153, 154 | Individual comparison pending |
-| 127 | `Z8cfDB` | `jJi1S` | Learning / Review strategies | 390×844 | `/mobile/127` · MobileScreen | Native; drafts/navigation; domain pending | Runtime local action / pending domain flow | Individual comparison pending |
+| 126 | `YKHMT` | `C9U3t` | Learning / Learning actions | 390×1104 | `/learning` / `view=study overflow` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 3, 4, 5, 37, 153, 154 | Individual comparison pending |
+| 127 | `Z8cfDB` | `jJi1S` | Learning / Review strategies | 390×844 | `/learning` / `view=strategies` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | Runtime local action / pending domain flow | Individual comparison pending |
 | 128 | `AFntW` | `psR0y` | Knowledge / Web sources | 390×1268 | `/mobile/128` · MobileScreen | Native; drafts/navigation; domain pending | 48 | Individual comparison pending |
 | 129 | `UDlc0` | `etwql` | Plan / Task appearance | 390×844 | `/mobile/129` · MobileScreen | Native; drafts/navigation; domain pending | Runtime local action / pending domain flow | Individual comparison pending |
 | 130 | `bPDy2` | `j8poIG` | Library / Manage tags | 390×844 | `/mobile/130` · MobileScreen | Native; drafts/navigation; domain pending | Runtime local action / pending domain flow | Individual comparison pending |
-| 131 | `qBCPO` | `xtS37` | Learning / Module 2 | 390×1080 | `/mobile/131` · MobileScreen | Native; drafts/navigation; domain pending | 5 | Individual comparison pending |
-| 132 | `JEMVb` | `D8RyO` | Learning / Module 3 | 390×982 | `/mobile/132` · MobileScreen | Native; drafts/navigation; domain pending | 5 | Individual comparison pending |
-| 133 | `H56XFV` | `NqVNL` | Learning / Module 4 | 390×1004 | `/mobile/133` · MobileScreen | Native; drafts/navigation; domain pending | 5 | Individual comparison pending |
-| 134 | `kxbKB` | `RIo1P` | Learning / Module 5 | 390×982 | `/mobile/134` · MobileScreen | Native; drafts/navigation; domain pending | 5 | Individual comparison pending |
-| 135 | `Yja0Q` | `y1ljt1` | Learning / Module 6 | 390×1102 | `/mobile/135` · MobileScreen | Native; drafts/navigation; domain pending | 5 | Individual comparison pending |
-| 136 | `RrYsk` | `HMZgk` | Learning / Module 7 | 390×1032 | `/mobile/136` · MobileScreen | Native; drafts/navigation; domain pending | 5 | Individual comparison pending |
-| 137 | `S3tx9g` | `OGDxL` | Learning / Learning goal | 390×1050 | `/mobile/137` · MobileScreen | Native; drafts/navigation; domain pending | 12 | Individual comparison pending |
+| 131 | `qBCPO` | `xtS37` | Learning / Module 2 | 390×1080 | `/learning` / `view=module` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 5 | Individual comparison pending |
+| 132 | `JEMVb` | `D8RyO` | Learning / Module 3 | 390×982 | `/learning` / `view=module` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 5 | Individual comparison pending |
+| 133 | `H56XFV` | `NqVNL` | Learning / Module 4 | 390×1004 | `/learning` / `view=module` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 5 | Individual comparison pending |
+| 134 | `kxbKB` | `RIo1P` | Learning / Module 5 | 390×982 | `/learning` / `view=module` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 5 | Individual comparison pending |
+| 135 | `Yja0Q` | `y1ljt1` | Learning / Module 6 | 390×1102 | `/learning` / `view=module` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 5 | Individual comparison pending |
+| 136 | `RrYsk` | `HMZgk` | Learning / Module 7 | 390×1032 | `/learning` / `view=module` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 5 | Individual comparison pending |
+| 137 | `S3tx9g` | `OGDxL` | Learning / Learning goal | 390×1050 | `/learning` / `view=goal` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 12 | Individual comparison pending |
 | 138 | `KVyuF` | `cTVpE` | Account / Avatar | 390×849 | `/mobile/138` · MobileScreen | Native; drafts/navigation; domain pending | Runtime local action / pending domain flow | Individual comparison pending |
 | 139 | `ApkqK` | `xQnfU` | Account / Device sign-in | 390×844 | `/mobile/139` · MobileScreen | Native; drafts/navigation; domain pending | Runtime local action / pending domain flow | Individual comparison pending |
 | 140 | `C9MxCS` | `c2Dnz` | Knowledge / Library move | 390×844 | `/mobile/140` · MobileScreen | Native; drafts/navigation; domain pending | Runtime local action / pending domain flow | Individual comparison pending |
@@ -172,8 +174,8 @@ Dimensions are resolved canvas bounds. Compared means selected browser/Pencil vi
 | 150 | `EQb2N` | `K1zNA6` | Knowledge / Practical Challenges & Engineering Exercises | 390×844 | `/mobile/150` · MobileScreen | Native; drafts/navigation; domain pending | 12, 44, 45, 50, 51 | Individual comparison pending |
 | 151 | `WtX78` | `Gjx3x` | Knowledge / Production Engineering, Reliability & Security | 390×872 | `/mobile/151` · MobileScreen | Native; drafts/navigation; domain pending | 12, 44, 45, 50, 51 | Individual comparison pending |
 | 152 | `wn1Pu` | `EbIeH` | States / Delete conversation | 390×844 | `/mobile/152` · MobileScreen | Native; local flow + pending domain actions | 13 | Individual comparison pending |
-| 153 | `KmqIP` | `EmQ3t` | States / Reset path progress | 390×844 | `/mobile/153` · MobileScreen | Native; drafts/navigation; domain pending | 3 | Individual comparison pending |
-| 154 | `u2rJcx` | `vtPMF` | States / Delete learning path | 390×844 | `/mobile/154` · MobileScreen | Native; drafts/navigation; domain pending | 3 | Individual comparison pending |
+| 153 | `KmqIP` | `EmQ3t` | States / Reset path progress | 390×844 | `/learning` / `view=reset confirmation` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 3 | Individual comparison pending |
+| 154 | `u2rJcx` | `vtPMF` | States / Delete learning path | 390×844 | `/learning` / `view=delete confirmation` · live Learning screens | COMPLETE (core read/navigation) / PARTIAL (advanced operations); see current Learning matrix | 3 | Individual comparison pending |
 
 ## Assets, APIs and outstanding work
 

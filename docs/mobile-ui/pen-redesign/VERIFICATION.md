@@ -1,5 +1,7 @@
 # Pencil mobile redesign — implementation and verification
 
+Learning supersession (2026-11-09): see the [live Learning implementation and verification](../../LEARNING_IMPLEMENTATION_STATUS.md) for current routes, API integration, screen statuses, and remaining gaps. The earlier UI-only scope below is retained as historical evidence.
+
 Date: 2026-11-08. Source: `file:///home/zillia/Documents/deep-tutor-app-2.pen`. The document was read through Pencil MCP and was not modified.
 
 ## Outcome and limits

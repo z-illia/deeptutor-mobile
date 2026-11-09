@@ -57,7 +57,7 @@ function parseSegments(raw: string): MarkdownSegment[] {
   return segments;
 }
 
-export function ChatMarkdown({ content }: { content: string }) {
+export function ChatMarkdown({ content, learning = false }: { content: string; learning?: boolean }) {
   const { colors } = useDesign();
   const t = useCopy();
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
@@ -118,7 +118,7 @@ export function ChatMarkdown({ content }: { content: string }) {
                   </Text>
                 </Pressable>
               </View>
-              <Text style={[styles.codeBody, { color: colors.foreground }]}>
+              <Text style={[styles.codeBody, { color: colors.foreground }, learning && { fontSize: 14, lineHeight: 20 }]}>
                 {seg.code}
               </Text>
             </View>
@@ -173,9 +173,9 @@ export function ChatMarkdown({ content }: { content: string }) {
               return (
                 <Text
                   key={`l-${lIdx}`}
-                  style={[styles.paragraph, { color: colors.foreground }]}
+                  style={[styles.paragraph, { color: colors.foreground }, learning && { fontFamily: 'Inter', fontSize: 18, lineHeight: 26 }]}
                 >
-                  {trimmed}
+                  {trimmed.split(/(\*\*[^*]+\*\*|`[^`]+`)/g).map((part, index) => part.startsWith('**') && part.endsWith('**') ? <Text key={index} style={{ fontWeight: '700' }}>{part.slice(2, -2)}</Text> : part.startsWith('`') && part.endsWith('`') ? <Text key={index} style={{ fontFamily: 'monospace' }}>{part.slice(1, -1)}</Text> : part)}
                 </Text>
               );
             })}

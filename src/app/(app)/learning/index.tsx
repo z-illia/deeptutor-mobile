@@ -1,5 +1,2 @@
-import { LearningDashboardScreen } from '@/features/learning/LearningDashboardScreen';
-
-export default function LearningHubRoute() {
-  return <LearningDashboardScreen />;
-}
+import { LiveLearningScreen } from '@/features/learning/live/LiveLearningScreen';
+export default function LearningRoute() { return <LiveLearningScreen view="overview" />; }

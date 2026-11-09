@@ -7,14 +7,18 @@ import { getConversation, listChatModels, listConversations } from './repository
 
 export function chatError(cause: unknown): string {
   if (isAxiosError(cause)) {
+    if (cause.response?.status === 403) return 'Your account cannot access this learning content.';
     if (cause.response?.status === 401) return 'Your session has expired. Please sign in again.';
     const detail = cause.response?.data?.detail;
-    return typeof detail === 'string' ? detail : 'Unable to reach the server. Please try again.';
+    return typeof detail === 'string' ? detail : cause.response ? `The server could not complete this request (HTTP ${cause.response.status}).` : 'Unable to reach the server. Please try again.';
   }
   return cause instanceof Error ? cause.message : 'Unable to reach the server. Please try again.';
 }
 
-export function useLiveChat(initialId: string | null) {
+export type LearningChatContext = { mastery_path_id?: string; mastery_session_mode?: string; workspace_id: string; workspace_mode?: string; reading_material_id?: string; reading_material_revision?: number; reading_workspace_id?: string };
+
+export function useLiveChat(initialId: string | null, learning?: LearningChatContext) {
+  const workspaceId = learning?.workspace_id;
   const [configuration, setConfiguration] = useState<TutorConfiguration>({});
   const [messages, setMessages] = useState<ChatRow[]>([]);
   const [sessions, setSessions] = useState<Conversation[]>([]);
@@ -72,6 +76,7 @@ export function useLiveChat(initialId: string | null) {
         }
         return;
       }
+      if (event.type === 'tool_result') setMessages(old => old.map(row => row.id === assistantId.current ? { ...row, events: [...(row.events ?? []), event] } : row));
       const chunk = answerChunk(event);
       if (chunk) setMessages(old => old.map(row => row.id === assistantId.current ? { ...row, content: row.content + chunk } : row));
       if (event.type === 'session_meta' && typeof event.metadata?.title === 'string') setTitle(event.metadata.title);
@@ -92,7 +97,7 @@ export function useLiveChat(initialId: string | null) {
         // Read persisted IDs and the server-selected branch before the next turn.
         if (sessionId.current) {
           setLoading(true);
-          void getConversation(sessionId.current, abort.signal).then(data => {
+          void getConversation(sessionId.current, abort.signal, workspaceId).then(data => {
             if (!active) return;
             const rows = visibleMessages(data);
             parentId.current = rows.at(-1)?.id ?? null;
@@ -101,7 +106,7 @@ export function useLiveChat(initialId: string | null) {
         }
       }
     };
-    const socket = new ChatConnection(websocketUrl(String(api.defaults.baseURL)), onEvent, message => {
+    const socket = new ChatConnection(websocketUrl(String(api.defaults.baseURL)) + (workspaceId !== undefined ? `?dt_workspace=${encodeURIComponent(workspaceId)}` : ''), onEvent, message => {
       if (active) { clearTimeout(checkTimer); activeReply?.(); setError(message); finish(); }
     });
     connection.current = socket;
@@ -112,11 +117,11 @@ export function useLiveChat(initialId: string | null) {
         setModel(catalog.options.find(option => option.profile_id === catalog.active?.profile_id && option.model_id === catalog.active?.model_id) ?? catalog.options[0] ?? null);
         return catalog;
       }),
-      targetId ? getConversation(targetId, abort.signal).then(async data => {
+      targetId ? getConversation(targetId, abort.signal, workspaceId).then(async data => {
         if (!active) return;
         const rows = visibleMessages(data);
         savedModel = data.preferences?.llm_selection;
-        setConfiguration(configurationFromPreferences(data.preferences));
+        setConfiguration({ ...configurationFromPreferences(data.preferences), ...(Array.isArray(data.preferences?.knowledge_bases) ? { knowledge_bases: data.preferences.knowledge_bases as string[] } : {}) });
         setMessages(rows); setTitle(data.title || 'New chat'); parentId.current = rows.at(-1)?.id ?? null;
         await socket.connect();
         if (!active) return;
@@ -129,7 +134,7 @@ export function useLiveChat(initialId: string | null) {
       if (active && selection && catalog) setModel(catalog.options.find(option => option.profile_id === selection.profile_id && option.model_id === selection.model_id) ?? null);
     }).catch(cause => { if (active) { clearTimeout(checkTimer); setError(chatError(cause)); } }).finally(() => { if (active) setLoading(false); });
     return () => { active = false; clearTimeout(checkTimer); mounted.current = false; abort.abort(); socket.close(); connection.current = null; };
-  }, [initialId, revision]);
+  }, [initialId, revision, workspaceId]);
 
   const refreshHistory = async (more = false) => {
     if (historyLock.current) return;
@@ -140,8 +145,8 @@ export function useLiveChat(initialId: string | null) {
     } catch (cause) { if (mounted.current) setHistoryError(chatError(cause)); }
     finally { historyLock.current = false; if (mounted.current) setHistoryLoading(false); }
   };
-  const send = async (language: string) => {
-    const content = draft.trim();
+  const send = async (language: string, submission?: { content: string; mastery_answer?: { question_id: string; text: string; answers?: Record<string, string> }; mastery_skip?: { question_id: string } }) => {
+    const content = (submission?.content ?? draft).trim();
     if (!content || replyLock.current || error || loading || (lock.current && !waiting) || !connection.current) return;
     const replying = waiting;
     if (replying) replyLock.current = true;
@@ -156,6 +161,9 @@ export function useLiveChat(initialId: string | null) {
         type: 'submit_user_reply', turn_id: turnId.current, text: content, command_id: commandId(),
       } : {
         type: 'start_turn', content, session_id: sessionId.current, capability: 'chat', ...configuration, language,
+        ...(submission?.mastery_answer ? { mastery_answer: submission.mastery_answer } : {}),
+        ...(submission?.mastery_skip ? { mastery_skip: submission.mastery_skip } : {}),
+        ...(learning ? { ...learning, capability: learning.mastery_path_id ? 'mastery_path' : 'chat' } : {}),
         client_submission_id: commandId(),
         ...(sessionId.current ? { parent_message_id: parentId.current } : {}),
         ...(model ? { llm_selection: { profile_id: model.profile_id, model_id: model.model_id } } : {}),
