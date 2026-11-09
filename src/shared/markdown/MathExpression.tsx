@@ -1,23 +1,40 @@
 import { memo, useEffect, useState } from 'react';
-import { ScrollView, Text, useWindowDimensions } from 'react-native';
+import { Platform, ScrollView, Text, useWindowDimensions } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { useDesign } from '@/shared/design/DesignProvider';
-import { mono } from './CodeBlock';
+import { contentFingerprint, richDiagnostic } from './diagnostics';
 import type { typesetMath } from './math';
 
-export const MathExpression = memo(function MathExpression({ source, display = false }: { source: string; display?: boolean }) {
+type MathResult = { source: string; display: boolean; equation?: ReturnType<typeof typesetMath>; invalid?: boolean };
+export const MathExpression = memo(function MathExpression({ source, display = false, pending = false }: { source: string; display?: boolean; pending?: boolean }) {
   const { colors } = useDesign();
-  const { fontScale } = useWindowDimensions();
-  const [result, setResult] = useState<ReturnType<typeof typesetMath>>();
+  const { fontScale, width } = useWindowDimensions();
+  const [result, setResult] = useState<MathResult>();
   useEffect(() => {
+    if (pending) return;
     let active = true;
-    setResult(undefined);
+    const fingerprint = contentFingerprint(source);
+    richDiagnostic('math-input', { fingerprint, length: source.length, display });
     void import('./math').then(module => {
       const equation = module.typesetMath(source, display);
-      if (active) setResult(equation);
-    }).catch(() => { /* Preserve readable source for incomplete or invalid equations. */ });
+      if (active) { richDiagnostic('math-svg-ready', { fingerprint, width: equation.width, height: equation.height }); setResult({ source, display, equation }); }
+    }).catch(error => { if (active) {
+      richDiagnostic('math-render-failed', { fingerprint, errorName: error instanceof Error ? error.name : 'unknown', reason: error instanceof TypeError || error instanceof ReferenceError ? error.message : 'typesetter-rejected-expression-or-load-failed' });
+      setResult({ source, display, invalid: true });
+    } });
     return () => { active = false; };
-  }, [source, display]);
-  const content = result ? <SvgXml xml={result.xml} color={colors.foreground} width={result.width * fontScale} height={result.height * fontScale} accessibilityLabel={source} /> : <Text selectable style={{ color: colors.foreground, fontFamily: mono, fontSize: 14 }}>{source}</Text>;
-  return display ? <ScrollView horizontal nestedScrollEnabled style={{ maxWidth: '100%', marginVertical: 12 }} contentContainerStyle={{ paddingVertical: 4 }}>{content}</ScrollView> : content;
+  }, [source, display, pending]);
+  // Never show the preceding equation after a streamed source change.
+  const current = !pending && result?.source === source && result.display === display ? result : undefined;
+  const equation = current?.equation;
+  const scale = equation && !display ? Math.min(fontScale, Math.max(1, width - 40) / equation.width) : fontScale;
+  const content = equation
+    ? <SvgXml xml={equation.xml} color={colors.foreground} width={equation.width * scale} height={equation.height * scale} {...(Platform.OS === 'web' ? {} : { accessible: true })} accessibilityRole="image" accessibilityLabel={source} onError={() => {
+      richDiagnostic('math-svg-failed', { fingerprint: contentFingerprint(source), reason: 'svg-parser-error' });
+      setResult({ source, display, invalid: true });
+    }} />
+    : <Text selectable={!!current?.invalid} accessibilityLabel={source} style={{ color: colors.foreground, fontFamily: 'Inter', fontSize: 14, lineHeight: 22 }}>{current?.invalid ? source : '…'}</Text>;
+  return display
+    ? <ScrollView horizontal nestedScrollEnabled style={{ maxWidth: '100%', marginVertical: 8 }} contentContainerStyle={{ paddingVertical: 4 }}>{content}</ScrollView>
+    : content;
 });

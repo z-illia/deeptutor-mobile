@@ -51,7 +51,7 @@ Screenshots use real React Native Web primitives rendered to static HTML. The de
 - No Android emulator/device was available. Verify keyboard anchoring, horizontal gesture arbitration, Android back navigation, font scaling, inline code background/baseline and SVG equation accessibility on device. Existing navigation/composer logic was preserved.
 - Production desktop/mobile visual parity and a fresh authenticated backend response comparison remain to be checked against the current web checkout/server.
 - Incomplete links display their unfinished source until valid Markdown arrives; content is never guessed or destructively normalized.
-- Math recognizes dollar delimiters; backend TeX using other delimiter conventions needs an explicit contract before transformation. Very wide inline equations may require display math from the backend.
+- Math supports dollar delimiters, backslash inline/display delimiters and narrowly recognized standalone TeX. See [math compatibility update](MATH_RENDERING.md) for current behavior, tests and remaining differences from KaTeX.
 - Native inline Text padding/corner appearance varies by platform. Tables use consistent 160px columns to retain alignment and readability at narrow widths.
 - Existing fixture appearance controls for code wrapping/line numbers no longer affect rich code output: shared code rendering consistently preserves full source and horizontal scrolling.
 - New locale strings currently use English fallback translations; existing translated controls are reused.

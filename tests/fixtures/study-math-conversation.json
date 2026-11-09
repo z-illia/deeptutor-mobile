@@ -1,0 +1,22 @@
+{
+  "session_id": "fixture-study-math",
+  "title": "Math integration verification",
+  "preferences": {
+    "mastery_path_id": "fixture-topic",
+    "mastery_session_mode": "study"
+  },
+  "messages": [
+    {
+      "id": 1,
+      "parent_message_id": null,
+      "role": "user",
+      "content": "Explain health-check latency."
+    },
+    {
+      "id": 2,
+      "parent_message_id": 1,
+      "role": "assistant",
+      "content": "## Latency model\n\nThe response time is:\n\n$$\n\\text{health-check latency}\n=\n\\text{waiting to run}\n+\n\\text{handler execution}\n+\n\\text{response/network time}\n$$\n\n[Documentation](https://example.com/docs)\n\n```python\nprint(\"healthy\")\n```"
+    }
+  ]
+}

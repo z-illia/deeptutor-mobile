@@ -1,0 +1,22 @@
+[
+  {
+    "streaming": false,
+    "version": "rich-math-runtime-3",
+    "rendererMounted": true,
+    "mathAstNodes": 1,
+    "exactMathInput": true,
+    "svgDisplayed": true,
+    "rawLatexVisible": false,
+    "errors": []
+  },
+  {
+    "streaming": true,
+    "version": "rich-math-runtime-3",
+    "rendererMounted": true,
+    "mathAstNodes": 1,
+    "exactMathInput": true,
+    "svgDisplayed": true,
+    "rawLatexVisible": false,
+    "errors": []
+  }
+]

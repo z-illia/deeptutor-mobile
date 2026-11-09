@@ -1,9 +1,10 @@
 import { useCopy } from '@/features/entry/copy';
-import { memo, useDeferredValue, useMemo, type ReactNode } from 'react';
+import { memo, useDeferredValue, useMemo, useEffect, type ReactNode } from 'react';
 import { Alert, Linking, ScrollView, Text, View, type TextStyle } from 'react-native';
 import type { Root, RootContent, Definition } from 'mdast';
 import { useDesign } from '@/shared/design/DesignProvider';
 import { geometry } from '@/shared/design/tokens';
+import { contentFingerprint, richDiagnostic } from './diagnostics';
 import { MathExpression } from './MathExpression';
 import { CodeBlock, mono } from './CodeBlock';
 import { parseMarkdown, safeExternalUrl } from './parser';
@@ -21,6 +22,13 @@ export const RichMarkdownRenderer = memo(function RichMarkdownRenderer({ content
   const t = useCopy();
   const deferred = useDeferredValue(content);
   const tree = useMemo(() => parseMarkdown(deferred), [deferred]);
+  useEffect(() => {
+    if (typeof __DEV__ === 'undefined' || !__DEV__) return;
+    let mathNodes = 0;
+    const count = (node: Node) => { if (node.type === 'math' || node.type === 'inlineMath') mathNodes++; if ('children' in node) node.children.forEach(child => count(child as Node)); };
+    count(tree);
+    richDiagnostic('renderer-mounted', { fingerprint: contentFingerprint(deferred), length: deferred.length, mathNodes });
+  }, [tree, deferred]);
   const definitions = useMemo(() => {
     const result = new Map<string, Definition>();
     const visit = (node: Node) => { if (node.type === 'definition') result.set(node.identifier.toUpperCase(), node); if ('children' in node) node.children.forEach(child => visit(child as Node)); };
@@ -57,8 +65,8 @@ export const RichMarkdownRenderer = memo(function RichMarkdownRenderer({ content
       case 'definition': return null;
       default: {
         // remark-math adds these nodes to the CommonMark tree.
-        const value = node as { type: string; value?: string };
-        if (value.type === 'math') return <MathExpression key={key} display source={value.value ?? ''} />;
+        const value = node as { type: string; value?: string; data?: { pendingMath?: boolean } };
+        if (value.type === 'math') return <MathExpression key={key} display pending={!!value.data?.pendingMath} source={value.value ?? ''} />;
         if (value.type === 'inlineMath') return <MathExpression key={key} source={value.value ?? ''} />;
         return 'children' in node ? <View key={key}>{children(node)}</View> : null;
       }

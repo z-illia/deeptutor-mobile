@@ -84,7 +84,7 @@ test('HTTP repository reads real paginated requests and propagates auth failures
   });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   const api = axios.create({ baseURL: `http://127.0.0.1:${server.address().port}/api`, withCredentials: true });
-  const repository = load('src/features/chat/live/repository.ts', { '@/api/client': { api } });
+  const repository = load('src/features/chat/live/repository.ts', { '@/api/client': { api }, '@/shared/markdown/diagnostics': load('src/shared/markdown/diagnostics.ts') });
   try {
     assert.equal((await repository.listConversations(undefined, 50))[0].session_id, 's1');
     assert.equal((await repository.getConversation('s1')).messages[0].content, 'Q');
