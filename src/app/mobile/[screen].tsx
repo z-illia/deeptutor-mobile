@@ -16,9 +16,28 @@ import {
 import { EditNoteScreen, NotebookListScreen, ReviewNoteEditScreen } from '@/features/notes/MobileNotebookScreens';
 import { CalendarScreen, PlanOverviewScreen, TaskAppearanceScreen, TaskBoardScreen, TaskDetailsScreen } from '@/features/plan/MobilePlanScreens';
 import { ImportQuestionsScreen, LearningJournalScreen, ManageTagsScreen, PracticeQuestionScreen, QuestionBankScreen } from '@/features/questions/MobileLibraryScreens';
+import {
+  AddDocumentsScreen,
+  AddSourceTypeScreen,
+  ConnectedSourcesScreen,
+  EngineConfigScreen,
+  GitHubSourceScreen,
+  IndexRecoveryScreen,
+  KnowledgeBaseDetailScreen,
+  KnowledgeBaseSettingsScreen,
+  KnowledgeBasesListScreen,
+  KnowledgeEnginesScreen,
+  KnowledgeSourcePreviewScreen,
+  LinkedFolderScreen,
+  MoveKnowledgeBaseScreen,
+  NewKnowledgeBaseScreen,
+  ReviewDeleteKbScreen,
+  WebSourceScreen,
+  WebSourcesListScreen,
+} from '@/features/knowledge/MobileKnowledgeScreens';
 
 export default function MobileRoute() {
-  const { screen, notebookId, recordId, docId, taskId } = useLocalSearchParams<{ screen: string; notebookId?: string; recordId?: string; docId?: string; taskId?: string }>();
+  const { screen, notebookId, recordId, docId, taskId, kb, file, engine } = useLocalSearchParams<{ screen: string; notebookId?: string; recordId?: string; docId?: string; taskId?: string; kb?: string; file?: string; engine?: string }>();
   const num = Number(screen);
   if ([26, 65].includes(num)) return <EntryBoundary><ResourceHubScreen key={screen} personalization={num === 65} /></EntryBoundary>;
   if ([82, 83].includes(num)) return <EntryBoundary><MobileSettingsScreen key={screen} appearance={num === 83} /></EntryBoundary>;
@@ -31,6 +50,23 @@ export default function MobileRoute() {
   if ([37, 38].includes(num)) return <EntryBoundary><PracticeQuestionScreen key={screen} review={num === 38} /></EntryBoundary>;
   if (num === 39) return <EntryBoundary><LearningJournalScreen /></EntryBoundary>;
   if (num === 130) return <EntryBoundary><ManageTagsScreen /></EntryBoundary>;
+  if (num === 40) return <EntryBoundary><KnowledgeBasesListScreen /></EntryBoundary>;
+  if ([41, 147, 148, 149, 150, 151].includes(num)) return <EntryBoundary><KnowledgeBaseDetailScreen key={`${screen}:${kb ?? ''}`} screenNumber={num} /></EntryBoundary>;
+  if (num === 42) return <EntryBoundary><KnowledgeSourcePreviewScreen key={`${screen}:${kb ?? ''}:${file ?? ''}`} /></EntryBoundary>;
+  if (num === 43) return <EntryBoundary><NewKnowledgeBaseScreen /></EntryBoundary>;
+  if (num === 44) return <EntryBoundary><AddDocumentsScreen key={`${screen}:${kb ?? ''}`} /></EntryBoundary>;
+  if (num === 45) return <EntryBoundary><ConnectedSourcesScreen key={`${screen}:${kb ?? ''}`} /></EntryBoundary>;
+  if (num === 46) return <EntryBoundary><AddSourceTypeScreen key={`${screen}:${kb ?? ''}`} /></EntryBoundary>;
+  if (num === 47) return <EntryBoundary><GitHubSourceScreen key={`${screen}:${kb ?? ''}`} /></EntryBoundary>;
+  if (num === 48) return <EntryBoundary><WebSourceScreen key={`${screen}:${kb ?? ''}`} /></EntryBoundary>;
+  if (num === 49) return <EntryBoundary><LinkedFolderScreen key={`${screen}:${kb ?? ''}`} /></EntryBoundary>;
+  if (num === 50) return <EntryBoundary><IndexRecoveryScreen key={`${screen}:${kb ?? ''}`} /></EntryBoundary>;
+  if (num === 51) return <EntryBoundary><KnowledgeBaseSettingsScreen key={`${screen}:${kb ?? ''}`} /></EntryBoundary>;
+  if (num === 59) return <EntryBoundary><KnowledgeEnginesScreen /></EntryBoundary>;
+  if (num === 60) return <EntryBoundary><EngineConfigScreen key={`${screen}:${engine ?? ''}`} /></EntryBoundary>;
+  if (num === 112) return <EntryBoundary><ReviewDeleteKbScreen key={`${screen}:${kb ?? ''}`} /></EntryBoundary>;
+  if (num === 128) return <EntryBoundary><WebSourcesListScreen key={`${screen}:${kb ?? ''}`} /></EntryBoundary>;
+  if (num === 140) return <EntryBoundary><MoveKnowledgeBaseScreen key={`${screen}:${kb ?? ''}`} /></EntryBoundary>;
   if (num === 52) return <EntryBoundary><PlanOverviewScreen /></EntryBoundary>;
   if ([53, 54, 55].includes(num)) return <EntryBoundary><CalendarScreen key={screen} view={num === 53 ? 'month' : num === 54 ? 'day' : 'week'} /></EntryBoundary>;
   if (num === 56) return <EntryBoundary><TaskBoardScreen /></EntryBoundary>;

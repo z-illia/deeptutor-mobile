@@ -17,6 +17,7 @@ export default function DestinationBoundary() {
   if (path === '/space/journal') return <Redirect href="/mobile/39" />;
   if (!allowedDestination(f.mode, path)) return <View style={{ padding: 24, gap: 16 }}><InlineAlert tone="warning">{t('Unavailable')}</InlineAlert><BackButton /></View>;
   if (path === '/co-writer') return <Redirect href="/mobile/28" />;
+  if (path === '/knowledge-bases') return <Redirect href="/mobile/40" />;
   if (path === '/calendar') return <Redirect href="/mobile/53" />;
   if (path === '/kanban') return <Redirect href="/mobile/56" />;
   if (path === '/memory') return <Redirect href="/mobile/78" />;
