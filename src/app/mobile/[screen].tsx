@@ -7,13 +7,17 @@ import { MobileFavoritesScreen } from '@/features/favorites/MobileFavoritesScree
 import { MobileConversationLibrary } from '@/features/chat/MobileConversationLibrary';
 import { ProfileScreen } from '@/features/entry/ProfileScreen';
 import { MobileScreen } from '@/features/mobile/MobileScreen';
+import { EditNoteScreen, NotebookListScreen, ReviewNoteEditScreen } from '@/features/notes/MobileNotebookScreens';
 import { ImportQuestionsScreen, LearningJournalScreen, ManageTagsScreen, PracticeQuestionScreen, QuestionBankScreen } from '@/features/questions/MobileLibraryScreens';
 
 export default function MobileRoute() {
-  const { screen, notebookId, recordId } = useLocalSearchParams<{ screen: string; notebookId?: string; recordId?: string }>();
+  const { screen, notebookId, recordId, docId } = useLocalSearchParams<{ screen: string; notebookId?: string; recordId?: string; docId?: string }>();
   const num = Number(screen);
   if ([26, 65].includes(num)) return <EntryBoundary><ResourceHubScreen key={screen} personalization={num === 65} /></EntryBoundary>;
   if ([82, 83].includes(num)) return <EntryBoundary><MobileSettingsScreen key={screen} appearance={num === 83} /></EntryBoundary>;
+  if (num === 28) return <EntryBoundary><NotebookListScreen /></EntryBoundary>;
+  if ([21, 29].includes(num)) return <EntryBoundary><EditNoteScreen key={`${screen}:${docId ?? ''}`} conversationNote={num === 21} /></EntryBoundary>;
+  if (num === 30) return <EntryBoundary><ReviewNoteEditScreen /></EntryBoundary>;
   if ([31, 32].includes(num)) return <EntryBoundary><MobileFavoritesScreen key={`${screen}:${notebookId ?? ''}:${recordId ?? ''}`} create={num === 32} /></EntryBoundary>;
   if ([33, 34].includes(num)) return <EntryBoundary><QuestionBankScreen key={screen} mistakes={num === 34} /></EntryBoundary>;
   if ([35, 36, 115].includes(num)) return <EntryBoundary><ImportQuestionsScreen key={screen} step={num as 35 | 36 | 115} /></EntryBoundary>;
