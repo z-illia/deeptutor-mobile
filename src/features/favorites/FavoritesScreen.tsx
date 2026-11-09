@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Modal,
   Pressable,
@@ -8,7 +8,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import {
   AlertTriangle,
   ArrowLeft,
@@ -34,9 +34,12 @@ import { useTheme } from '../../theme';
 import { useI18n } from '../../i18n';
 import { ChatMarkdown } from '../chat/ChatMarkdown';
 import { useFavorites } from './FavoritesProvider';
+import { favoritesError } from './api';
+import { ErrorState, InlineAlert, LoadingState } from '@/shared/ui/Feedback';
+import { Button } from '@/shared/ui/Controls';
+import { ConfirmDialog } from '@/shared/ui/Dialog';
 import {
   DEFAULT_NOTEBOOK_COLOR,
-  exportNotebookAsMarkdown,
   FAVORITE_KIND_LABELS,
   favoriteKind,
   filterNotebookRecords,
@@ -65,7 +68,6 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
     notebooks,
     recordsByNotebook,
     libraryState,
-    setLibraryState,
     createNotebook,
     updateNotebook,
     deleteNotebook,
@@ -73,7 +75,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
     deleteRecord,
     relocateRecord,
     locateRecord,
-    resetFavoritesFixtures,
+    refresh, error, busy, exportNotebook, resolveRecord,
   } = useFavorites();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -119,16 +121,24 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
   );
   const [confirmDeleteNotebook, setConfirmDeleteNotebook] = useState(false);
 
+  const [operationError, setOperationError] = useState('');
+  const actionLock = useRef(false);
+  useFocusEffect(useCallback(() => { void refresh(notebookId); }, [notebookId, refresh]));
   useEffect(() => {
-    if (
-      params.state === 'loading' ||
-      params.state === 'empty' ||
-      params.state === 'error' ||
-      params.state === 'ready'
-    ) {
-      setLibraryState(params.state);
-    }
-  }, [params.state, setLibraryState]);
+    if (!notebookId || !params.recordId) return;
+    const controller = new AbortController();
+    void resolveRecord(params.recordId, notebookId, controller.signal).then(id => {
+      if (!controller.signal.aborted && id !== notebookId) router.replace(`/notebooks/${encodeURIComponent(id)}?recordId=${encodeURIComponent(params.recordId!)}` as never);
+    }).catch(cause => { if (!controller.signal.aborted) setOperationError(favoritesError(cause)); });
+    return () => controller.abort();
+  }, [notebookId, params.recordId, resolveRecord, router]);
+  const perform = async (action: () => Promise<unknown>, success: () => void, failure?: (message: string) => void) => {
+    if (actionLock.current) return;
+    actionLock.current = true; setOperationError('');
+    try { await action(); success(); }
+    catch (cause) { const message = favoritesError(cause); setOperationError(message); failure?.(message); }
+    finally { actionLock.current = false; }
+  };
 
   const activeNotebook = useMemo(
     () =>
@@ -142,8 +152,8 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
   );
 
   const filteredNotebooks = useMemo(
-    () => filterNotebooks(notebooks, recordsByNotebook, searchQuery),
-    [notebooks, recordsByNotebook, searchQuery],
+    () => filterNotebooks(notebooks, {}, searchQuery),
+    [notebooks, searchQuery],
   );
 
   const filteredRecords = useMemo(
@@ -154,10 +164,10 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
   const totalRecordCount = useMemo(
     () =>
       notebooks.reduce(
-        (acc, nb) => acc + (recordsByNotebook[nb.id]?.length ?? 0),
+        (acc, nb) => acc + nb.record_count,
         0,
       ),
-    [notebooks, recordsByNotebook],
+    [notebooks],
   );
 
   // Deep-link ?recordId=... resolution
@@ -202,22 +212,11 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
       setMetaError('Collection name is required.');
       return;
     }
-    if (editingNotebook) {
-      updateNotebook(editingNotebook.id, {
-        name: trimmed,
-        description: metaDescription,
-        color: metaColor,
-      });
-      setStatusNotice(`Updated collection "${trimmed}".`);
-    } else {
-      createNotebook({
-        name: trimmed,
-        description: metaDescription,
-        color: metaColor,
-      });
-      setStatusNotice(`Created collection "${trimmed}".`);
-    }
-    setMetaModalOpen(false);
+    void perform(async () => {
+      const input = { name: trimmed, description: metaDescription, color: metaColor };
+      if (editingNotebook) await updateNotebook(editingNotebook.id, input);
+      else await createNotebook(input);
+    }, () => { setStatusNotice(t('Saved')); setMetaModalOpen(false); }, setMetaError);
   };
 
   const openEditRecordModal = (rec: NotebookRecordItem) => {
@@ -235,6 +234,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
   );
 
   const handleRequestCloseRecordEdit = () => {
+    if (busy) return;
     if (isRecordEditDirty && !confirmDiscardRecordEdit) {
       setConfirmDiscardRecordEdit(true);
       return;
@@ -250,13 +250,9 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
       setRecordEditError('Title cannot be empty.');
       return;
     }
-    updateRecord(notebookId, editingRecord.id, {
-      title: trimmedTitle,
-      summary: recordSummaryDraft.trim(),
-    });
-    setStatusNotice(`Updated favorite "${trimmedTitle}".`);
-    setEditingRecord(null);
-    setConfirmDiscardRecordEdit(false);
+    void perform(() => updateRecord(notebookId, editingRecord.id, { title: trimmedTitle, summary: recordSummaryDraft.trim() }), () => {
+      setStatusNotice(t('Saved')); setEditingRecord(null); setConfirmDiscardRecordEdit(false);
+    }, setRecordEditError);
   };
 
   const openRelocateModal = (
@@ -272,22 +268,9 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
 
   const handleConfirmRelocate = () => {
     if (!relocatingState || !notebookId || !targetNotebookId) return;
-    const res = relocateRecord(
-      relocatingState.mode,
-      notebookId,
-      relocatingState.record.id,
-      targetNotebookId,
-    );
-    const destName =
-      notebooks.find((n) => n.id === targetNotebookId)?.name ?? 'collection';
-    if (res) {
-      setStatusNotice(
-        relocatingState.mode === 'move'
-          ? `Moved "${relocatingState.record.title}" to ${destName}.`
-          : `Copied "${relocatingState.record.title}" to ${destName}.`,
-      );
-    }
-    setRelocatingState(null);
+    void perform(() => relocateRecord(relocatingState.mode, notebookId, relocatingState.record.id, targetNotebookId), () => {
+      setStatusNotice(t('Saved')); setRelocatingState(null);
+    });
   };
 
   const toggleExpandRecord = (id: string) => {
@@ -295,6 +278,17 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     );
   };
+
+  if (notebookId && libraryState === 'loading') return <LoadingState />;
+  if (notebookId && libraryState === 'error') return <View style={{ padding: 20, gap: 16 }}>
+    <Button variant="ghost" onPress={() => router.replace('/notebooks')}>{t('All Favorites')}</Button>
+    <ErrorState message={t(error)} onRetry={() => void refresh(notebookId)} />
+    {activeNotebook?.unreadable && <><Button variant="danger" disabled={busy} onPress={() => setConfirmDeleteNotebook(true)}>{t('Delete collection')}</Button>
+      <ConfirmDialog open={confirmDeleteNotebook} title={t('Delete collection')} confirmLabel={t('Delete')} busy={busy}
+        onCancel={() => setConfirmDeleteNotebook(false)} onConfirm={() => void perform(() => deleteNotebook(notebookId), () => { setConfirmDeleteNotebook(false); router.replace('/notebooks'); })}>
+        {!!operationError && <InlineAlert tone="danger">{t(operationError)}</InlineAlert>}
+      </ConfirmDialog></>}
+  </View>;
 
   // Render Collection Detail (`MS-FAVORITES-DETAIL`, `/notebooks/[notebookId]`)
   if (notebookId) {
@@ -305,6 +299,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
         >
           <View style={styles.detailHeader}>
             <Pressable
+                  disabled={busy}
               accessibilityRole="button"
               accessibilityLabel={t('Back to all Favorites')}
               onPress={() => router.push('/notebooks' as never)}
@@ -332,6 +327,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
               {t('This Favorites collection may have been deleted.')}
             </Text>
             <Pressable
+                  disabled={busy}
               accessibilityRole="button"
               accessibilityLabel={t('Return to Favorites')}
               onPress={() => router.push('/notebooks' as never)}
@@ -354,9 +350,11 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
     return (
       <View style={[styles.container, { backgroundColor: colors.background }]}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
+          {!!operationError && <InlineAlert tone="danger">{t(operationError)}</InlineAlert>}
           {/* Breadcrumb & Collection Actions */}
           <View style={styles.detailTopRow}>
             <Pressable
+                  disabled={busy}
               accessibilityRole="button"
               accessibilityLabel={t('Back to all Favorites')}
               onPress={() => router.push('/notebooks' as never)}
@@ -370,6 +368,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
 
             <View style={styles.detailHeaderActions}>
               <Pressable
+                  disabled={busy}
                 accessibilityRole="button"
                 accessibilityLabel={t('Edit collection metadata')}
                 onPress={() => openEditNotebookModal(activeNotebook)}
@@ -383,13 +382,10 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                 </Text>
               </Pressable>
               <Pressable
+                  disabled={busy}
                 accessibilityRole="button"
                 accessibilityLabel={t('Export Markdown')}
-                onPress={() =>
-                  setExportMarkdownText(
-                    exportNotebookAsMarkdown(activeNotebook, rawRecords),
-                  )
-                }
+                onPress={() => void perform(async () => { setExportMarkdownText(await exportNotebook(activeNotebook.id)); }, () => {})}
                 style={[styles.actionChip, { borderColor: colors.border }]}
               >
                 <Download size={14} color={colors.foreground} />
@@ -400,6 +396,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                 </Text>
               </Pressable>
               <Pressable
+                  disabled={busy}
                 accessibilityRole="button"
                 accessibilityLabel={t('Delete collection')}
                 onPress={() => setConfirmDeleteNotebook(true)}
@@ -480,6 +477,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                 {t(statusNotice)}
               </Text>
               <Pressable
+                  disabled={busy}
                 accessibilityRole="button"
                 accessibilityLabel={t('Dismiss notice')}
                 onPress={() => setStatusNotice(null)}
@@ -503,6 +501,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                 {t("Record \"{value1}\" was moved to {value2}.", { value1: String(focusedRecordStatus.record.title), value2: String(focusedRecordStatus.notebook.name) })}
               </Text>
               <Pressable
+                  disabled={busy}
                 accessibilityRole="button"
                 accessibilityLabel={t('Open relocated record')}
                 onPress={() =>
@@ -580,6 +579,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                 >
                   <Search size={15} color={colors.mutedForeground} />
                   <TextInput
+                    editable={!busy}
                     value={searchQuery}
                     onChangeText={setSearchQuery}
                     placeholder={t('Search saved originals in this collection...')}
@@ -589,6 +589,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                   />
                   {searchQuery ? (
                     <Pressable
+                  disabled={busy}
                       accessibilityRole="button"
                       accessibilityLabel={t('Clear search')}
                       onPress={() => setSearchQuery('')}
@@ -607,6 +608,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                     const active = kindFilter === kf.id;
                     return (
                       <Pressable
+                  disabled={busy}
                         key={kf.id}
                         accessibilityRole="button"
                         accessibilityState={{ selected: active }}
@@ -699,6 +701,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                         ]}
                       >
                         <Pressable
+                  disabled={busy}
                           accessibilityRole="button"
                           accessibilityLabel={t("Toggle favorite record {value1}", { value1: String(rec.title) })}
                           onPress={() => toggleExpandRecord(rec.id)}
@@ -780,6 +783,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                               </View>
                               {sessionId ? (
                                 <Pressable
+                  disabled={busy}
                                   accessibilityRole="button"
                                   accessibilityLabel={t("Open original session for {value1}", { value1: String(rec.title) })}
                                   onPress={() =>
@@ -849,11 +853,12 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                             {/* Record Action Bar */}
                             <View style={styles.recordActionsRow}>
                               <Pressable
+                  disabled={busy}
                                 accessibilityRole="button"
                                 accessibilityLabel={t("Use {value1} in Chat", { value1: String(rec.title) })}
                                 onPress={() =>
                                   router.push(
-                                    `/chat?attachFavoriteId=${rec.id}` as never,
+                                    `/chat?attachFavoriteId=${encodeURIComponent(rec.id)}&favoriteNotebookId=${encodeURIComponent(notebookId)}` as never,
                                   )
                                 }
                                 style={[
@@ -876,6 +881,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                               </Pressable>
 
                               <Pressable
+                  disabled={busy}
                                 accessibilityRole="button"
                                 accessibilityLabel={t("Edit details for {value1}", { value1: String(rec.title) })}
                                 onPress={() => openEditRecordModal(rec)}
@@ -896,6 +902,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                               </Pressable>
 
                               <Pressable
+                  disabled={busy}
                                 accessibilityRole="button"
                                 accessibilityLabel={t("Move {value1}", { value1: String(rec.title) })}
                                 onPress={() => openRelocateModal('move', rec)}
@@ -919,6 +926,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                               </Pressable>
 
                               <Pressable
+                  disabled={busy}
                                 accessibilityRole="button"
                                 accessibilityLabel={t("Copy {value1}", { value1: String(rec.title) })}
                                 onPress={() => openRelocateModal('copy', rec)}
@@ -939,11 +947,11 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                               </Pressable>
 
                               <Pressable
+                  disabled={busy}
                                 accessibilityRole="button"
                                 accessibilityLabel={t("Delete {value1}", { value1: String(rec.title) })}
                                 onPress={() => {
-                                  deleteRecord(notebookId, rec.id);
-                                  setStatusNotice(`Deleted "${rec.title}".`);
+                                  void perform(() => deleteRecord(notebookId, rec.id), () => setStatusNotice(t('Deleted')));
                                 }}
                                 style={[
                                   styles.recordActionBtn,
@@ -990,7 +998,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
           visible={metaModalOpen}
           transparent
           animationType="fade"
-          onRequestClose={() => setMetaModalOpen(false)}
+          onRequestClose={() => { if (!busy) setMetaModalOpen(false); }}
         >
           <View style={styles.modalBackdrop}>
             <View
@@ -1013,6 +1021,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                     : t('New Favorites Collection')}
                 </Text>
                 <Pressable
+                  disabled={busy}
                   accessibilityRole="button"
                   accessibilityLabel={t('Close collection dialog')}
                   onPress={() => setMetaModalOpen(false)}
@@ -1022,10 +1031,13 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
               </View>
 
               <View style={styles.modalBody}>
+                {busy && <LoadingState />}
+                {!!operationError && <InlineAlert tone="danger">{t(operationError)}</InlineAlert>}
                 <Text style={[styles.fieldLabel, { color: colors.foreground }]}>
                   {t('Collection Name')}
                 </Text>
                 <TextInput
+                    editable={!busy}
                   value={metaName}
                   onChangeText={(val) => {
                     setMetaName(val);
@@ -1048,6 +1060,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                   {t('Description')}
                 </Text>
                 <TextInput
+                    editable={!busy}
                   value={metaDescription}
                   onChangeText={setMetaDescription}
                   placeholder={t('Optional summary of saved items...')}
@@ -1071,6 +1084,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                     const selected = metaColor === swatch;
                     return (
                       <Pressable
+                  disabled={busy}
                         key={swatch}
                         accessibilityRole="button"
                         accessibilityLabel={t("Select color {value1}", { value1: String(swatch) })}
@@ -1104,6 +1118,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                 style={[styles.modalFooter, { borderTopColor: colors.border }]}
               >
                 <Pressable
+                  disabled={busy}
                   accessibilityRole="button"
                   accessibilityLabel={t('Cancel collection dialog')}
                   onPress={() => setMetaModalOpen(false)}
@@ -1122,6 +1137,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                   </Text>
                 </Pressable>
                 <Pressable
+                  disabled={busy}
                   accessibilityRole="button"
                   accessibilityLabel={t('Save collection metadata')}
                   onPress={handleSaveNotebookMeta}
@@ -1170,6 +1186,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                   {t('Edit Favorite Details')}
                 </Text>
                 <Pressable
+                  disabled={busy}
                   accessibilityRole="button"
                   accessibilityLabel={t('Close edit favorite dialog')}
                   onPress={handleRequestCloseRecordEdit}
@@ -1179,10 +1196,13 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
               </View>
 
               <View style={styles.modalBody}>
+                {busy && <LoadingState />}
+                {!!operationError && <InlineAlert tone="danger">{t(operationError)}</InlineAlert>}
                 <Text style={[styles.fieldLabel, { color: colors.foreground }]}>
                   {t('Favorite Title')}
                 </Text>
                 <TextInput
+                    editable={!busy}
                   value={recordTitleDraft}
                   onChangeText={(val) => {
                     setRecordTitleDraft(val);
@@ -1204,6 +1224,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                   {t('Summary / Annotation')}
                 </Text>
                 <TextInput
+                    editable={!busy}
                   value={recordSummaryDraft}
                   onChangeText={(val) => {
                     setRecordSummaryDraft(val);
@@ -1247,6 +1268,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                       {t('You have unsaved changes. Discard edits?')}
                     </Text>
                     <Pressable
+                  disabled={busy}
                       accessibilityRole="button"
                       accessibilityLabel={t('Discard unsaved favorite changes')}
                       onPress={() => {
@@ -1275,6 +1297,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                 style={[styles.modalFooter, { borderTopColor: colors.border }]}
               >
                 <Pressable
+                  disabled={busy}
                   accessibilityRole="button"
                   accessibilityLabel={t('Cancel edit favorite')}
                   onPress={handleRequestCloseRecordEdit}
@@ -1293,6 +1316,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                   </Text>
                 </Pressable>
                 <Pressable
+                  disabled={busy}
                   accessibilityRole="button"
                   accessibilityLabel={t('Save favorite details')}
                   onPress={handleSaveRecordEdit}
@@ -1320,7 +1344,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
           visible={Boolean(relocatingState)}
           transparent
           animationType="fade"
-          onRequestClose={() => setRelocatingState(null)}
+          onRequestClose={() => { if (!busy) setRelocatingState(null); }}
         >
           <View style={styles.modalBackdrop}>
             <View
@@ -1343,6 +1367,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                     : t('Copy Favorite to Collection')}
                 </Text>
                 <Pressable
+                  disabled={busy}
                   accessibilityRole="button"
                   accessibilityLabel={t('Close relocate dialog')}
                   onPress={() => setRelocatingState(null)}
@@ -1352,10 +1377,13 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
               </View>
 
               <View style={styles.modalBody}>
+                {busy && <LoadingState />}
+                {!!operationError && <InlineAlert tone="danger">{t(operationError)}</InlineAlert>}
                 {otherNotebooks.map((nb) => {
                   const selected = targetNotebookId === nb.id;
                   return (
                     <Pressable
+                  disabled={busy}
                       key={nb.id}
                       accessibilityRole="radio"
                       accessibilityState={{ selected }}
@@ -1399,6 +1427,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                 style={[styles.modalFooter, { borderTopColor: colors.border }]}
               >
                 <Pressable
+                  disabled={busy}
                   accessibilityRole="button"
                   accessibilityLabel={t('Cancel relocate')}
                   onPress={() => setRelocatingState(null)}
@@ -1417,6 +1446,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                   </Text>
                 </Pressable>
                 <Pressable
+                  disabled={busy}
                   accessibilityRole="button"
                   accessibilityLabel={t('Confirm relocate favorite')}
                   onPress={handleConfirmRelocate}
@@ -1467,6 +1497,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                   {t('Export Collection as Markdown')}
                 </Text>
                 <Pressable
+                  disabled={busy}
                   accessibilityRole="button"
                   accessibilityLabel={t('Close export dialog')}
                   onPress={() => setExportMarkdownText(null)}
@@ -1485,6 +1516,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                 style={[styles.modalFooter, { borderTopColor: colors.border }]}
               >
                 <Pressable
+                  disabled={busy}
                   accessibilityRole="button"
                   accessibilityLabel={t('Copy exported Markdown')}
                   onPress={async () => {
@@ -1518,7 +1550,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
           visible={confirmDeleteNotebook}
           transparent
           animationType="fade"
-          onRequestClose={() => setConfirmDeleteNotebook(false)}
+          onRequestClose={() => { if (!busy) setConfirmDeleteNotebook(false); }}
         >
           <View style={styles.modalBackdrop}>
             <View
@@ -1539,6 +1571,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                   {t('Delete Collection?')}
                 </Text>
                 <Pressable
+                  disabled={busy}
                   accessibilityRole="button"
                   accessibilityLabel={t('Close delete collection dialog')}
                   onPress={() => setConfirmDeleteNotebook(false)}
@@ -1547,6 +1580,8 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                 </Pressable>
               </View>
               <View style={styles.modalBody}>
+                {busy && <LoadingState />}
+                {!!operationError && <InlineAlert tone="danger">{t(operationError)}</InlineAlert>}
                 <Text
                   style={[styles.stateBody, { color: colors.mutedForeground }]}
                 >
@@ -1557,6 +1592,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                 style={[styles.modalFooter, { borderTopColor: colors.border }]}
               >
                 <Pressable
+                  disabled={busy}
                   accessibilityRole="button"
                   accessibilityLabel={t('Cancel delete collection')}
                   onPress={() => setConfirmDeleteNotebook(false)}
@@ -1575,14 +1611,13 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                   </Text>
                 </Pressable>
                 <Pressable
+                  disabled={busy}
                   accessibilityRole="button"
                   accessibilityLabel={t('Confirm delete collection')}
                   onPress={() => {
-                    if (activeNotebook) {
-                      deleteNotebook(activeNotebook.id);
-                    }
-                    setConfirmDeleteNotebook(false);
-                    router.push('/notebooks' as never);
+                    if (activeNotebook) void perform(() => deleteNotebook(activeNotebook.id), () => {
+                      setConfirmDeleteNotebook(false); router.replace('/notebooks');
+                    });
                   }}
                   style={[
                     styles.primaryBtn,
@@ -1609,6 +1644,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
+          {!!operationError && <InlineAlert tone="danger">{t(operationError)}</InlineAlert>}
         {/* Top Header */}
         <View style={styles.topHeader}>
           <View style={styles.topHeaderText}>
@@ -1640,6 +1676,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
           </View>
 
           <Pressable
+                  disabled={busy}
             accessibilityRole="button"
             accessibilityLabel={t('New notebook')}
             onPress={openCreateNotebookModal}
@@ -1700,6 +1737,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
               {t(statusNotice)}
             </Text>
             <Pressable
+                  disabled={busy}
               accessibilityRole="button"
               accessibilityLabel={t('Dismiss notice')}
               onPress={() => setStatusNotice(null)}
@@ -1719,15 +1757,17 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
           >
             <Search size={15} color={colors.mutedForeground} />
             <TextInput
+                    editable={!busy}
               value={searchQuery}
               onChangeText={setSearchQuery}
-              placeholder={t('Search folders, titles, or summaries...')}
+              placeholder={t('Search Favorites collections')}
               placeholderTextColor={colors.mutedForeground}
               accessibilityLabel={t('Search Favorites collections')}
               style={[styles.searchInput, { color: colors.foreground }]}
             />
             {searchQuery ? (
               <Pressable
+                  disabled={busy}
                 accessibilityRole="button"
                 accessibilityLabel={t('Clear search')}
                 onPress={() => setSearchQuery('')}
@@ -1737,46 +1777,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
             ) : null}
           </View>
 
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.statePillsRow}
-          >
-            {(['ready', 'loading', 'empty', 'error'] as const).map((st) => {
-              const active = libraryState === st;
-              return (
-                <Pressable
-                  key={st}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: active }}
-                  accessibilityLabel={t("Switch Favorites state to {value1}", { value1: String(st) })}
-                  onPress={() => setLibraryState(st)}
-                  style={[
-                    styles.statePill,
-                    {
-                      borderColor: active ? colors.primary : colors.border,
-                      backgroundColor: active
-                        ? colors.secondary
-                        : colors.card,
-                    },
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.statePillText,
-                      {
-                        color: active
-                          ? colors.primary
-                          : colors.mutedForeground,
-                      },
-                    ]}
-                  >
-                    {t("State: {value1}", { value1: String(st) })}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
+          <Button variant="secondary" disabled={busy || libraryState === 'loading'} onPress={() => void refresh()}>{t('Refresh')}</Button>
         </View>
 
         {libraryState === 'loading' ? (
@@ -1789,11 +1790,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
             <Text style={[styles.stateTitle, { color: colors.foreground }]}>
               {t('Loading Favorites collections...')}
             </Text>
-            <Text
-              style={[styles.stateBody, { color: colors.mutedForeground }]}
-            >
-              {t('Reading local Saved Originals index and record counts.')}
-            </Text>
+            <LoadingState />
           </View>
         ) : libraryState === 'error' ? (
           <View
@@ -1812,16 +1809,14 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
             <Text
               style={[styles.stateBody, { color: colors.mutedForeground }]}
             >
-              {t(
-                'Local Favorites index encountered a read error. Retry to reload collections.',
-              )}
+              {t(error)}
             </Text>
             <Pressable
+                  disabled={busy}
               accessibilityRole="button"
               accessibilityLabel={t('Retry loading Favorites')}
               onPress={() => {
-                resetFavoritesFixtures();
-                setLibraryState('ready');
+                void refresh();
               }}
               style={[styles.primaryBtn, { backgroundColor: colors.primary }]}
             >
@@ -1858,10 +1853,10 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                   )}
             </Text>
             <Pressable
+                  disabled={busy}
               accessibilityRole="button"
               accessibilityLabel={t('Create first collection')}
               onPress={() => {
-                setLibraryState('ready');
                 openCreateNotebookModal();
               }}
               style={[styles.primaryBtn, { backgroundColor: colors.primary }]}
@@ -1895,6 +1890,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                   ]}
                 >
                   <Pressable
+                  disabled={busy}
                     accessibilityRole="button"
                     accessibilityLabel={t("Open collection {value1}", { value1: String(nb.name) })}
                     onPress={() => router.push(`/notebooks/${nb.id}` as never)}
@@ -1963,7 +1959,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                             { color: colors.foreground },
                           ]}
                         >
-                          {t("{value1} item{value2}", { value1: String(records.length), value2: String(records.length === 1 ? '' : 's') })}
+                          {t("{value1} item{value2}", { value1: String(nb.record_count), value2: String(nb.record_count === 1 ? '' : 's') })}
                         </Text>
                       </View>
                     </View>
@@ -2018,6 +2014,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                     ]}
                   >
                     <Pressable
+                  disabled={busy}
                       accessibilityRole="button"
                       accessibilityLabel={t("Edit collection {value1}", { value1: String(nb.name) })}
                       onPress={() => openEditNotebookModal(nb)}
@@ -2035,6 +2032,7 @@ export function FavoritesScreen({ notebookId }: { notebookId?: string }) {
                     </Pressable>
 
                     <Pressable
+                  disabled={busy}
                       accessibilityRole="button"
                       accessibilityLabel={t("View items in {value1}", { value1: String(nb.name) })}
                       onPress={() =>

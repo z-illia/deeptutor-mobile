@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Modal,
   Pressable,
@@ -17,6 +17,9 @@ import {
   Sparkles,
   X,
 } from 'lucide-react-native';
+import { favoritesError } from './api';
+import { InlineAlert, LoadingState } from '@/shared/ui/Feedback';
+import { Button } from '@/shared/ui/Controls';
 import { useTheme } from '../../theme';
 import { useI18n } from '../../i18n';
 import {
@@ -31,6 +34,7 @@ import {
   FAVORITE_KIND_LABELS,
   favoriteKind,
   indexesForLastTurns,
+  type NotebookSavePayload,
 } from './model';
 
 export function SaveToNotebookModal() {
@@ -55,7 +59,11 @@ function SaveToNotebookModalContent({
   const { colors } = useTheme();
   const { t } = useI18n();
   const router = useRouter();
-  const { notebooks, createNotebook, saveRecordToNotebooks } = useFavorites();
+  const { notebooks, createNotebook, saveRecordToNotebooks, refresh, libraryState, error, busy } = useFavorites();
+  const lock = useRef(false);
+  const [confirmedIds, setConfirmedIds] = useState<string[]>([]);
+  const snapshot = useRef<NotebookSavePayload | null>(null);
+  useEffect(() => { void refresh(); }, [refresh]);
 
   const readableNotebooks = useMemo(
     () => notebooks.filter((nb) => !nb.unreadable),
@@ -100,12 +108,12 @@ function SaveToNotebookModalContent({
 
   const toggleNotebookSelection = (id: string) => {
     setErrorMessage(null);
-    setSelectedNotebookIds((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
-    );
+    if (confirmedIds.includes(id)) return;
+    setSelectedNotebookIds((prev) => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
   };
 
   const toggleMessageIndex = (idx: number) => {
+    if (confirmedIds.length) return;
     setErrorMessage(null);
     setSelectedMsgIndexes((prev) =>
       prev.includes(idx) ? prev.filter((item) => item !== idx) : [...prev, idx],
@@ -113,6 +121,7 @@ function SaveToNotebookModalContent({
   };
 
   const handleSelectMessagesPreset = (preset: 'all' | 'last1' | 'last3') => {
+    if (confirmedIds.length) return;
     if (!messages) return;
     setErrorMessage(null);
     if (preset === 'all') {
@@ -124,13 +133,16 @@ function SaveToNotebookModalContent({
     }
   };
 
-  const handleCreateInlineNotebook = () => {
+  const handleCreateInlineNotebook = async () => {
+    if (lock.current) return;
     const trimmed = newCollectionName.trim();
     if (!trimmed) {
       setErrorMessage('Enter a collection name.');
       return;
     }
-    const created = createNotebook({
+    lock.current = true;
+    try {
+    const created = await createNotebook({
       name: trimmed,
       color: DEFAULT_NOTEBOOK_COLOR,
     });
@@ -140,9 +152,12 @@ function SaveToNotebookModalContent({
     setNewCollectionName('');
     setCreatingInline(false);
     setErrorMessage(null);
+    } catch (cause) { setErrorMessage(favoritesError(cause)); }
+    finally { lock.current = false; }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (lock.current || busy || libraryState === 'loading' || libraryState === 'error') return;
     const trimmedTitle = title.trim();
     if (!trimmedTitle) {
       setErrorMessage('Title cannot be empty.');
@@ -166,7 +181,9 @@ function SaveToNotebookModalContent({
         ? buildUserQueryFromMessages(selectedMessages) || payload.userQuery
         : payload.userQuery;
 
-    saveRecordToNotebooks(selectedNotebookIds, {
+    lock.current = true; setErrorMessage(null);
+    try {
+    const savePayload = snapshot.current ?? {
       ...payload,
       title: trimmedTitle,
       summary: summary.trim() || payload.summary,
@@ -177,9 +194,20 @@ function SaveToNotebookModalContent({
         saved_message_count:
           messages && messages.length > 0 ? selectedMessages.length : undefined,
       },
-    });
-
-    setSavedDestinationId(selectedNotebookIds[0]);
+    };
+    const result = await saveRecordToNotebooks(selectedNotebookIds.filter(id => !confirmedIds.includes(id)), savePayload);
+    if (result.savedNotebookIds.length) snapshot.current = savePayload;
+    const allConfirmed = [...new Set([...confirmedIds, ...result.savedNotebookIds])];
+    setConfirmedIds(allConfirmed);
+    if (result.failedNotebookIds.length) {
+      setSelectedNotebookIds(result.failedNotebookIds);
+      setErrorMessage('Some collections were not saved. Retry the remaining selections.');
+      return;
+    }
+    if (!allConfirmed.length) { setErrorMessage('Select at least one collection.'); return; }
+    setSavedDestinationId(allConfirmed[0]);
+    } catch (cause) { setErrorMessage(favoritesError(cause)); }
+    finally { lock.current = false; }
   };
 
   return (
@@ -187,10 +215,11 @@ function SaveToNotebookModalContent({
       visible
       transparent
       animationType="fade"
-      onRequestClose={onClose}
+      onRequestClose={() => { if (!busy) onClose(); }}
     >
       <View style={styles.backdrop}>
         <Pressable
+                  disabled={busy}
           style={StyleSheet.absoluteFill}
           onPress={onClose}
           accessibilityLabel={t('Close modal backdrop')}
@@ -226,6 +255,7 @@ function SaveToNotebookModalContent({
               </View>
             </View>
             <Pressable
+                  disabled={busy}
               accessibilityRole="button"
               accessibilityLabel={t('Close Save to Favorites')}
               onPress={onClose}
@@ -254,10 +284,11 @@ function SaveToNotebookModalContent({
                   { color: colors.mutedForeground },
                 ]}
               >
-                {t("Immutable snapshot stored in {value1} collection{value2}.", { value1: String(selectedNotebookIds.length), value2: String(selectedNotebookIds.length === 1 ? '' : 's') })}
+                {t("Immutable snapshot stored in {value1} collection{value2}.", { value1: String(confirmedIds.length), value2: String(confirmedIds.length === 1 ? '' : 's') })}
               </Text>
               <View style={styles.savedActionsRow}>
                 <Pressable
+                  disabled={busy}
                   accessibilityRole="button"
                   accessibilityLabel={t('Open Favorites Collection')}
                   onPress={() => {
@@ -280,6 +311,7 @@ function SaveToNotebookModalContent({
                   </Text>
                 </Pressable>
                 <Pressable
+                  disabled={busy}
                   accessibilityRole="button"
                   accessibilityLabel={t('Done saving favorite')}
                   onPress={onClose}
@@ -311,6 +343,7 @@ function SaveToNotebookModalContent({
                     {t('Snapshot Title')}
                   </Text>
                   <TextInput
+                    editable={!busy && confirmedIds.length === 0}
                     value={title}
                     onChangeText={(val) => {
                       setCustomTitle(val);
@@ -336,6 +369,7 @@ function SaveToNotebookModalContent({
                     {t('Note / Summary (Optional)')}
                   </Text>
                   <TextInput
+                    editable={!busy && confirmedIds.length === 0}
                     value={summary}
                     onChangeText={setSummary}
                     placeholder={t('Add context note for this snapshot...')}
@@ -362,6 +396,7 @@ function SaveToNotebookModalContent({
                       </Text>
                       <View style={styles.presetRow}>
                         <Pressable
+                  disabled={busy}
                           accessibilityRole="button"
                           accessibilityLabel={t('Select all messages')}
                           onPress={() => handleSelectMessagesPreset('all')}
@@ -380,6 +415,7 @@ function SaveToNotebookModalContent({
                           </Text>
                         </Pressable>
                         <Pressable
+                  disabled={busy}
                           accessibilityRole="button"
                           accessibilityLabel={t('Select last turn')}
                           onPress={() => handleSelectMessagesPreset('last1')}
@@ -398,6 +434,7 @@ function SaveToNotebookModalContent({
                           </Text>
                         </Pressable>
                         <Pressable
+                  disabled={busy}
                           accessibilityRole="button"
                           accessibilityLabel={t('Select last 3 turns')}
                           onPress={() => handleSelectMessagesPreset('last3')}
@@ -427,6 +464,7 @@ function SaveToNotebookModalContent({
                         const checked = selectedMsgIndexes.includes(idx);
                         return (
                           <Pressable
+                  disabled={busy}
                             key={`save-msg-${idx}`}
                             accessibilityRole="checkbox"
                             accessibilityState={{ checked }}
@@ -492,6 +530,7 @@ function SaveToNotebookModalContent({
                       {t('Destination Collections')}
                     </Text>
                     <Pressable
+                  disabled={busy}
                       accessibilityRole="button"
                       accessibilityLabel={t('Create new collection inline')}
                       onPress={() => setCreatingInline((v) => !v)}
@@ -512,6 +551,7 @@ function SaveToNotebookModalContent({
                   {creatingInline ? (
                     <View style={styles.inlineCreateRow}>
                       <TextInput
+                    editable={!busy}
                         value={newCollectionName}
                         onChangeText={setNewCollectionName}
                         placeholder={t('New collection name...')}
@@ -528,9 +568,10 @@ function SaveToNotebookModalContent({
                         ]}
                       />
                       <Pressable
+                  disabled={busy}
                         accessibilityRole="button"
                         accessibilityLabel={t('Confirm create collection')}
-                        onPress={handleCreateInlineNotebook}
+                        onPress={() => void handleCreateInlineNotebook()}
                         style={[
                           styles.inlineCreateConfirmBtn,
                           { backgroundColor: colors.primary },
@@ -550,9 +591,10 @@ function SaveToNotebookModalContent({
 
                   <View style={styles.collectionList}>
                     {readableNotebooks.map((nb) => {
-                      const selected = selectedNotebookIds.includes(nb.id);
+                      const selected = selectedNotebookIds.includes(nb.id) || confirmedIds.includes(nb.id);
                       return (
                         <Pressable
+                  disabled={busy || confirmedIds.includes(nb.id)}
                           key={nb.id}
                           accessibilityRole="checkbox"
                           accessibilityState={{ checked: selected }}
@@ -620,6 +662,8 @@ function SaveToNotebookModalContent({
                   </View>
                 </View>
 
+                {(busy || libraryState === 'loading') && <LoadingState />}
+                {!!error && <><InlineAlert tone="danger">{t(error)}</InlineAlert><Button onPress={() => void refresh()}>{t('Retry')}</Button></>}
                 {errorMessage ? (
                   <View
                     style={[
@@ -643,6 +687,7 @@ function SaveToNotebookModalContent({
                 style={[styles.footer, { borderTopColor: colors.border }]}
               >
                 <Pressable
+                  disabled={busy}
                   accessibilityRole="button"
                   accessibilityLabel={t('Cancel Save to Favorites')}
                   onPress={onClose}
@@ -661,9 +706,10 @@ function SaveToNotebookModalContent({
                   </Text>
                 </Pressable>
                 <Pressable
+                  disabled={busy || libraryState === 'loading' || libraryState === 'error'}
                   accessibilityRole="button"
                   accessibilityLabel={t('Confirm Save to Favorites')}
-                  onPress={handleSave}
+                  onPress={() => void handleSave()}
                   style={[
                     styles.primaryBtn,
                     { backgroundColor: colors.primary },

@@ -3,9 +3,13 @@ import type { ThemeChoice, LayoutChoice } from '../design/tokens';
 import type { Language } from '@/i18n/copy';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import type { Preferences } from '@/features/entry/model';
 
 export interface LocalTask { id: string; title: string; status: string }
 interface PreferencesState {
+  appliedSettings: Preferences | null;
+  settingsOwner: string;
+  applySettings: (preferences: Preferences, owner: string) => void;
   workspace: string;
   theme: ThemeChoice;
   language: Language;
@@ -23,6 +27,8 @@ interface PreferencesState {
 }
 // Device preferences are shared by every route. Keep credentials out of persisted drafts.
 export const usePreferencesStore = create<PreferencesState>()(persist((set) => ({
+  appliedSettings: null, settingsOwner: '',
+  applySettings: (preferences, owner) => set({ appliedSettings: preferences, settingsOwner: owner, theme: preferences.theme, language: preferences.language, layout: preferences.layout }),
   workspace: 'Software Development', theme: 'system', language: 'en', layout: 'modern', values: {}, tasks: {}, notes: {},
   setWorkspace: workspace => set({ workspace }),
   setTheme: theme => set({ theme }),

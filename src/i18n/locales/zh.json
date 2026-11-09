@@ -2569,5 +2569,18 @@
   "Unable to load workspaces. Please try again.": "无法加载工作区。请重试。",
   "Avatar image is too large (max 1 MB).": "头像图片过大（最大 1 MB）。",
   "Avatar must be a PNG, JPEG or WebP image.": "头像必须是 PNG、JPEG 或 WebP 图片。",
-  "PNG, JPEG or WebP · up to 1 MB": "PNG、JPEG 或 WebP · 最大 1 MB"
+  "PNG, JPEG or WebP · up to 1 MB": "PNG、JPEG 或 WebP · 最大 1 MB",
+  "Deleted": "已删除",
+  "Please wait and try again.": "请稍候再试。",
+  "Save reply to Favorites": "将回复保存到收藏夹",
+  "Some collections were not saved. Retry the remaining selections.": "部分收藏集未保存。请重试其余选项。",
+  "The workspace has changed.": "工作区已更改。",
+  "This collection is unreadable. Restore a backup or delete it.": "无法读取此收藏集。请恢复备份或将其删除。",
+  "Remove": "移除",
+  "Local edits will be replaced with the server settings and saved draft.": "本地修改将被服务器上的设置和已保存草稿替换。",
+  "Reload settings?": "重新加载设置？",
+  "Settings applied, but the draft could not be cleared. Retry Apply.": "设置已应用，但无法清除草稿。请再次应用。",
+  "Settings changed on the server. Reload before saving.": "服务器上的设置已更改。请重新加载后再保存。",
+  "Applies General and Appearance changes.": "应用常规和外观设置的更改。",
+  "This layout is saved on this device.": "此布局保存在本设备上。"
 }

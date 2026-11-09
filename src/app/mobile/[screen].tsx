@@ -5,6 +5,8 @@ import { MobileScreen } from '@/features/mobile/MobileScreen';
 
 export default function MobileRoute() {
   const { screen } = useLocalSearchParams<{ screen: string }>();
+  if ([81, 82, 83, 141].includes(Number(screen))) return <EntryBoundary><Redirect href={Number(screen) === 83 ? '/settings/appearance' : '/settings/general'} /></EntryBoundary>;
+  if ([31, 32].includes(Number(screen))) return <EntryBoundary><Redirect href="/notebooks" /></EntryBoundary>;
   if ([63, 64, 138].includes(Number(screen))) return <EntryBoundary><Redirect href="/profile" /></EntryBoundary>;
   if (Number(screen) === 62) return <EntryBoundary><WorkspaceScreen /></EntryBoundary>;
   if (Number(screen) === 58) return <EntryBoundary><Redirect href="/learning/live?view=progress" /></EntryBoundary>;

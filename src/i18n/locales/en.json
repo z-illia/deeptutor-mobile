@@ -2569,5 +2569,18 @@
   "Unable to load workspaces. Please try again.": "Unable to load workspaces. Please try again.",
   "Avatar image is too large (max 1 MB).": "Avatar image is too large (max 1 MB).",
   "Avatar must be a PNG, JPEG or WebP image.": "Avatar must be a PNG, JPEG or WebP image.",
-  "PNG, JPEG or WebP · up to 1 MB": "PNG, JPEG or WebP · up to 1 MB"
+  "PNG, JPEG or WebP · up to 1 MB": "PNG, JPEG or WebP · up to 1 MB",
+  "Deleted": "Deleted",
+  "Please wait and try again.": "Please wait and try again.",
+  "Save reply to Favorites": "Save reply to Favorites",
+  "Some collections were not saved. Retry the remaining selections.": "Some collections were not saved. Retry the remaining selections.",
+  "The workspace has changed.": "The workspace has changed.",
+  "This collection is unreadable. Restore a backup or delete it.": "This collection is unreadable. Restore a backup or delete it.",
+  "Remove": "Remove",
+  "Local edits will be replaced with the server settings and saved draft.": "Local edits will be replaced with the server settings and saved draft.",
+  "Reload settings?": "Reload settings?",
+  "Settings applied, but the draft could not be cleared. Retry Apply.": "Settings applied, but the draft could not be cleared. Retry Apply.",
+  "Settings changed on the server. Reload before saving.": "Settings changed on the server. Reload before saving.",
+  "Applies General and Appearance changes.": "Applies General and Appearance changes.",
+  "This layout is saved on this device.": "This layout is saved on this device."
 }

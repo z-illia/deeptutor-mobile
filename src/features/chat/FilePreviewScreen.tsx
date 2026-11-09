@@ -26,7 +26,6 @@ import {
 import { useTheme } from '../../theme';
 import { useI18n } from '../../i18n';
 import { useFavorites } from '../favorites/FavoritesProvider';
-import { SaveToNotebookModal } from '../favorites/SaveToNotebookModal';
 import { ChatMarkdown } from './ChatMarkdown';
 import { useChat } from './ChatProvider';
 import {
@@ -671,7 +670,6 @@ export function FilePreviewScreen() {
         )}
       </ScrollView>
 
-      <SaveToNotebookModal />
     </View>
   );
 }

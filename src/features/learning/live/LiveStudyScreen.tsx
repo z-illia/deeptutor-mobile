@@ -25,7 +25,8 @@ import { activeResourceCount } from './study-resources';
 import { useLearningData } from './useLearningData';
 
 export function LiveStudyScreen({ workspace, pathId, sessionId, mode, prompt, reading, onLeave }: { workspace: string; pathId: string; sessionId: string | null; mode?: string; prompt?: string; reading?: LearningChatContext; onLeave?: () => void }) {
-  const { colors, language } = useDesign();
+  const { colors, language: interfaceLanguage, preferences } = useDesign();
+  const language = preferences?.responseLanguage ?? interfaceLanguage;
   const auth = useAuth();
   const key = `${auth.serverUrl}:${auth.session?.profile?.id ?? 'local'}:${workspace}:${pathId}:${sessionId ?? 'new'}`;
   const [restored] = useState(() => readStudyDraft(key));

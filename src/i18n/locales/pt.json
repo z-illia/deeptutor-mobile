@@ -2569,5 +2569,18 @@
   "Unable to load workspaces. Please try again.": "Não foi possível carregar os espaços de trabalho. Tente novamente.",
   "Avatar image is too large (max 1 MB).": "A imagem do avatar é demasiado grande (máximo de 1 MB).",
   "Avatar must be a PNG, JPEG or WebP image.": "O avatar deve ser uma imagem PNG, JPEG ou WebP.",
-  "PNG, JPEG or WebP · up to 1 MB": "PNG, JPEG ou WebP · até 1 MB"
+  "PNG, JPEG or WebP · up to 1 MB": "PNG, JPEG ou WebP · até 1 MB",
+  "Deleted": "Eliminado",
+  "Please wait and try again.": "Aguarde e tente novamente.",
+  "Save reply to Favorites": "Guardar resposta nos favoritos",
+  "Some collections were not saved. Retry the remaining selections.": "Algumas coleções não foram guardadas. Tente novamente para as restantes.",
+  "The workspace has changed.": "O espaço de trabalho mudou.",
+  "This collection is unreadable. Restore a backup or delete it.": "Esta coleção não pode ser lida. Restaure uma cópia de segurança ou elimine-a.",
+  "Remove": "Remover",
+  "Local edits will be replaced with the server settings and saved draft.": "As alterações locais serão substituídas pelas definições e pelo rascunho guardados no servidor.",
+  "Reload settings?": "Recarregar definições?",
+  "Settings applied, but the draft could not be cleared. Retry Apply.": "As definições foram aplicadas, mas não foi possível limpar o rascunho. Tente aplicar novamente.",
+  "Settings changed on the server. Reload before saving.": "As definições no servidor foram alteradas. Recarregue antes de guardar.",
+  "Applies General and Appearance changes.": "Aplica alterações nas secções Geral e Aparência.",
+  "This layout is saved on this device.": "Este esquema é guardado neste dispositivo."
 }

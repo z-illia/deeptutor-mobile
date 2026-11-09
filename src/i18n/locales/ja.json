@@ -2569,5 +2569,18 @@
   "Unable to load workspaces. Please try again.": "ワークスペースを読み込めませんでした。もう一度お試しください。",
   "Avatar image is too large (max 1 MB).": "アバター画像が大きすぎます（最大1 MB）。",
   "Avatar must be a PNG, JPEG or WebP image.": "アバターにはPNG、JPEG、WebP形式の画像を使用してください。",
-  "PNG, JPEG or WebP · up to 1 MB": "PNG、JPEG、WebP · 最大1 MB"
+  "PNG, JPEG or WebP · up to 1 MB": "PNG、JPEG、WebP · 最大1 MB",
+  "Deleted": "削除しました",
+  "Please wait and try again.": "しばらく待ってからもう一度お試しください。",
+  "Save reply to Favorites": "返信をお気に入りに保存",
+  "Some collections were not saved. Retry the remaining selections.": "一部のコレクションに保存できませんでした。残りの選択項目で再試行してください。",
+  "The workspace has changed.": "ワークスペースが変更されました。",
+  "This collection is unreadable. Restore a backup or delete it.": "このコレクションは読み取れません。バックアップを復元するか削除してください。",
+  "Remove": "削除",
+  "Local edits will be replaced with the server settings and saved draft.": "ローカルの変更は、サーバーの設定と保存済みの下書きに置き換えられます。",
+  "Reload settings?": "設定を再読み込みしますか？",
+  "Settings applied, but the draft could not be cleared. Retry Apply.": "設定は適用されましたが、下書きを削除できませんでした。もう一度適用してください。",
+  "Settings changed on the server. Reload before saving.": "サーバーの設定が変更されました。保存する前に再読み込みしてください。",
+  "Applies General and Appearance changes.": "一般と外観の変更を適用します。",
+  "This layout is saved on this device.": "このレイアウトはこのデバイスに保存されます。"
 }

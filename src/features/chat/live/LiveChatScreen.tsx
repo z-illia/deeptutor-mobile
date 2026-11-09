@@ -1,4 +1,5 @@
 import { WorkspaceSheet } from '@/features/entry/WorkspaceSheet';
+import { useFavorites } from '@/features/favorites/FavoritesProvider';
 import { useWorkspaces } from '@/features/workspaces/WorkspaceProvider';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { useCopy } from '@/features/entry/copy';
@@ -8,7 +9,7 @@ import { Button, IconButton } from '@/shared/ui/Controls';
 import { InlineAlert, LoadingState, StatusChip } from '@/shared/ui/Feedback';
 import { DText } from '@/shared/ui/Text';
 import { router, useLocalSearchParams } from 'expo-router';
-import { ChevronLeft, History, Layers, Plus } from 'lucide-react-native';
+import { Bookmark, ChevronLeft, History, Layers, Plus } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -21,17 +22,18 @@ import { TutorComposer } from './TutorComposer';
 import { useLiveChat } from './useLiveChat';
 
 export function LiveChatScreen({ showHistory = false }: { showHistory?: boolean }) {
-  const params = useLocalSearchParams<{ sessionId?: string; new?: string }>();
+  const params = useLocalSearchParams<{ sessionId?: string; new?: string; attachFavoriteId?: string; favoriteNotebookId?: string }>();
   const auth = useAuth();
   const { selectedWorkspaceId } = useWorkspaces();
   const id = typeof params.sessionId === 'string' ? params.sessionId : null;
-  return <ConversationScreen key={`${auth.serverUrl}:${auth.session?.profile?.id}:${selectedWorkspaceId}:${id ?? params.new ?? 'new'}`} sessionId={id} showHistory={showHistory} />;
+  return <ConversationScreen key={`${auth.serverUrl}:${auth.session?.profile?.id}:${selectedWorkspaceId}:${id ?? params.new ?? 'new'}:${params.attachFavoriteId ?? ''}:${params.favoriteNotebookId ?? ''}`} sessionId={id} showHistory={showHistory} favorite={params.attachFavoriteId && params.favoriteNotebookId ? { notebook_id: params.favoriteNotebookId, record_ids: [params.attachFavoriteId] } : undefined} />;
 }
 
-function ConversationScreen({ sessionId, showHistory }: { sessionId: string | null; showHistory: boolean }) {
+function ConversationScreen({ sessionId, showHistory, favorite }: { sessionId: string | null; showHistory: boolean; favorite?: { notebook_id: string; record_ids: string[] } }) {
   const { selectedWorkspaceId } = useWorkspaces();
-  const chat = useLiveChat(sessionId, { workspace_id: selectedWorkspaceId, workspace_mode: 'chat' });
-  const { colors, language } = useDesign();
+  const chat = useLiveChat(sessionId, { workspace_id: selectedWorkspaceId, workspace_mode: 'chat' }, favorite ? { text: '', configuration: { notebook_references: [favorite] } } : undefined);
+  const { openSaveModal } = useFavorites();
+  const { colors, language, preferences } = useDesign();
   const t = useCopy();
   const [historyOpen, setHistoryOpen] = useState(showHistory);
   const [workspaceOpen, setWorkspaceOpen] = useState(false);
@@ -43,15 +45,21 @@ function ConversationScreen({ sessionId, showHistory }: { sessionId: string | nu
   const followBottom = useRef(true);
   const newChat = () => router.push({ pathname: '/chat', params: { new: commandId() } });
   const openHistory = () => { setHistoryOpen(true); void chat.refreshHistory(); };
+  const saveConversation = () => openSaveModal({
+    payload: { recordType: 'chat', title: chat.title, userQuery: '', output: '', metadata: { session_id: chat.serverSessionId, source_surface: 'chat', content_workspace_id: selectedWorkspaceId } },
+    messages: chat.messages.filter(item => item.role === 'user' || item.role === 'assistant').map(item => ({ role: item.role as 'user' | 'assistant', content: item.content })),
+  });
   return <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, gap: 8, minHeight: 60, borderBottomWidth: 1, borderColor: colors.border }}>
         <IconButton label={t('Back')} onPress={() => router.canGoBack() ? router.back() : router.replace('/mobile/1')}><ChevronLeft size={22} color={colors.foreground} /></IconButton>
         <DText accessibilityRole="header" numberOfLines={1} style={{ flex: 1, fontSize: 22 }}>{chat.serverSessionId ? chat.title : t('New chat')}</DText>
+        <IconButton label={t('Save to Favorites')} disabled={chat.busy || chat.loading || !chat.messages.length} onPress={saveConversation}><Bookmark size={22} color={colors.foreground} /></IconButton>
         <IconButton label={t('Switch workspace')} onPress={() => setWorkspaceOpen(true)}><Layers size={22} color={colors.foreground} /></IconButton>
         <IconButton label={t('Recent conversations')} onPress={openHistory}><History size={22} color={colors.foreground} /></IconButton>
         <IconButton label={t('New chat')} onPress={newChat}><Plus size={22} color={colors.foreground} /></IconButton>
       </View>
+      {!!chat.configuration.notebook_references?.length && <View style={{ paddingHorizontal: 16 }}><Button variant="ghost" onPress={() => chat.setConfiguration(previous => ({ ...previous, notebook_references: [] }))}>{t('Saved Original')} · {t('Remove')}</Button></View>}
       {chat.loading && <LoadingState />}
       {!!chat.error && <View style={{ padding: 16, gap: 8 }}><InlineAlert tone="danger">{t(chat.error)}</InlineAlert><Button variant="secondary" onPress={chat.reload}>{t('Reload conversation')}</Button></View>}
       <FlatList
@@ -67,6 +75,11 @@ function ConversationScreen({ sessionId, showHistory }: { sessionId: string | nu
         renderItem={({ item }) => <View style={{ gap: 8, padding: item.role === 'user' ? 16 : 0, borderRadius: 16, backgroundColor: item.role === 'user' ? colors.secondary : 'transparent' }}>
           <DText role="label" muted>{t(item.role === 'user' ? 'You' : 'DeepTutor')}</DText>
           {item.content ? <ChatMarkdown content={item.content} /> : chat.busy ? <DText muted>{t('Thinking…')}</DText> : null}
+          {item.role === 'assistant' && !!item.content && !chat.busy && <Button variant="ghost" onPress={() => {
+            const index = chat.messages.indexOf(item);
+            const prompt = chat.messages.slice(0, index).findLast(row => row.role === 'user')?.content ?? '';
+            openSaveModal({ payload: { recordType: 'chat', title: chat.title, userQuery: prompt, output: item.content, metadata: { session_id: chat.serverSessionId, message_id: item.id, source_surface: 'chat', content_workspace_id: selectedWorkspaceId } } });
+          }}>{t('Save reply to Favorites')}</Button>}
         </View>}
       />
       <TutorComposer
@@ -76,7 +89,7 @@ function ConversationScreen({ sessionId, showHistory }: { sessionId: string | nu
         workspace={selectedWorkspaceId}
         configuration={chat.configuration} onConfigure={chat.setConfiguration}
         loading={chat.loading} busy={chat.busy} waiting={chat.waiting} error={!!chat.error}
-        onSend={() => { followBottom.current = true; void chat.send(language); }}
+        onSend={() => { followBottom.current = true; void chat.send(preferences?.responseLanguage ?? language); }}
         onStop={() => void chat.stop()}
       />
     </KeyboardAvoidingView>

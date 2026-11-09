@@ -2569,5 +2569,18 @@
   "Unable to load workspaces. Please try again.": "Impossible de charger les espaces de travail. Réessayez.",
   "Avatar image is too large (max 1 MB).": "L’image de l’avatar est trop volumineuse (1 Mo maximum).",
   "Avatar must be a PNG, JPEG or WebP image.": "L’avatar doit être une image PNG, JPEG ou WebP.",
-  "PNG, JPEG or WebP · up to 1 MB": "PNG, JPEG ou WebP · jusqu’à 1 Mo"
+  "PNG, JPEG or WebP · up to 1 MB": "PNG, JPEG ou WebP · jusqu’à 1 Mo",
+  "Deleted": "Supprimé",
+  "Please wait and try again.": "Veuillez patienter et réessayer.",
+  "Save reply to Favorites": "Enregistrer la réponse dans les favoris",
+  "Some collections were not saved. Retry the remaining selections.": "Certaines collections n’ont pas été enregistrées. Réessayez pour les sélections restantes.",
+  "The workspace has changed.": "L’espace de travail a changé.",
+  "This collection is unreadable. Restore a backup or delete it.": "Cette collection est illisible. Restaurez une sauvegarde ou supprimez-la.",
+  "Remove": "Retirer",
+  "Local edits will be replaced with the server settings and saved draft.": "Les modifications locales seront remplacées par les paramètres et le brouillon enregistrés sur le serveur.",
+  "Reload settings?": "Recharger les paramètres ?",
+  "Settings applied, but the draft could not be cleared. Retry Apply.": "Les paramètres ont été appliqués, mais le brouillon n’a pas pu être supprimé. Réessayez de les appliquer.",
+  "Settings changed on the server. Reload before saving.": "Les paramètres ont changé sur le serveur. Rechargez-les avant d’enregistrer.",
+  "Applies General and Appearance changes.": "Applique les modifications des sections Général et Apparence.",
+  "This layout is saved on this device.": "Cette disposition est enregistrée sur cet appareil."
 }

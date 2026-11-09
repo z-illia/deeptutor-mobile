@@ -21,7 +21,6 @@ import { useLayoutDimensions } from '@/hooks/use-layout-dimensions';
 import { ChatMarkdown } from '@/features/chat/ChatMarkdown';
 import { useCopy } from '@/features/entry/copy';
 import { useFavorites } from '@/features/favorites/FavoritesProvider';
-import { SaveToNotebookModal } from '@/features/favorites/SaveToNotebookModal';
 import { useDesign } from '@/shared/design/DesignProvider';
 import { alpha, geometry } from '@/shared/design/tokens';
 import { Button } from '@/shared/ui/Controls';
@@ -1342,7 +1341,6 @@ export function MasteryStudyScreen({
       </Dialog>
 
       {/* Save to Favorites Modal (`UI-FAVORITES-SAVE`) */}
-      <SaveToNotebookModal />
     </View>
   );
 }

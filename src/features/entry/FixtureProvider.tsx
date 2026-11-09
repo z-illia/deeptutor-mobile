@@ -1,11 +1,11 @@
 import { createContext, useContext, useRef, useState, type PropsWithChildren } from 'react';
 import { useWorkspaces } from '@/features/workspaces/WorkspaceProvider';
 import { useAuth } from '@/features/auth/AuthProvider';
-import { useDesign } from '@/shared/design/DesignProvider';
-import { defaultPreferences, principalFor, settingsTransition, type EntryMode, type Preferences, type ResourceState, type SettingsState } from './model';
+import { useSettings } from '@/features/settings/SettingsProvider';
+import { principalFor, type EntryMode, type ResourceState } from './model';
 
 function useFixtureState() {
-  const design = useDesign();
+  const liveSettings = useSettings();
   const auth = useAuth();
   const session = auth.session;
   const initialMode: EntryMode = !session?.status.enabled ? 'disabled' : !session.profile ? 'signed-out' : session.profile.mustChange ? 'temporary' : session.profile.role === 'admin' ? 'admin' : session.status.preset === 'learner' ? 'learner' : 'standard';
@@ -14,23 +14,15 @@ function useFixtureState() {
   const { selectedWorkspaceId: workspace, selectWorkspace } = useWorkspaces();
   const setWorkspace = (id: string) => { void selectWorkspace(id); };
   const [resourceState, setResourceState] = useState<ResourceState>('ready');
-  const [settingsState, setSettingsState] = useState<ResourceState>('ready');
   const [whisper, setWhisper] = useState(false);
   const [failOperation, setFailOperation] = useState(false);
-  const [storedSettings, setSettings] = useState<SettingsState>({ active: { ...defaultPreferences, theme: design.theme, language: design.language, layout: design.layout }, staged: { ...defaultPreferences, theme: design.theme, language: design.language, layout: design.layout }, saved: null, phase: 'clean' });
   const [busy, setBusy] = useState<string | null>(null);
   const [password, setPassword] = useState('fixture-password');
   const [registered, setRegistered] = useState<{ username: string; password: string; first: boolean } | null>(null);
-  const syncSettings = (old: SettingsState): SettingsState => {
-    const active = { ...old.active, theme: design.theme, language: design.language, layout: design.layout };
-    return { ...old, active, staged: old.phase === 'clean' || old.phase === 'applied' ? active : old.staged };
-  };
-  const settings = syncSettings(storedSettings);
   const lock = useRef(false);
   const generation = useRef(0);
   const resetMode = (next: EntryMode) => {
     generation.current++; lock.current = false; setBusy(null); setMode(next); setProfile(principalFor(next)); setWorkspace(''); setPassword('fixture-password'); setRegistered(null);
-    setSettings({ active: { ...defaultPreferences, theme: design.theme, language: design.language, layout: design.layout }, staged: { ...defaultPreferences, theme: design.theme, language: design.language, layout: design.layout }, saved: null, phase: 'clean' });
   };
   const run = async (name: string, commit: () => void, forceFailure = false) => {
     if (lock.current) return false;
@@ -41,14 +33,7 @@ function useFixtureState() {
     if (ok) commit();
     lock.current = false; setBusy(null); return ok;
   };
-  const edit = (patch: Partial<Preferences>) => setSettings(old => settingsTransition(syncSettings(old), { type: 'edit', patch }));
-  const save = (operation: 'save' | 'apply' | 'discard') => {
-    if (operation === 'discard' && !lock.current) { setSettings(old => settingsTransition(syncSettings(old), { type: 'discard' })); return Promise.resolve(true); }
-    return run(operation, () => {
-    setSettings(old => settingsTransition(syncSettings(old), { type: operation }));
-    if (operation === 'apply') { design.setTheme(settings.staged.theme); design.setLayout(settings.staged.layout); design.setLanguage(settings.staged.language); }
-  }); };
-  return { mode: session?.profile ? initialMode : mode, resetMode, profile: session?.profile ?? profile, setProfile, workspace, setWorkspace, resourceState, setResourceState, settingsState, setSettingsState, whisper, setWhisper, failOperation, setFailOperation, settings, edit, save, busy, run, password, setPassword, registered, setRegistered, signOut: () => { void auth.signOut().catch(() => { void auth.refresh(); }); } };
+  return { mode: session?.profile ? initialMode : mode, resetMode, profile: session?.profile ?? profile, setProfile, workspace, setWorkspace, resourceState, setResourceState, whisper, setWhisper, failOperation, setFailOperation, settings: liveSettings.state, edit: liveSettings.edit, save: liveSettings.save, busy, run, password, setPassword, registered, setRegistered, signOut: () => { void auth.signOut().catch(() => { void auth.refresh(); }); } };
 }
 type FixtureState = ReturnType<typeof useFixtureState>;
 const Context = createContext<FixtureState | null>(null);

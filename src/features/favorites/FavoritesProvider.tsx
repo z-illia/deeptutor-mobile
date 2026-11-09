@@ -1,373 +1,138 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
-import {
-  DEFAULT_NOTEBOOK_COLOR,
-  type NotebookRecordItem,
-  type NotebookSaveMessage,
-  type NotebookSavePayload,
-  type NotebookSummary,
-} from './model';
-import {
-  createInitialNotebookRecords,
-  createInitialNotebooks,
-} from './repository';
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type PropsWithChildren } from 'react';
+import { useAuth } from '@/features/auth/AuthProvider';
+import { useWorkspaces } from '@/features/workspaces/WorkspaceProvider';
+import type { NotebookRecordItem, NotebookSaveMessage, NotebookSavePayload, NotebookSummary } from './model';
+import * as repository from './api';
 
 export type FavoritesLibraryState = 'ready' | 'loading' | 'empty' | 'error';
+export interface SaveModalRequest { payload: NotebookSavePayload; messages?: NotebookSaveMessage[] }
 
-export interface SaveModalRequest {
-  payload: NotebookSavePayload;
-  messages?: NotebookSaveMessage[];
-}
-
-export interface FavoritesContextValue {
-  notebooks: NotebookSummary[];
-  recordsByNotebook: Record<string, NotebookRecordItem[]>;
-  libraryState: FavoritesLibraryState;
-  setLibraryState: (state: FavoritesLibraryState) => void;
-  activeSaveModal: SaveModalRequest | null;
-  openSaveModal: (request: SaveModalRequest) => void;
-  closeSaveModal: () => void;
-  createNotebook: (input: {
-    name: string;
-    description?: string;
-    color?: string;
-  }) => NotebookSummary;
-  updateNotebook: (
-    id: string,
-    patch: { name: string; description?: string; color?: string },
-  ) => void;
-  deleteNotebook: (id: string) => void;
-  saveRecordToNotebooks: (
-    notebookIds: string[],
-    payload: NotebookSavePayload,
-  ) => NotebookRecordItem[];
-  updateRecord: (
-    notebookId: string,
-    recordId: string,
-    patch: { title: string; summary?: string },
-  ) => void;
-  deleteRecord: (notebookId: string, recordId: string) => void;
-  relocateRecord: (
-    mode: 'move' | 'copy',
-    sourceNotebookId: string,
-    recordId: string,
-    targetNotebookId: string,
-  ) => NotebookRecordItem | null;
-  locateRecord: (
-    recordId: string,
-  ) => { notebook: NotebookSummary; record: NotebookRecordItem } | null;
-  resetFavoritesFixtures: () => void;
-}
-
-const FavoritesContext = createContext<FavoritesContextValue | null>(null);
-
-export function FavoritesProvider({ children }: { children: React.ReactNode }) {
-  const [notebooks, setNotebooks] = useState<NotebookSummary[]>(() =>
-    createInitialNotebooks(),
-  );
-  const [recordsByNotebook, setRecordsByNotebook] = useState<
-    Record<string, NotebookRecordItem[]>
-  >(() => createInitialNotebookRecords());
-  const [libraryState, setLibraryState] =
-    useState<FavoritesLibraryState>('ready');
-  const [activeSaveModal, setActiveSaveModal] =
-    useState<SaveModalRequest | null>(null);
-
-  const openSaveModal = useCallback((request: SaveModalRequest) => {
-    setActiveSaveModal(request);
+function useLibrary(workspace: string, enabled: boolean) {
+  const [notebooks, setNotebooks] = useState<NotebookSummary[]>([]);
+  const [recordsByNotebook, setRecords] = useState<Record<string, NotebookRecordItem[]>>({});
+  const [libraryState, setLibraryState] = useState<FavoritesLibraryState>('loading');
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [activeSaveModal, setActiveSaveModal] = useState<SaveModalRequest | null>(null);
+  const read = useRef<AbortController | null>(null);
+  const write = useRef<AbortController | null>(null);
+  const mounted = useRef(true);
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; read.current?.abort(); write.current?.abort(); };
   }, []);
 
-  const closeSaveModal = useCallback(() => {
-    setActiveSaveModal(null);
-  }, []);
+  const refresh = useCallback(async (notebookId?: string) => {
+    if (!enabled || write.current) return;
+    read.current?.abort();
+    const controller = new AbortController(); read.current = controller;
+    setLibraryState('loading'); setError('');
+    try {
+      const rows = await repository.listNotebooks(workspace, controller.signal);
+      if (controller.signal.aborted) return;
+      setNotebooks(rows);
+      setRecords(previous => Object.fromEntries(Object.entries(previous).filter(([id]) => rows.some(row => row.id === id))));
+      if (notebookId) {
+        const detail = await repository.getNotebook(notebookId, workspace, controller.signal);
+        if (controller.signal.aborted) return;
+        setNotebooks(previous => [...previous.filter(item => item.id !== notebookId), detail.notebook]);
+        setRecords(previous => ({ ...previous, [notebookId]: detail.records }));
+      }
+      setLibraryState(rows.length || notebookId ? 'ready' : 'empty');
+    } catch (cause) {
+      if (!controller.signal.aborted) { setError(repository.favoritesError(cause)); setLibraryState('error'); }
+    }
+  }, [enabled, workspace]);
 
-  const createNotebook = useCallback(
-    (input: { name: string; description?: string; color?: string }) => {
-      const now = Date.now() / 1000;
-      const newNotebook: NotebookSummary = {
-        id: `nb-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-        name: input.name.trim(),
-        description: input.description?.trim() ?? '',
-        color: input.color || DEFAULT_NOTEBOOK_COLOR,
-        record_count: 0,
-        updated_at: now,
-        workspace_id: 'ws-default',
-      };
-      setNotebooks((prev) => [newNotebook, ...prev]);
-      setRecordsByNotebook((prev) => ({
-        ...prev,
-        [newNotebook.id]: [],
-      }));
-      return newNotebook;
-    },
-    [],
+  const mutate = useCallback(async <T,>(action: (signal: AbortSignal) => Promise<T>, commit: (result: T) => void): Promise<T> => {
+    if (!enabled || write.current || libraryState === 'loading') throw new Error('Please wait and try again.');
+    read.current?.abort();
+    const controller = new AbortController(); write.current = controller; setBusy(true);
+    try {
+      const result = await action(controller.signal);
+      if (controller.signal.aborted || !mounted.current) throw new Error('The workspace has changed.');
+      commit(result); setLibraryState('ready'); setError('');
+      return result;
+    } finally {
+      if (write.current === controller) write.current = null;
+      if (mounted.current) setBusy(false);
+    }
+  }, [enabled, libraryState]);
+
+  const touch = (ids: string[], delta = 0) => setNotebooks(previous => previous.map(item => ids.includes(item.id)
+    ? { ...item, record_count: Math.max(0, item.record_count + delta), updated_at: Date.now() / 1000 } : item));
+  const createNotebook = (input: repository.NotebookInput) => mutate(
+    signal => repository.createNotebook(input, workspace, signal),
+    notebook => { setNotebooks(previous => [notebook, ...previous]); setRecords(previous => ({ ...previous, [notebook.id]: [] })); },
   );
-
-  const updateNotebook = useCallback(
-    (
-      id: string,
-      patch: { name: string; description?: string; color?: string },
-    ) => {
-      const now = Date.now() / 1000;
-      setNotebooks((prev) =>
-        prev.map((nb) =>
-          nb.id === id
-            ? {
-                ...nb,
-                name: patch.name.trim(),
-                description:
-                  patch.description !== undefined
-                    ? patch.description.trim()
-                    : nb.description,
-                color: patch.color || nb.color,
-                updated_at: now,
-              }
-            : nb,
-        ),
-      );
-    },
-    [],
+  const updateNotebook = (id: string, input: repository.NotebookInput) => mutate(
+    signal => repository.updateNotebook(id, input, workspace, signal),
+    notebook => setNotebooks(previous => previous.map(item => item.id === id ? notebook : item)),
   );
-
-  const deleteNotebook = useCallback((id: string) => {
-    setNotebooks((prev) => prev.filter((nb) => nb.id !== id));
-    setRecordsByNotebook((prev) => {
-      const next = { ...prev };
-      delete next[id];
-      return next;
-    });
-  }, []);
-
-  const saveRecordToNotebooks = useCallback(
-    (notebookIds: string[], payload: NotebookSavePayload) => {
-      const now = Date.now() / 1000;
-      const created: NotebookRecordItem[] = [];
-      setRecordsByNotebook((prev) => {
-        const next = { ...prev };
-        notebookIds.forEach((notebookId, idx) => {
-          const item: NotebookRecordItem = {
-            id: `fav-rec-${Date.now()}-${idx}-${Math.random().toString(36).slice(2, 6)}`,
-            notebook_id: notebookId,
-            type: payload.recordType,
-            title: payload.title.trim() || 'Untitled favorite',
-            user_query: payload.userQuery,
-            summary: payload.summary?.trim() || undefined,
-            output: payload.output,
-            created_at: now,
-            metadata: payload.metadata,
-          };
-          created.push(item);
-          next[notebookId] = [item, ...(next[notebookId] ?? [])];
-        });
+  const deleteNotebook = (id: string) => mutate(signal => repository.deleteNotebook(id, workspace, signal), () => {
+    setNotebooks(previous => previous.filter(item => item.id !== id));
+    setRecords(previous => { const next = { ...previous }; delete next[id]; return next; });
+  });
+  const saveRecordToNotebooks = (ids: string[], payload: NotebookSavePayload) => mutate(
+    signal => repository.saveRecord(ids, payload, workspace, signal), result => {
+      setRecords(previous => {
+        const next = { ...previous };
+        // Keep an unloaded detail unloaded; an added record is not its full list.
+        for (const record of result.records) if (next[record.notebook_id]) next[record.notebook_id] = [...next[record.notebook_id], record];
         return next;
       });
-      setNotebooks((prev) =>
-        prev.map((nb) => {
-          if (!notebookIds.includes(nb.id)) return nb;
-          return {
-            ...nb,
-            record_count: (nb.record_count ?? 0) + 1,
-            updated_at: now,
-          };
-        }),
-      );
-      return created;
+      touch(result.savedNotebookIds, 1);
     },
-    [],
   );
-
-  const updateRecord = useCallback(
-    (
-      notebookId: string,
-      recordId: string,
-      patch: { title: string; summary?: string },
-    ) => {
-      const now = Date.now() / 1000;
-      setRecordsByNotebook((prev) => {
-        const list = prev[notebookId] ?? [];
-        return {
-          ...prev,
-          [notebookId]: list.map((rec) =>
-            rec.id === recordId
-              ? {
-                  ...rec,
-                  title: patch.title.trim(),
-                  summary:
-                    patch.summary !== undefined
-                      ? patch.summary.trim()
-                      : rec.summary,
-                }
-              : rec,
-          ),
-        };
+  const updateRecord = (id: string, recordId: string, patch: { title: string; summary?: string }) => mutate(
+    signal => repository.updateRecord(id, recordId, patch, workspace, signal), record => {
+      setRecords(previous => ({ ...previous, [id]: (previous[id] ?? []).map(item => item.id === recordId ? record : item) })); touch([id]);
+    },
+  );
+  const deleteRecord = (id: string, recordId: string) => mutate(signal => repository.deleteRecord(id, recordId, workspace, signal), () => {
+    setRecords(previous => ({ ...previous, [id]: (previous[id] ?? []).filter(item => item.id !== recordId) })); touch([id], -1);
+  });
+  const relocateRecord = (mode: 'move' | 'copy', id: string, recordId: string, target: string) => mutate(
+    signal => repository.relocateRecord(mode, id, recordId, target, workspace, signal), record => {
+      setRecords(previous => {
+        const next = { ...previous };
+        if (mode === 'move' && next[id]) next[id] = next[id].filter(item => item.id !== recordId);
+        if (next[target]) next[target] = [...next[target], record];
+        return next;
       });
-      setNotebooks((prev) =>
-        prev.map((nb) =>
-          nb.id === notebookId ? { ...nb, updated_at: now } : nb,
-        ),
-      );
+      if (mode === 'move') touch([id], -1);
+      touch([target], 1);
     },
-    [],
   );
-
-  const deleteRecord = useCallback((notebookId: string, recordId: string) => {
-    const now = Date.now() / 1000;
-    setRecordsByNotebook((prev) => {
-      const list = prev[notebookId] ?? [];
-      const filtered = list.filter((rec) => rec.id !== recordId);
-      return {
-        ...prev,
-        [notebookId]: filtered,
-      };
-    });
-    setNotebooks((prev) =>
-      prev.map((nb) =>
-        nb.id === notebookId
-          ? {
-              ...nb,
-              record_count: Math.max(0, (nb.record_count ?? 1) - 1),
-              updated_at: now,
-            }
-          : nb,
-      ),
-    );
-  }, []);
-
-  const relocateRecord = useCallback(
-    (
-      mode: 'move' | 'copy',
-      sourceNotebookId: string,
-      recordId: string,
-      targetNotebookId: string,
-    ): NotebookRecordItem | null => {
-      const sourceList = recordsByNotebook[sourceNotebookId] ?? [];
-      const sourceItem = sourceList.find((r) => r.id === recordId);
-      if (!sourceItem || sourceNotebookId === targetNotebookId) return null;
-
-      const now = Date.now() / 1000;
-      const newRecord: NotebookRecordItem = {
-        ...sourceItem,
-        id:
-          mode === 'move'
-            ? sourceItem.id
-            : `fav-rec-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-        notebook_id: targetNotebookId,
-        created_at: mode === 'move' ? sourceItem.created_at : now,
-      };
-
-      setRecordsByNotebook((prev) => {
-        const currentSource = prev[sourceNotebookId] ?? [];
-        const currentTarget = prev[targetNotebookId] ?? [];
-        return {
-          ...prev,
-          [sourceNotebookId]:
-            mode === 'move'
-              ? currentSource.filter((r) => r.id !== recordId)
-              : currentSource,
-          [targetNotebookId]: [newRecord, ...currentTarget],
-        };
-      });
-
-      setNotebooks((prev) =>
-        prev.map((nb) => {
-          if (nb.id === sourceNotebookId && mode === 'move') {
-            return {
-              ...nb,
-              record_count: Math.max(0, (nb.record_count ?? 1) - 1),
-              updated_at: now,
-            };
-          }
-          if (nb.id === targetNotebookId) {
-            return {
-              ...nb,
-              record_count: (nb.record_count ?? 0) + 1,
-              updated_at: now,
-            };
-          }
-          return nb;
-        }),
-      );
-
-      return newRecord;
-    },
-    [recordsByNotebook],
-  );
-
-  const locateRecord = useCallback(
-    (recordId: string) => {
-      for (const nb of notebooks) {
-        const list = recordsByNotebook[nb.id] ?? [];
-        const found = list.find((r) => r.id === recordId);
-        if (found) {
-          return { notebook: nb, record: found };
-        }
-      }
-      return null;
-    },
-    [notebooks, recordsByNotebook],
-  );
-
-  const resetFavoritesFixtures = useCallback(() => {
-    setNotebooks(createInitialNotebooks());
-    setRecordsByNotebook(createInitialNotebookRecords());
-    setLibraryState('ready');
-    setActiveSaveModal(null);
-  }, []);
-
-  const value = useMemo<FavoritesContextValue>(
-    () => ({
-      notebooks,
-      recordsByNotebook,
-      libraryState,
-      setLibraryState,
-      activeSaveModal,
-      openSaveModal,
-      closeSaveModal,
-      createNotebook,
-      updateNotebook,
-      deleteNotebook,
-      saveRecordToNotebooks,
-      updateRecord,
-      deleteRecord,
-      relocateRecord,
-      locateRecord,
-      resetFavoritesFixtures,
-    }),
-    [
-      notebooks,
-      recordsByNotebook,
-      libraryState,
-      activeSaveModal,
-      openSaveModal,
-      closeSaveModal,
-      createNotebook,
-      updateNotebook,
-      deleteNotebook,
-      saveRecordToNotebooks,
-      updateRecord,
-      deleteRecord,
-      relocateRecord,
-      locateRecord,
-      resetFavoritesFixtures,
-    ],
-  );
-
-  return (
-    <FavoritesContext.Provider value={value}>
-      {children}
-    </FavoritesContext.Provider>
-  );
+  const locateRecord = useCallback((recordId: string) => {
+    for (const notebook of notebooks) {
+      const record = recordsByNotebook[notebook.id]?.find(item => item.id === recordId);
+      if (record) return { notebook, record };
+    }
+    return null;
+  }, [notebooks, recordsByNotebook]);
+  const resolveRecord = useCallback((recordId: string, preferredId: string, signal?: AbortSignal) => repository.locateRecord(recordId, preferredId, workspace, signal), [workspace]);
+  const exportNotebook = (id: string) => mutate(signal => repository.exportNotebook(id, workspace, signal), () => {});
+  const openSaveModal = useCallback((request: SaveModalRequest) => { setActiveSaveModal(request); }, []);
+  const closeSaveModal = useCallback(() => { if (!write.current) setActiveSaveModal(null); }, []);
+  const resetFavoritesFixtures = useCallback(() => { void refresh(); }, [refresh]);
+  return { notebooks, recordsByNotebook, libraryState, error, busy, refresh, activeSaveModal, openSaveModal, closeSaveModal,
+    createNotebook, updateNotebook, deleteNotebook, saveRecordToNotebooks, updateRecord, deleteRecord, relocateRecord, locateRecord,
+    resolveRecord, exportNotebook, resetFavoritesFixtures };
 }
-
-export function useFavorites(): FavoritesContextValue {
-  const ctx = useContext(FavoritesContext);
-  if (!ctx) {
-    throw new Error('useFavorites must be used within a FavoritesProvider');
-  }
-  return ctx;
+export type FavoritesContextValue = ReturnType<typeof useLibrary>;
+const Context = createContext<FavoritesContextValue | null>(null);
+function FavoritesSession({ children, workspace, enabled }: PropsWithChildren<{ workspace: string; enabled: boolean }>) {
+  return <Context.Provider value={useLibrary(workspace, enabled)}>{children}</Context.Provider>;
+}
+export function FavoritesProvider({ children }: PropsWithChildren) {
+  const auth = useAuth(); const scope = useWorkspaces();
+  const enabled = scope.ready && !auth.loading && !!auth.session && (!auth.session.status.enabled || auth.session.status.authenticated);
+  const key = JSON.stringify([auth.serverUrl, auth.session?.profile?.id ?? (auth.session?.status.enabled ? 'signed-out' : 'local'), scope.selectedWorkspaceId]);
+  return <FavoritesSession key={key} workspace={scope.selectedWorkspaceId} enabled={enabled}>{children}</FavoritesSession>;
+}
+export function useFavorites() {
+  const value = useContext(Context);
+  if (!value) throw new Error('useFavorites must be used within a FavoritesProvider');
+  return value;
 }

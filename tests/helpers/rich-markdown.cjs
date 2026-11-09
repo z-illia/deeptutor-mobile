@@ -14,6 +14,7 @@ function createLoader(overrides = {}) {
       if (name === 'react-native-svg') return { SvgXml: () => null };
       if (name.startsWith('.') || name.startsWith('@/')) {
         const base = name.startsWith('@/') ? path.join(root, 'src', name.slice(2)) : path.resolve(path.dirname(full), name);
+        if (name.endsWith('.json')) return JSON.parse(fs.readFileSync(base, 'utf8'));
         const target = ['.ts', '.tsx'].map(ext => base + ext).find(fs.existsSync);
         return load(target);
       }

@@ -1,0 +1,6 @@
+simulation: settings-client
+routing: path
+mocks:
+  - name: settings
+    routeKey: settings
+    path: ./settings-api-mock

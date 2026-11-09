@@ -14,7 +14,6 @@ import {
 } from 'lucide-react-native';
 import { useCopy } from '@/features/entry/copy';
 import { useFavorites } from '@/features/favorites/FavoritesProvider';
-import { SaveToNotebookModal } from '@/features/favorites/SaveToNotebookModal';
 import { useDesign } from '@/shared/design/DesignProvider';
 import { geometry } from '@/shared/design/tokens';
 import { Button, IconButton } from '@/shared/ui/Controls';
@@ -701,7 +700,6 @@ export function ChatWorkspace() {
           onDelete={handleDeleteCurrentSession}
         />
 
-        <SaveToNotebookModal />
       </View>
   );
 }

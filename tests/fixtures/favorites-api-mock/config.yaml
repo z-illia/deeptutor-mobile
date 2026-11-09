@@ -1,0 +1,9 @@
+version: 1
+name: favorites-verification
+slug: favorites-verification
+protocol: http
+port: 4500
+scenarios:
+  - name: default
+    path: ./default.cjs
+    default: true

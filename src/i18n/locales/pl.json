@@ -2569,5 +2569,18 @@
   "Unable to load workspaces. Please try again.": "Nie udało się wczytać obszarów roboczych. Spróbuj ponownie.",
   "Avatar image is too large (max 1 MB).": "Obraz awatara jest za duży (maks. 1 MB).",
   "Avatar must be a PNG, JPEG or WebP image.": "Awatar musi być obrazem PNG, JPEG lub WebP.",
-  "PNG, JPEG or WebP · up to 1 MB": "PNG, JPEG lub WebP · do 1 MB"
+  "PNG, JPEG or WebP · up to 1 MB": "PNG, JPEG lub WebP · do 1 MB",
+  "Deleted": "Usunięto",
+  "Please wait and try again.": "Poczekaj i spróbuj ponownie.",
+  "Save reply to Favorites": "Zapisz odpowiedź w ulubionych",
+  "Some collections were not saved. Retry the remaining selections.": "Nie zapisano we wszystkich kolekcjach. Ponów próbę dla pozostałych.",
+  "The workspace has changed.": "Obszar roboczy się zmienił.",
+  "This collection is unreadable. Restore a backup or delete it.": "Nie można odczytać kolekcji. Przywróć kopię zapasową lub ją usuń.",
+  "Remove": "Usuń",
+  "Local edits will be replaced with the server settings and saved draft.": "Zmiany lokalne zostaną zastąpione ustawieniami i zapisanym szkicem z serwera.",
+  "Reload settings?": "Wczytać ustawienia ponownie?",
+  "Settings applied, but the draft could not be cleared. Retry Apply.": "Ustawienia zastosowano, ale nie udało się usunąć szkicu. Ponów zastosowanie.",
+  "Settings changed on the server. Reload before saving.": "Ustawienia na serwerze uległy zmianie. Wczytaj je ponownie przed zapisaniem.",
+  "Applies General and Appearance changes.": "Stosuje zmiany ustawień ogólnych i wyglądu.",
+  "This layout is saved on this device.": "Ten układ jest zapisywany na tym urządzeniu."
 }

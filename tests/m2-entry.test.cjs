@@ -72,5 +72,5 @@ test('M2 appearance retains all source syntax themes and exact fixed preview tex
 test('M2 source copy has Ukrainian/English labels and fixture files import no live transport',()=>{
  const messages={en:require('../src/i18n/locales/en.json'),uk:require('../src/i18n/locales/uk.json')};assert.equal(messages.uk['Email or username'],require('../docs/mobile-ui/audit/source/web/locales/uk/app.json')['Email or username']);
  assert.notEqual(messages.uk['Appearance'],messages.en['Appearance']);
- for(const owner of ['entry','resources','search','settings']) for(const name of fs.readdirSync(path.join(root,'src/features',owner))) if(/\.(tsx?|json)$/.test(name)&&name!=='code-preview.json') assert.doesNotMatch(fs.readFileSync(path.join(root,'src/features',owner,name),'utf8'),/from\s+['"][^'"]*(?:api\/client|axios)|\bfetch\s*\(|new WebSocket/);
+ for(const owner of ['entry','resources','search','settings']) for(const name of fs.readdirSync(path.join(root,'src/features',owner))) if(/\.(tsx?|json)$/.test(name)&&name!=='code-preview.json'&&!(owner==='settings'&&name==='api.ts')) assert.doesNotMatch(fs.readFileSync(path.join(root,'src/features',owner,name),'utf8'),/from\s+['"][^'"]*(?:api\/client|axios)|\bfetch\s*\(|new WebSocket/);
 });

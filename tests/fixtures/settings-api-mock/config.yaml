@@ -1,0 +1,9 @@
+version: 1
+name: settings-verification
+slug: settings-verification
+protocol: http
+port: 4500
+scenarios:
+  - name: default
+    path: ./default.cjs
+    default: true

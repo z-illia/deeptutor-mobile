@@ -1,0 +1,6 @@
+simulation: favorites-client
+routing: path
+mocks:
+  - name: favorites
+    routeKey: favorites
+    path: ./favorites-api-mock

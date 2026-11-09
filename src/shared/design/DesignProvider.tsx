@@ -10,6 +10,7 @@ export type MessageKey = string;
 
 function useDesignState() {
   const system = useColorScheme();
+  const preferences = usePreferencesStore(state => state.appliedSettings);
   const theme = usePreferencesStore(state => state.theme);
   const setTheme = usePreferencesStore(state => state.setTheme);
   const layout = usePreferencesStore(state => state.layout);
@@ -17,7 +18,7 @@ function useDesignState() {
   const language = usePreferencesStore(state => state.language);
   const setLanguage = usePreferencesStore(state => state.setLanguage);
   const design = useMemo(() => resolveDesign(theme, layout, system), [theme, layout, system]);
-  return { ...design, theme, setTheme, setLayout, language, setLanguage, t: (key: MessageKey, values?: CopyValues) => translateCopy(language, key, values) };
+  return { ...design, preferences, theme, setTheme, setLayout, language, setLanguage, t: (key: MessageKey, values?: CopyValues) => translateCopy(language, key, values) };
 }
 
 type DesignState = ReturnType<typeof useDesignState>;

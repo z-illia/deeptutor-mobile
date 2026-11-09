@@ -18,7 +18,9 @@ export async function openMarkdownLink(value: string, t: (key: string) => string
 }
 
 export const RichMarkdownRenderer = memo(function RichMarkdownRenderer({ content }: { content: string }) {
-  const { colors } = useDesign();
+  const { colors, preferences } = useDesign();
+  const scale = (preferences?.scale ?? 100) / 100;
+  const lineFactor = preferences ? { compact: 1.5, normal: 1.75, relaxed: 2 }[preferences.spacing] : 22 / 14;
   const t = useCopy();
   const deferred = useDeferredValue(content);
   const tree = useMemo(() => parseMarkdown(deferred), [deferred]);
@@ -34,7 +36,7 @@ export const RichMarkdownRenderer = memo(function RichMarkdownRenderer({ content
     const visit = (node: Node) => { if (node.type === 'definition') result.set(node.identifier.toUpperCase(), node); if ('children' in node) node.children.forEach(child => visit(child as Node)); };
     visit(tree); return result;
   }, [tree]);
-  const body: TextStyle = { fontFamily: 'Inter', fontSize: 14, lineHeight: 22, color: colors.foreground, flexShrink: 1 };
+  const body: TextStyle = { fontFamily: 'Inter', fontSize: 14 * scale, lineHeight: 14 * scale * lineFactor, color: colors.foreground, flexShrink: 1 };
   const children = (node: Node, compact = false): ReactNode => 'children' in node ? node.children.map((child, i) => render(child as Node, String(i), compact)) : null;
   const render = (node: Node, key: string, compact = false): ReactNode => {
     switch (node.type) {
@@ -43,12 +45,12 @@ export const RichMarkdownRenderer = memo(function RichMarkdownRenderer({ content
       case 'paragraph': return <Text key={key} selectable style={[body, { marginBottom: compact ? 6 : 12 }]}>{children(node)}</Text>;
       case 'heading': {
         const sizes = [21, 18, 16, 15, 14, 14], heights = [27, 24, 22, 21, 21, 21];
-        return <Text key={key} accessibilityRole="header" selectable style={[body, { fontSize: sizes[node.depth - 1], lineHeight: heights[node.depth - 1], fontWeight: '600', marginTop: key === '0' ? 0 : 10, marginBottom: 10 }]}>{children(node)}</Text>;
+        return <Text key={key} accessibilityRole="header" selectable style={[body, { fontSize: sizes[node.depth - 1] * scale, lineHeight: heights[node.depth - 1] * scale * (lineFactor / (22 / 14)), fontWeight: '600', marginTop: key === '0' ? 0 : 10, marginBottom: 10 }]}>{children(node)}</Text>;
       }
       case 'strong': return <Text key={key} style={{ fontWeight: '600' }}>{children(node)}</Text>;
       case 'emphasis': return <Text key={key} style={{ fontStyle: 'italic' }}>{children(node)}</Text>;
       case 'delete': return <Text key={key} style={{ textDecorationLine: 'line-through' }}>{children(node)}</Text>;
-      case 'inlineCode': return <Text key={key} style={{ fontFamily: mono, fontSize: 13, backgroundColor: colors.secondary, paddingHorizontal: 3, borderRadius: geometry.radius.sm }}>{node.value}</Text>;
+      case 'inlineCode': return <Text key={key} style={{ fontFamily: mono, fontSize: 13 * scale, backgroundColor: colors.secondary, paddingHorizontal: 3, borderRadius: geometry.radius.sm }}>{node.value}</Text>;
       case 'code': return <CodeBlock key={key} code={node.value} language={node.lang || 'text'} />;
       case 'link': case 'linkReference': {
         const url = node.type === 'link' ? node.url : definitions.get(node.identifier.toUpperCase())?.url;

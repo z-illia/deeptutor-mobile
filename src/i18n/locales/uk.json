@@ -2569,5 +2569,18 @@
   "Unable to load workspaces. Please try again.": "Не вдалося завантажити робочі простори. Спробуйте ще раз.",
   "Avatar image is too large (max 1 MB).": "Зображення аватара завелике (максимум 1 МБ).",
   "Avatar must be a PNG, JPEG or WebP image.": "Аватар має бути зображенням PNG, JPEG або WebP.",
-  "PNG, JPEG or WebP · up to 1 MB": "PNG, JPEG або WebP · до 1 МБ"
+  "PNG, JPEG or WebP · up to 1 MB": "PNG, JPEG або WebP · до 1 МБ",
+  "Deleted": "Видалено",
+  "Please wait and try again.": "Зачекайте й спробуйте ще раз.",
+  "Save reply to Favorites": "Зберегти відповідь в обране",
+  "Some collections were not saved. Retry the remaining selections.": "Збережено не в усі колекції. Повторіть спробу для решти вибраних.",
+  "The workspace has changed.": "Робочий простір змінився.",
+  "This collection is unreadable. Restore a backup or delete it.": "Не вдалося прочитати колекцію. Відновіть резервну копію або видаліть її.",
+  "Remove": "Прибрати",
+  "Local edits will be replaced with the server settings and saved draft.": "Локальні зміни буде замінено налаштуваннями й збереженою чернеткою із сервера.",
+  "Reload settings?": "Перезавантажити налаштування?",
+  "Settings applied, but the draft could not be cleared. Retry Apply.": "Налаштування застосовано, але чернетку не вдалося очистити. Повторіть застосування.",
+  "Settings changed on the server. Reload before saving.": "Налаштування на сервері змінилися. Перезавантажте їх перед збереженням.",
+  "Applies General and Appearance changes.": "Застосовує зміни в розділах «Загальні» та «Вигляд».",
+  "This layout is saved on this device.": "Ця розкладка зберігається на цьому пристрої."
 }

@@ -30,7 +30,6 @@ import {
 import { useTheme } from '../../theme';
 import { useI18n } from '../../i18n';
 import { useFavorites } from '../favorites/FavoritesProvider';
-import { SaveToNotebookModal } from '../favorites/SaveToNotebookModal';
 import { CapabilityConfigCard } from './CapabilityConfigCard';
 import { ChatMarkdown } from './ChatMarkdown';
 import { useChat } from './ChatProvider';
@@ -1117,7 +1116,6 @@ export function SessionViewerScreen() {
         )}
       </ScrollView>
 
-      <SaveToNotebookModal />
     </View>
   );
 }

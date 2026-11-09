@@ -2569,5 +2569,18 @@
   "Unable to load workspaces. Please try again.": "Không thể tải các không gian làm việc. Vui lòng thử lại.",
   "Avatar image is too large (max 1 MB).": "Ảnh đại diện quá lớn (tối đa 1 MB).",
   "Avatar must be a PNG, JPEG or WebP image.": "Ảnh đại diện phải có định dạng PNG, JPEG hoặc WebP.",
-  "PNG, JPEG or WebP · up to 1 MB": "PNG, JPEG hoặc WebP · tối đa 1 MB"
+  "PNG, JPEG or WebP · up to 1 MB": "PNG, JPEG hoặc WebP · tối đa 1 MB",
+  "Deleted": "Đã xóa",
+  "Please wait and try again.": "Vui lòng đợi và thử lại.",
+  "Save reply to Favorites": "Lưu câu trả lời vào mục yêu thích",
+  "Some collections were not saved. Retry the remaining selections.": "Chưa lưu được vào một số bộ sưu tập. Hãy thử lại với các mục còn lại.",
+  "The workspace has changed.": "Không gian làm việc đã thay đổi.",
+  "This collection is unreadable. Restore a backup or delete it.": "Không thể đọc bộ sưu tập này. Hãy khôi phục bản sao lưu hoặc xóa nó.",
+  "Remove": "Gỡ bỏ",
+  "Local edits will be replaced with the server settings and saved draft.": "Các thay đổi cục bộ sẽ được thay bằng cài đặt và bản nháp đã lưu trên máy chủ.",
+  "Reload settings?": "Tải lại cài đặt?",
+  "Settings applied, but the draft could not be cleared. Retry Apply.": "Đã áp dụng cài đặt nhưng không thể xóa bản nháp. Hãy thử áp dụng lại.",
+  "Settings changed on the server. Reload before saving.": "Cài đặt trên máy chủ đã thay đổi. Hãy tải lại trước khi lưu.",
+  "Applies General and Appearance changes.": "Áp dụng các thay đổi ở mục Chung và Giao diện.",
+  "This layout is saved on this device.": "Bố cục này được lưu trên thiết bị này."
 }

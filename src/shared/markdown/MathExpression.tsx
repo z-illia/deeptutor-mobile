@@ -7,7 +7,8 @@ import type { typesetMath } from './math';
 
 type MathResult = { source: string; display: boolean; equation?: ReturnType<typeof typesetMath>; invalid?: boolean };
 export const MathExpression = memo(function MathExpression({ source, display = false, pending = false }: { source: string; display?: boolean; pending?: boolean }) {
-  const { colors } = useDesign();
+  const { colors, preferences } = useDesign();
+  const contentScale = (preferences?.scale ?? 100) / 100;
   const { fontScale, width } = useWindowDimensions();
   const [result, setResult] = useState<MathResult>();
   useEffect(() => {
@@ -27,13 +28,13 @@ export const MathExpression = memo(function MathExpression({ source, display = f
   // Never show the preceding equation after a streamed source change.
   const current = !pending && result?.source === source && result.display === display ? result : undefined;
   const equation = current?.equation;
-  const scale = equation && !display ? Math.min(fontScale, Math.max(1, width - 40) / equation.width) : fontScale;
+  const scale = equation && !display ? Math.min(fontScale * contentScale, Math.max(1, width - 40) / equation.width) : fontScale * contentScale;
   const content = equation
     ? <SvgXml xml={equation.xml} color={colors.foreground} width={equation.width * scale} height={equation.height * scale} {...(Platform.OS === 'web' ? {} : { accessible: true })} accessibilityRole="image" accessibilityLabel={source} onError={() => {
       richDiagnostic('math-svg-failed', { fingerprint: contentFingerprint(source), reason: 'svg-parser-error' });
       setResult({ source, display, invalid: true });
     }} />
-    : <Text selectable={!!current?.invalid} accessibilityLabel={source} style={{ color: colors.foreground, fontFamily: 'Inter', fontSize: 14, lineHeight: 22 }}>{current?.invalid ? source : '…'}</Text>;
+    : <Text selectable={!!current?.invalid} accessibilityLabel={source} style={{ color: colors.foreground, fontFamily: 'Inter', fontSize: 14 * contentScale, lineHeight: 22 * contentScale }}>{current?.invalid ? source : '…'}</Text>;
   return display
     ? <ScrollView horizontal nestedScrollEnabled style={{ maxWidth: '100%', marginVertical: 8 }} contentContainerStyle={{ paddingVertical: 4 }}>{content}</ScrollView>
     : content;

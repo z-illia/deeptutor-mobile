@@ -2569,5 +2569,18 @@
   "Unable to load workspaces. Please try again.": "Çalışma alanları yüklenemedi. Lütfen tekrar deneyin.",
   "Avatar image is too large (max 1 MB).": "Avatar görseli çok büyük (en fazla 1 MB).",
   "Avatar must be a PNG, JPEG or WebP image.": "Avatar PNG, JPEG veya WebP biçiminde olmalıdır.",
-  "PNG, JPEG or WebP · up to 1 MB": "PNG, JPEG veya WebP · en fazla 1 MB"
+  "PNG, JPEG or WebP · up to 1 MB": "PNG, JPEG veya WebP · en fazla 1 MB",
+  "Deleted": "Silindi",
+  "Please wait and try again.": "Lütfen bekleyip tekrar deneyin.",
+  "Save reply to Favorites": "Yanıtı favorilere kaydet",
+  "Some collections were not saved. Retry the remaining selections.": "Bazı koleksiyonlara kaydedilemedi. Kalan seçimler için tekrar deneyin.",
+  "The workspace has changed.": "Çalışma alanı değişti.",
+  "This collection is unreadable. Restore a backup or delete it.": "Bu koleksiyon okunamıyor. Bir yedeği geri yükleyin veya koleksiyonu silin.",
+  "Remove": "Kaldır",
+  "Local edits will be replaced with the server settings and saved draft.": "Yerel değişiklikler, sunucudaki ayarlar ve kaydedilmiş taslakla değiştirilecek.",
+  "Reload settings?": "Ayarlar yeniden yüklensin mi?",
+  "Settings applied, but the draft could not be cleared. Retry Apply.": "Ayarlar uygulandı ancak taslak temizlenemedi. Tekrar uygulayın.",
+  "Settings changed on the server. Reload before saving.": "Sunucudaki ayarlar değişti. Kaydetmeden önce yeniden yükleyin.",
+  "Applies General and Appearance changes.": "Genel ve Görünüm değişikliklerini uygular.",
+  "This layout is saved on this device.": "Bu düzen bu cihazda kaydedilir."
 }

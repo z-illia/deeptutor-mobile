@@ -220,11 +220,12 @@ test('M3.2 Favorites / Saved Originals filtering, turn indexing, and Markdown ex
   assert.match(md, /### Saved Original Snapshot/);
 });
 
-test('M3.2 transport isolation across chat and favorites modules', () => {
+test('chat and favorites keep transport in their explicit API adapters', () => {
   for (const relDir of ['src/features/chat', 'src/features/favorites']) {
     const absDir = path.resolve(__dirname, '..', relDir);
     for (const file of fs.readdirSync(absDir)) {
       if (!file.endsWith('.ts') && !file.endsWith('.tsx')) continue;
+      if (relDir === 'src/features/favorites' && file === 'api.ts') continue;
       const text = fs.readFileSync(path.join(absDir, file), 'utf8');
       assert.doesNotMatch(
         text,

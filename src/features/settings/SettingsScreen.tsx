@@ -10,12 +10,14 @@ import { DText } from '@/shared/ui/Text';
 import { PageScaffold } from '@/shared/ui/Layout';
 import { ErrorState, InlineAlert, LoadingState } from '@/shared/ui/Feedback';
 import { useFixtures } from '../entry/FixtureProvider';
-import { catalogEditable, type Preferences } from '../entry/model';
+import { catalogEditable } from '../entry/model';
 import { useCopy } from '../entry/copy';
 import { BackButton } from '../entry/Boundary';
 import responseLanguages from './response-languages.json';
 import codeOptions from './code-options.json';
 import { CodePreview } from './CodePreview';
+import { useSettings } from './SettingsProvider';
+import { ConfirmDialog } from '@/shared/ui/Dialog';
 const interfaceLanguages = [{ value: 'en', label: 'English' }, { value: 'zh', label: '简体中文' }, { value: 'fr', label: 'Français' }, { value: 'de', label: 'Deutsch' }, { value: 'uk', label: 'Українська' }, { value: 'pl', label: 'Polski' }, { value: 'pt', label: 'Português' }, { value: 'vi', label: 'Tiếng Việt' }, { value: 'ja', label: '日本語' }, { value: 'tr', label: 'Türkçe' }] as const;
 function Section({ title, description, children }: { title: string; description?: string; children: ReactNode }) {
   const { colors } = useDesign();
@@ -23,16 +25,18 @@ function Section({ title, description, children }: { title: string; description?
 }
 function Row({ title, description, children }: { title: string; description?: string; children: ReactNode }) { return <View style={{ gap: 8, paddingVertical: 14 }}><DText role="label">{title}</DText>{description && <DText role="small" muted>{description}</DText>}{children}</View>; }
 export function SettingsScreen({ appearance = false }: { appearance?: boolean }) {
-  const f = useFixtures(); const t = useCopy(); const { colors } = useDesign(); const [error, setError] = useState(''); const p = f.settings.staged;
-  const edit = (patch: Partial<Preferences>) => { setError(''); f.edit(patch); };
-  const save = async (operation: 'save' | 'apply' | 'discard') => { setError(''); if (!await f.save(operation)) setError(t('Failed to save')); };
-  if (f.settingsState === 'loading') return <LoadingState />;
-  if (['denied', 'unavailable'].includes(f.settingsState)) return <PageScaffold title={t('Settings')}><BackButton /><InlineAlert tone="warning">{t('This settings page is unavailable.')}</InlineAlert></PageScaffold>;
-  if (f.settingsState === 'error') return <ErrorState message={t('Failed to load settings')} onRetry={() => f.setSettingsState('ready')} />;
-  const disabled = !!f.busy;
+  const f = useFixtures(); const settings = useSettings(); const t = useCopy(); const { colors } = useDesign();
+  const [confirmReload, setConfirmReload] = useState(false); const p = settings.state.staged;
+  const edit = settings.edit;
+  const save = settings.save;
+  if (settings.loading) return <LoadingState />;
+  if (!settings.loaded) return <ErrorState message={t(settings.error || 'Failed to load settings')} onRetry={() => void settings.refresh()} />;
+  const disabled = !!settings.busy;
   return <View style={{ flex: 1 }}><PageScaffold title={t(appearance ? 'Appearance' : 'General')} description={t(appearance ? 'Customize the visual theme, learning text, and code blocks. Apply changes using the bar below.' : 'Make DeepTutor feel at home. Apply your preferences using the bar below.')}>
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}><BackButton /><Button variant="ghost" accessibilityState={{ selected: !appearance }} onPress={() => router.replace('/settings/general')}>{t('General')}</Button><Button variant="ghost" accessibilityState={{ selected: appearance }} onPress={() => router.replace('/settings/appearance')}>{t('Appearance')}</Button></View>
-    {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
+    {!!settings.error && <InlineAlert tone="danger">{t(settings.error)}</InlineAlert>}
+    <Button variant="secondary" disabled={disabled} onPress={() => { if (settings.state.phase === 'unsaved' || settings.state.phase === 'saved-draft') setConfirmReload(true); else void settings.refresh(); }}>{t('Refresh')}</Button>
+    <ConfirmDialog open={confirmReload} title={t('Reload settings?')} confirmLabel={t('Refresh')} tone="default" onCancel={() => setConfirmReload(false)} onConfirm={() => { setConfirmReload(false); void settings.refresh(); }}>{t('Local edits will be replaced with the server settings and saved draft.')}</ConfirmDialog>
     {appearance ? <>
       <Section title={t('Theme')} description={t('Pick the colour palette and interface style. Each tile previews the theme it applies.')}><View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
         {(['system', 'snow', 'cream', 'dark', 'glass'] as ThemeChoice[]).map((theme, i) => { const preview = resolveDesign(theme, p.layout, 'light').colors; const label = t(['System', 'Default', 'Cream', 'Dark', 'Glass'][i]); return <Button key={theme} accessibilityLabel={`${t('Theme')} ${label}`} accessibilityState={{ selected: p.theme === theme }} disabled={disabled} variant="secondary" onPress={() => edit({ theme })} style={{ flexGrow: 1, flexBasis: 120, borderColor: p.theme === theme ? colors.primary : colors.border, backgroundColor: preview.background, padding: 12 }}><View style={{ flex: 1, gap: 8 }}><View style={{ height: 46, backgroundColor: preview.secondary, borderRadius: 6, padding: 8, gap: 4 }}><View style={{ width: '55%', height: 5, backgroundColor: preview.primary, borderRadius: 6 }} /><View style={{ width: '80%', height: 5, backgroundColor: preview.mutedForeground, borderRadius: 6 }} /></View><DText style={{ color: preview.foreground }}>{label}</DText></View></Button>; })}
@@ -49,13 +53,13 @@ export function SettingsScreen({ appearance = false }: { appearance?: boolean })
       </Section>
     </> : <>
       <Section title={t('Language')}><Row title={t('Interface language')} description={t('Controls navigation, settings, and status text only.')}><Choice label={t('Interface language')} disabled={disabled} value={p.language} options={interfaceLanguages} onChange={(language) => edit({ language })} /></Row><Row title={t('Model output language')} description={t('Sets the default language for chat and capability responses.')}><Choice label={t('Model output language')} disabled={disabled} value={p.responseLanguage} options={responseLanguages} onChange={(responseLanguage) => edit({ responseLanguage })} /></Row></Section>
-      <Section title={t('Layout')}><Row title={t('Interface layout')} description={t('Classic keeps the familiar navigation; Modern is the redesigned interface.')}><Choice label={t('Interface layout')} disabled={disabled} value={p.layout} options={[{ value: 'classic', label: t('Classic') }, { value: 'modern', label: t('Modern') }]} onChange={(layout) => edit({ layout })} /></Row></Section>
+      <Section title={t('Layout')}><Row title={t('Interface layout')} description={t('Classic keeps the familiar navigation; Modern is the redesigned interface.')}><Choice label={t('Interface layout')} disabled={disabled} value={p.layout} options={[{ value: 'classic', label: t('Classic') }, { value: 'modern', label: t('Modern') }]} onChange={(layout) => edit({ layout })} /></Row><DText role="small" muted>{t('This layout is saved on this device.')}</DText></Section>
       {catalogEditable(f.mode) && <Section title={t('Set up chat first')} description={t('Connect a provider and choose a language model. Other services are optional.')}>
         {[['/settings/connections', '1. Connect a provider', 'Add your provider and credentials, then test the connection.'], ['/settings/llm', '2. Choose a chat model', 'Add a language model, test it, and select it as the default for conversations.'], ['/settings/status', '3. Apply and check', 'Apply your changes using the bottom bar, then check service status before starting a conversation.']].map(([href, label, description]) => <View key={href} style={{ gap: 4, paddingVertical: 12 }}><Button variant="ghost" onPress={() => router.push(href as Href)}>{t(label)}</Button><DText muted role="small">{t(description)}</DText></View>)}
       </Section>}
     </>}
-  </PageScaffold>{f.settings.phase !== 'clean' && <View style={{ padding: 12, borderTopWidth: 1, borderColor: colors.border, backgroundColor: colors.background, gap: 8 }}>
-    <DText role="caption" accessibilityLiveRegion="polite" muted testID="settings-phase">{t(f.settings.phase === 'applied' ? 'Applied' : f.settings.phase === 'saved-draft' ? 'Draft not applied yet' : 'Unsaved changes')}</DText>
-    {f.settings.phase !== 'applied' && <><DText role="caption" muted>{t('Applies pending changes across all settings pages.')}</DText><View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}><Button variant="ghost" disabled={disabled} onPress={() => void save('discard')}>{t('Discard')}</Button><Button variant="secondary" loading={f.busy === 'save'} disabled={disabled || f.settings.phase !== 'unsaved'} onPress={() => void save('save')}>{t('Save draft')}</Button><Button loading={f.busy === 'apply'} disabled={disabled} onPress={() => void save('apply')} style={{ backgroundColor: colors.foreground }}><DText style={{ color: colors.background }}>{t('Apply changes')}</DText></Button></View></>}
+  </PageScaffold>{settings.state.phase !== 'clean' && <View style={{ padding: 12, borderTopWidth: 1, borderColor: colors.border, backgroundColor: colors.background, gap: 8 }}>
+    <DText role="caption" accessibilityLiveRegion="polite" muted testID="settings-phase">{t(settings.state.phase === 'applied' ? 'Applied' : settings.state.phase === 'saved-draft' ? 'Draft not applied yet' : 'Unsaved changes')}</DText>
+    {settings.state.phase !== 'applied' && <><DText role="caption" muted>{t('Applies General and Appearance changes.')}</DText><View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}><Button variant="ghost" disabled={disabled} onPress={() => void save('discard')}>{t('Discard')}</Button><Button variant="secondary" loading={settings.busy === 'save'} disabled={disabled || settings.state.phase !== 'unsaved'} onPress={() => void save('save')}>{t('Save draft')}</Button><Button loading={settings.busy === 'apply'} disabled={disabled} onPress={() => void save('apply')} style={{ backgroundColor: colors.foreground }}><DText style={{ color: colors.background }}>{t('Apply changes')}</DText></Button></View></>}
   </View>}</View>;
 }
