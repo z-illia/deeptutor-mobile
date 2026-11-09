@@ -2566,5 +2566,8 @@
   "Could not save the selected workspace. Please try again.": "Seçilen çalışma alanı kaydedilemedi. Lütfen tekrar deneyin.",
   "This workspace is unavailable. Choose another workspace.": "Bu çalışma alanı kullanılamıyor. Başka bir çalışma alanı seçin.",
   "This workspace is unavailable. Refresh the list and try again.": "Bu çalışma alanı kullanılamıyor. Listeyi yenileyip tekrar deneyin.",
-  "Unable to load workspaces. Please try again.": "Çalışma alanları yüklenemedi. Lütfen tekrar deneyin."
+  "Unable to load workspaces. Please try again.": "Çalışma alanları yüklenemedi. Lütfen tekrar deneyin.",
+  "Avatar image is too large (max 1 MB).": "Avatar görseli çok büyük (en fazla 1 MB).",
+  "Avatar must be a PNG, JPEG or WebP image.": "Avatar PNG, JPEG veya WebP biçiminde olmalıdır.",
+  "PNG, JPEG or WebP · up to 1 MB": "PNG, JPEG veya WebP · en fazla 1 MB"
 }

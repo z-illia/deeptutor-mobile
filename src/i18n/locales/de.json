@@ -2566,5 +2566,8 @@
   "Could not save the selected workspace. Please try again.": "Der ausgewählte Arbeitsbereich konnte nicht gespeichert werden. Bitte erneut versuchen.",
   "This workspace is unavailable. Choose another workspace.": "Dieser Arbeitsbereich ist nicht verfügbar. Wähle einen anderen.",
   "This workspace is unavailable. Refresh the list and try again.": "Dieser Arbeitsbereich ist nicht verfügbar. Aktualisiere die Liste und versuche es erneut.",
-  "Unable to load workspaces. Please try again.": "Arbeitsbereiche konnten nicht geladen werden. Bitte erneut versuchen."
+  "Unable to load workspaces. Please try again.": "Arbeitsbereiche konnten nicht geladen werden. Bitte erneut versuchen.",
+  "Avatar image is too large (max 1 MB).": "Das Avatarbild ist zu groß (maximal 1 MB).",
+  "Avatar must be a PNG, JPEG or WebP image.": "Der Avatar muss ein PNG-, JPEG- oder WebP-Bild sein.",
+  "PNG, JPEG or WebP · up to 1 MB": "PNG, JPEG oder WebP · bis zu 1 MB"
 }

@@ -2566,5 +2566,8 @@
   "Could not save the selected workspace. Please try again.": "Не вдалося зберегти вибраний робочий простір. Спробуйте ще раз.",
   "This workspace is unavailable. Choose another workspace.": "Цей робочий простір недоступний. Виберіть інший.",
   "This workspace is unavailable. Refresh the list and try again.": "Цей робочий простір недоступний. Оновіть список і спробуйте ще раз.",
-  "Unable to load workspaces. Please try again.": "Не вдалося завантажити робочі простори. Спробуйте ще раз."
+  "Unable to load workspaces. Please try again.": "Не вдалося завантажити робочі простори. Спробуйте ще раз.",
+  "Avatar image is too large (max 1 MB).": "Зображення аватара завелике (максимум 1 МБ).",
+  "Avatar must be a PNG, JPEG or WebP image.": "Аватар має бути зображенням PNG, JPEG або WebP.",
+  "PNG, JPEG or WebP · up to 1 MB": "PNG, JPEG або WebP · до 1 МБ"
 }

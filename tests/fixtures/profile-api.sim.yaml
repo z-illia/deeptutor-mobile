@@ -1,0 +1,6 @@
+simulation: profile-client
+routing: path
+mocks:
+  - name: profile
+    routeKey: profile
+    path: ./profile-api-mock

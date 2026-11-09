@@ -2566,5 +2566,8 @@
   "Could not save the selected workspace. Please try again.": "Could not save the selected workspace. Please try again.",
   "This workspace is unavailable. Choose another workspace.": "This workspace is unavailable. Choose another workspace.",
   "This workspace is unavailable. Refresh the list and try again.": "This workspace is unavailable. Refresh the list and try again.",
-  "Unable to load workspaces. Please try again.": "Unable to load workspaces. Please try again."
+  "Unable to load workspaces. Please try again.": "Unable to load workspaces. Please try again.",
+  "Avatar image is too large (max 1 MB).": "Avatar image is too large (max 1 MB).",
+  "Avatar must be a PNG, JPEG or WebP image.": "Avatar must be a PNG, JPEG or WebP image.",
+  "PNG, JPEG or WebP · up to 1 MB": "PNG, JPEG or WebP · up to 1 MB"
 }

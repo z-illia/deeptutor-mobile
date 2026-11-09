@@ -5,7 +5,7 @@ import { api } from '@/api/client';
 import type { Profile } from '@/features/entry/model';
 
 type Status = { enabled: boolean; authenticated: boolean; preset?: string };
-type User = { id: string; username: string; role: Profile['role']; avatar: string; created_at: string; must_change_password: boolean };
+type User = { id: string; username: string; role: Profile['role']; avatar: string; created_at: string; must_change_password: boolean; can_change_password?: boolean };
 type Session = { status: Status; profile: Profile | null; firstUser: boolean };
 
 export function authError(error: unknown): string {
@@ -27,7 +27,7 @@ function useSession() {
     let firstUser = false;
     if (status.enabled && status.authenticated) {
       const { data: user } = await api.get<User>('/auth/profile');
-      profile = { id: user.id, username: user.username, role: user.role, avatar: user.avatar, joined: user.created_at, mustChange: user.must_change_password };
+      profile = { id: user.id, username: user.username, role: user.role, avatar: user.avatar, joined: user.created_at, mustChange: user.must_change_password, canChangePassword: user.can_change_password === true };
     } else if (status.enabled) {
       const { data } = await api.get<{ is_first_user: boolean }>('/auth/is_first_user');
       firstUser = data.is_first_user;
@@ -87,7 +87,10 @@ function useSession() {
     setSession({ status: { enabled: true, authenticated: false }, profile: null, firstUser: false });
     await refresh();
   };
-  return { serverUrl, session, loading, error, busy, refresh, authenticate, signOut };
+  const patchProfile = useCallback((userId: string, patch: Pick<Partial<Profile>, 'avatar' | 'mustChange'>) => {
+    setSession(previous => previous?.profile?.id === userId ? { ...previous, profile: { ...previous.profile, ...patch } } : previous);
+  }, []);
+  return { serverUrl, session, loading, error, busy, refresh, authenticate, signOut, patchProfile };
 }
 const Context = createContext<ReturnType<typeof useSession> | null>(null);
 export function AuthProvider({ children }: PropsWithChildren) { return <Context.Provider value={useSession()}>{children}</Context.Provider>; }

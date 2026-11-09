@@ -6,7 +6,7 @@ export type ResourceState = 'ready' | 'loading' | 'empty' | 'error' | 'denied' |
 export type WorkspaceId = string;
 export const workspaces: readonly { id: WorkspaceId; name: string }[] = [{ id: '', name: 'General workspace' }, { id: 'fixture-ws-a', name: 'Mathematics · A' }, { id: 'fixture-ws-b', name: 'Mathematics · B' }];
 export const entryModes: readonly EntryMode[] = ['disabled', 'admin', 'standard', 'learner', 'signed-out', 'first-user', 'closed', 'temporary', 'loading', 'unavailable'];
-export type Profile = { id: string; username: string; role: 'admin' | 'user' | 'teacher' | 'student'; avatar: string; mustChange: boolean; joined: string };
+export type Profile = { id: string; username: string; role: 'admin' | 'user' | 'teacher' | 'student'; avatar: string; mustChange: boolean; canChangePassword?: boolean; joined: string };
 export function principalFor(mode: EntryMode): Profile | null {
   const role: Principal | null = mode === 'temporary' ? 'standard' : ['admin', 'standard', 'learner'].includes(mode) ? mode as Principal : null;
   return role ? { id: `fixture-${role}`, username: `fixture-${role}`, role: role === 'admin' ? 'admin' : 'user', avatar: '', mustChange: mode === 'temporary', joined: '2026-01-15' } : null;

@@ -2566,5 +2566,8 @@
   "Could not save the selected workspace. Please try again.": "選択したワークスペースを保存できませんでした。もう一度お試しください。",
   "This workspace is unavailable. Choose another workspace.": "このワークスペースは利用できません。別のワークスペースを選択してください。",
   "This workspace is unavailable. Refresh the list and try again.": "このワークスペースは利用できません。一覧を更新してもう一度お試しください。",
-  "Unable to load workspaces. Please try again.": "ワークスペースを読み込めませんでした。もう一度お試しください。"
+  "Unable to load workspaces. Please try again.": "ワークスペースを読み込めませんでした。もう一度お試しください。",
+  "Avatar image is too large (max 1 MB).": "アバター画像が大きすぎます（最大1 MB）。",
+  "Avatar must be a PNG, JPEG or WebP image.": "アバターにはPNG、JPEG、WebP形式の画像を使用してください。",
+  "PNG, JPEG or WebP · up to 1 MB": "PNG、JPEG、WebP · 最大1 MB"
 }

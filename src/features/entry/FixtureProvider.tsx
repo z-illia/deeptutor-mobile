@@ -48,13 +48,14 @@ function useFixtureState() {
     setSettings(old => settingsTransition(syncSettings(old), { type: operation }));
     if (operation === 'apply') { design.setTheme(settings.staged.theme); design.setLayout(settings.staged.layout); design.setLanguage(settings.staged.language); }
   }); };
-  return { mode, resetMode, profile, setProfile, workspace, setWorkspace, resourceState, setResourceState, settingsState, setSettingsState, whisper, setWhisper, failOperation, setFailOperation, settings, edit, save, busy, run, password, setPassword, registered, setRegistered, signOut: () => { void auth.signOut().catch(() => { void auth.refresh(); }); } };
+  return { mode: session?.profile ? initialMode : mode, resetMode, profile: session?.profile ?? profile, setProfile, workspace, setWorkspace, resourceState, setResourceState, settingsState, setSettingsState, whisper, setWhisper, failOperation, setFailOperation, settings, edit, save, busy, run, password, setPassword, registered, setRegistered, signOut: () => { void auth.signOut().catch(() => { void auth.refresh(); }); } };
 }
 type FixtureState = ReturnType<typeof useFixtureState>;
 const Context = createContext<FixtureState | null>(null);
 function FixtureSession({ children }: PropsWithChildren) { return <Context.Provider value={useFixtureState()}>{children}</Context.Provider>; }
 export function FixtureProvider({ children }: PropsWithChildren) {
   const auth = useAuth();
-  return <FixtureSession key={JSON.stringify(auth.session)}>{children}</FixtureSession>;
+  const identity = [auth.serverUrl, auth.session?.status.enabled, auth.session?.status.authenticated, auth.session?.profile?.id];
+  return <FixtureSession key={JSON.stringify(identity)}>{children}</FixtureSession>;
 }
 export function useFixtures() { const value = useContext(Context); if (!value) throw new Error('FixtureProvider is required'); return value; }

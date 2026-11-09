@@ -2566,5 +2566,8 @@
   "Could not save the selected workspace. Please try again.": "无法保存所选工作区。请重试。",
   "This workspace is unavailable. Choose another workspace.": "此工作区不可用。请选择其他工作区。",
   "This workspace is unavailable. Refresh the list and try again.": "此工作区不可用。请刷新列表后重试。",
-  "Unable to load workspaces. Please try again.": "无法加载工作区。请重试。"
+  "Unable to load workspaces. Please try again.": "无法加载工作区。请重试。",
+  "Avatar image is too large (max 1 MB).": "头像图片过大（最大 1 MB）。",
+  "Avatar must be a PNG, JPEG or WebP image.": "头像必须是 PNG、JPEG 或 WebP 图片。",
+  "PNG, JPEG or WebP · up to 1 MB": "PNG、JPEG 或 WebP · 最大 1 MB"
 }
