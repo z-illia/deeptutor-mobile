@@ -39,7 +39,7 @@ export function AppShell({ children }: PropsWithChildren) {
   const [collapsed, setCollapsed] = useState(false);
   const [preferredWidth, setPreferredWidth] = useState<number>(272);
   const params = useLocalSearchParams<{ shelf?: ShelfId; page?: string; scenario?: ShellState }>();
-  const inferredShelf: ShelfId = /^\/(personalization|agents|memory|space\/(personas|skills|mcp|cli-apps))/.test(path) ? 'personalization' : path.startsWith('/space') || path.startsWith('/knowledge') || path.startsWith('/notebooks') ? 'resources' : path.startsWith('/learning') ? 'learning' : path.startsWith('/partners') ? 'partners' : 'home';
+  const inferredShelf: ShelfId = /^\/(personalization|agents|memory|space\/(personas|skills|mcp|cli-apps))/.test(path) ? 'personalization' : path.startsWith('/space') || path.startsWith('/knowledge') || path.startsWith('/mobile/31') ? 'resources' : path.startsWith('/learning') ? 'learning' : path.startsWith('/partners') ? 'partners' : 'home';
   const shelf = ['/', '/explore', '/avatar-preview'].includes(path) && shelves.some((item) => item.id === params.shelf) ? params.shelf! : inferredShelf;
   const state: ShellState = ['ready', 'loading', 'empty', 'error'].includes(params.scenario || '') ? params.scenario! : 'ready';
   const [hidden, setHidden] = useState<readonly string[]>([]);
@@ -79,7 +79,7 @@ export function AppShell({ children }: PropsWithChildren) {
       <View style={{ marginTop: 14, paddingHorizontal: 6, gap: 8 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 4 }}>
           <DText role="caption" muted>{t('Conversations')}  {state === 'ready' ? activeWorkspaceSessions.length : 0}</DText>
-          <Pressable accessibilityRole="button" accessibilityLabel={t('Chat History')} onPress={() => { setDrawer(false); router.push('/space/chat-history'); }} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 6, paddingVertical: 2 }}>
+          <Pressable accessibilityRole="button" accessibilityLabel={t('Chat History')} onPress={() => { setDrawer(false); router.push('/mobile/27'); }} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 6, paddingVertical: 2 }}>
             <History size={12} color={colors.mutedForeground} />
             <DText role="caption" muted>{t('History')}</DText>
           </Pressable>

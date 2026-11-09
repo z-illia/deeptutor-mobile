@@ -14,7 +14,8 @@ export function EntryBoundary({ children }: PropsWithChildren) {
   const f = useFixtures(); const path = usePathname(); const t = useCopy();
   const params = useGlobalSearchParams();
   const query = new URLSearchParams(Object.entries(params).flatMap(([key, value]) => (Array.isArray(value) ? value : value === undefined ? [] : [value]).map(item => [key, String(item)])));
-  const returnPath = path.startsWith('/learning') && query.size ? `${path}?${query}` : path;
+  query.delete('screen');
+  const returnPath = query.size ? `${path}?${query}` : path;
   if (auth.loading) return <LoadingState label={t('Loading…')} />;
   if (auth.error) return <ErrorState message={t(auth.error)} onRetry={() => void auth.refresh()} />;
   if (auth.session?.status.enabled && !auth.session.status.authenticated) return <Redirect href={{ pathname: '/login', params: { next: returnPath } }} />;

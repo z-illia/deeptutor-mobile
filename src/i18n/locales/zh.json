@@ -2582,5 +2582,12 @@
   "Settings applied, but the draft could not be cleared. Retry Apply.": "设置已应用，但无法清除草稿。请再次应用。",
   "Settings changed on the server. Reload before saving.": "服务器上的设置已更改。请重新加载后再保存。",
   "Applies General and Appearance changes.": "应用常规和外观设置的更改。",
-  "This layout is saved on this device.": "此布局保存在本设备上。"
+  "This layout is saved on this device.": "此布局保存在本设备上。",
+  "Choose a workspace": "选择工作区",
+  "Create collection": "创建收藏集",
+  "Discard changes?": "放弃更改？",
+  "Move": "移动",
+  "No matching records": "没有匹配的记录",
+  "Search collections": "搜索收藏集",
+  "Selection Tutor": "选文导师"
 }

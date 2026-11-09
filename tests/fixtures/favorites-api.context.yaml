@@ -1,0 +1,12 @@
+purpose:
+  stands_in_for: The repository's existing favorites HTTP stand-in, not a live backend.
+  unblocks: Mobile favorites UI and saved-conversation regression checks.
+assumptions:
+  - id: mobile-favorites-preserves-api-behavior
+    status: supported
+    claim: The mobile favorites screens preserve client CRUD, immutable snapshot content, relocation and server-confirmed partial-save retry behavior against this stand-in.
+    reason: Browser checks drive the real app over HTTP and inspect the mock state; this existing mock was reused without a new owning-team lookup.
+    verification: The 2026-11-09 browser run passed create/edit/delete, read-only output and knowledge-base metadata, copy/move, relocated legacy deep links, export, chat references, conversation saving, partial retry without duplicate destinations, failure recovery and workspace isolation. Provider behavior outside this fixture and native-device interaction remain unverified.
+    source: tests/browser/verify-favorites.cjs; tests/fixtures/favorites-api-mock/default.cjs; src/features/favorites/MobileFavoritesScreen.tsx; src/features/favorites/MobileSaveFavorite.tsx
+    updated_at: '2026-11-09'
+fingerprints: []

@@ -1,0 +1,12 @@
+purpose:
+  stands_in_for: The repository's existing settings HTTP stand-in, not a live backend.
+  unblocks: Mobile general/appearance forms with the existing server-synchronized settings provider.
+assumptions:
+  - id: mobile-settings-preserves-draft-protocol
+    status: supported
+    claim: The mobile client retains settings drafts, applies only on request and handles the modeled conflicts and partial failures against this stand-in.
+    reason: Browser checks use the actual settings provider and HTTP serialization and inspect both server state and applied local preferences. Existing fixture reused; no new owning-team lookup performed.
+    verification: The 2026-11-09 browser run passed cross-page drafts, reload persistence, save/apply/clear failures, retries without duplicate UI writes, preserved foreign draft fields, response language, rendered text/code preferences, conflict recovery and account isolation. Live-server concurrency and native device UI remain unverified.
+    source: tests/browser/verify-settings.cjs; tests/fixtures/settings-api-mock/default.cjs; src/features/settings/MobileSettingsScreen.tsx; src/features/settings/SettingsProvider.tsx
+    updated_at: '2026-11-09'
+fingerprints: []

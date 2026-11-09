@@ -2582,5 +2582,12 @@
   "Settings applied, but the draft could not be cleared. Retry Apply.": "Đã áp dụng cài đặt nhưng không thể xóa bản nháp. Hãy thử áp dụng lại.",
   "Settings changed on the server. Reload before saving.": "Cài đặt trên máy chủ đã thay đổi. Hãy tải lại trước khi lưu.",
   "Applies General and Appearance changes.": "Áp dụng các thay đổi ở mục Chung và Giao diện.",
-  "This layout is saved on this device.": "Bố cục này được lưu trên thiết bị này."
+  "This layout is saved on this device.": "Bố cục này được lưu trên thiết bị này.",
+  "Choose a workspace": "Chọn không gian làm việc",
+  "Create collection": "Tạo bộ sưu tập",
+  "Discard changes?": "Hủy thay đổi?",
+  "Move": "Di chuyển",
+  "No matching records": "Không có mục phù hợp",
+  "Search collections": "Tìm bộ sưu tập",
+  "Selection Tutor": "Gia sư văn bản được chọn"
 }

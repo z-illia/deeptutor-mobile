@@ -12,7 +12,7 @@ import { useCopy } from '@/features/entry/copy';
 // This route is a handoff boundary, not a completed feature screen.
 export default function DestinationBoundary() {
   const path = usePathname(); const f = useFixtures(); const t = useCopy();
-  if (path === '/settings/overview') return <Redirect href="/settings/general" />;
+  if (path === '/settings/overview') return <Redirect href="/mobile/81" />;
   if (!allowedDestination(f.mode, path)) return <View style={{ padding: 24, gap: 16 }}><InlineAlert tone="warning">{t('Unavailable')}</InlineAlert><BackButton /></View>;
   if (!knownDestination(path)) return <EmptyState title={t('Unavailable')} action={<BackButton />} />;
   return <View style={{ flex: 1, paddingHorizontal: 8, alignItems: 'flex-start' }}><Button variant="ghost" loading={f.busy === 'retry'} onPress={() => void f.run('retry', () => {})}>{t('Retry')}</Button>{__DEV__ && <DText role="caption" muted>{t("Source destination ·")}{path} {t("· implementation belongs to a later milestone")}</DText>}</View>;

@@ -2582,5 +2582,12 @@
   "Settings applied, but the draft could not be cleared. Retry Apply.": "Налаштування застосовано, але чернетку не вдалося очистити. Повторіть застосування.",
   "Settings changed on the server. Reload before saving.": "Налаштування на сервері змінилися. Перезавантажте їх перед збереженням.",
   "Applies General and Appearance changes.": "Застосовує зміни в розділах «Загальні» та «Вигляд».",
-  "This layout is saved on this device.": "Ця розкладка зберігається на цьому пристрої."
+  "This layout is saved on this device.": "Ця розкладка зберігається на цьому пристрої.",
+  "Choose a workspace": "Виберіть робочий простір",
+  "Create collection": "Створити колекцію",
+  "Discard changes?": "Скасувати зміни?",
+  "Move": "Перемістити",
+  "No matching records": "Відповідних записів немає",
+  "Search collections": "Пошук колекцій",
+  "Selection Tutor": "Тьютор виділеного тексту"
 }

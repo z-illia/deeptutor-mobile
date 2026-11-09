@@ -1,5 +1,7 @@
 # DeepTutor mobile design implementation matrix
 
+Mobile route migration (2026-11-09): Settings 82/83, Favorites 31/32, workspaces 62 and conversation library 27/108 now use dedicated mobile screens. Settings 81/141 and personalization 65 no longer redirect to web screens. Legacy URLs redirect to mobile routes; see [remaining legacy UI and route mapping](WEB_DESIGN_AUDIT.md). Settings/Favorites/workspace API behavior is preserved; conversation archive still uses the local ChatProvider. This supersedes the corresponding older rows below.
+
 Learning update (2026-11-09): [Learning implementation/status matrix](LEARNING_IMPLEMENTATION_STATUS.md) and [verified API mapping](LEARNING_API_MAPPING.md) supersede the older Learning rows and fixture-only claims below. Production Learning now uses live native screens and the shared chat transport. Core read/navigation/streaming flows were tested; advanced readers, assessments, resource types and native-device checks remain PARTIAL/BLOCKED as documented. The current Study Session source is 390×850.
 
 Source: `file:///home/zillia/Documents/deep-tutor-app-2.pen`, inspected read-only through Pencil MCP on 2026-11-08.

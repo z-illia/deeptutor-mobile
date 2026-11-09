@@ -2582,5 +2582,12 @@
   "Settings applied, but the draft could not be cleared. Retry Apply.": "As definições foram aplicadas, mas não foi possível limpar o rascunho. Tente aplicar novamente.",
   "Settings changed on the server. Reload before saving.": "As definições no servidor foram alteradas. Recarregue antes de guardar.",
   "Applies General and Appearance changes.": "Aplica alterações nas secções Geral e Aparência.",
-  "This layout is saved on this device.": "Este esquema é guardado neste dispositivo."
+  "This layout is saved on this device.": "Este esquema é guardado neste dispositivo.",
+  "Choose a workspace": "Escolha um espaço de trabalho",
+  "Create collection": "Criar coleção",
+  "Discard changes?": "Descartar alterações?",
+  "Move": "Mover",
+  "No matching records": "Nenhum registro correspondente",
+  "Search collections": "Pesquisar coleções",
+  "Selection Tutor": "Tutor de texto selecionado"
 }

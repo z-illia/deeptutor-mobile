@@ -1,6 +1,2 @@
-import React from 'react';
-import { FavoritesScreen } from '@/features/favorites/FavoritesScreen';
-
-export default function NotebooksIndexRoute() {
-  return <FavoritesScreen />;
-}
+import { Redirect } from 'expo-router';
+export default function Screen() { return <Redirect href="/mobile/31" />; }

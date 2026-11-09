@@ -2582,5 +2582,12 @@
   "Settings applied, but the draft could not be cleared. Retry Apply.": "Les paramètres ont été appliqués, mais le brouillon n’a pas pu être supprimé. Réessayez de les appliquer.",
   "Settings changed on the server. Reload before saving.": "Les paramètres ont changé sur le serveur. Rechargez-les avant d’enregistrer.",
   "Applies General and Appearance changes.": "Applique les modifications des sections Général et Apparence.",
-  "This layout is saved on this device.": "Cette disposition est enregistrée sur cet appareil."
+  "This layout is saved on this device.": "Cette disposition est enregistrée sur cet appareil.",
+  "Choose a workspace": "Choisissez un espace de travail",
+  "Create collection": "Créer une collection",
+  "Discard changes?": "Abandonner les modifications ?",
+  "Move": "Déplacer",
+  "No matching records": "Aucun enregistrement correspondant",
+  "Search collections": "Rechercher des collections",
+  "Selection Tutor": "Tuteur de sélection"
 }

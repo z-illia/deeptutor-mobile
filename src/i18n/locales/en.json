@@ -2582,5 +2582,12 @@
   "Settings applied, but the draft could not be cleared. Retry Apply.": "Settings applied, but the draft could not be cleared. Retry Apply.",
   "Settings changed on the server. Reload before saving.": "Settings changed on the server. Reload before saving.",
   "Applies General and Appearance changes.": "Applies General and Appearance changes.",
-  "This layout is saved on this device.": "This layout is saved on this device."
+  "This layout is saved on this device.": "This layout is saved on this device.",
+  "Choose a workspace": "Choose a workspace",
+  "Create collection": "Create collection",
+  "Discard changes?": "Discard changes?",
+  "Move": "Move",
+  "No matching records": "No matching records",
+  "Search collections": "Search collections",
+  "Selection Tutor": "Selection Tutor"
 }

@@ -2582,5 +2582,12 @@
   "Settings applied, but the draft could not be cleared. Retry Apply.": "Ayarlar uygulandı ancak taslak temizlenemedi. Tekrar uygulayın.",
   "Settings changed on the server. Reload before saving.": "Sunucudaki ayarlar değişti. Kaydetmeden önce yeniden yükleyin.",
   "Applies General and Appearance changes.": "Genel ve Görünüm değişikliklerini uygular.",
-  "This layout is saved on this device.": "Bu düzen bu cihazda kaydedilir."
+  "This layout is saved on this device.": "Bu düzen bu cihazda kaydedilir.",
+  "Choose a workspace": "Çalışma alanı seçin",
+  "Create collection": "Koleksiyon oluştur",
+  "Discard changes?": "Değişiklikler silinsin mi?",
+  "Move": "Taşı",
+  "No matching records": "Eşleşen kayıt yok",
+  "Search collections": "Koleksiyonlarda ara",
+  "Selection Tutor": "Seçili metin öğretmeni"
 }

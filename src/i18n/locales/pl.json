@@ -2582,5 +2582,12 @@
   "Settings applied, but the draft could not be cleared. Retry Apply.": "Ustawienia zastosowano, ale nie udało się usunąć szkicu. Ponów zastosowanie.",
   "Settings changed on the server. Reload before saving.": "Ustawienia na serwerze uległy zmianie. Wczytaj je ponownie przed zapisaniem.",
   "Applies General and Appearance changes.": "Stosuje zmiany ustawień ogólnych i wyglądu.",
-  "This layout is saved on this device.": "Ten układ jest zapisywany na tym urządzeniu."
+  "This layout is saved on this device.": "Ten układ jest zapisywany na tym urządzeniu.",
+  "Choose a workspace": "Wybierz przestrzeń roboczą",
+  "Create collection": "Utwórz kolekcję",
+  "Discard changes?": "Odrzucić zmiany?",
+  "Move": "Przenieś",
+  "No matching records": "Brak pasujących wpisów",
+  "Search collections": "Szukaj kolekcji",
+  "Selection Tutor": "Tutor zaznaczonego tekstu"
 }

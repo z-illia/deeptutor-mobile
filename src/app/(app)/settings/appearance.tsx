@@ -1,2 +1,2 @@
-import { SettingsScreen } from '@/features/settings/SettingsScreen';
-export default function Screen() { return <SettingsScreen appearance />; }
+import { Redirect } from 'expo-router';
+export default function Screen() { return <Redirect href="/mobile/83" />; }

@@ -1,5 +1,2 @@
-import { ChatHistoryScreen } from '@/features/chat/ChatHistoryScreen';
-
-export default function SettingsArchiveRoute() {
-  return <ChatHistoryScreen mode="archive" />;
-}
+import { Redirect } from 'expo-router';
+export default function Screen() { return <Redirect href="/mobile/108" />; }

@@ -1,2 +1,2 @@
-import { OverviewScreen } from '@/features/resources/OverviewScreen';
-export default function Screen() { return <OverviewScreen account />; }
+import { Redirect } from 'expo-router';
+export default function Screen() { return <Redirect href="/mobile/65" />; }

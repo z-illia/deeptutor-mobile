@@ -353,7 +353,7 @@ export function ChatWorkspace() {
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={t('Chat History')}
-              onPress={() => router.push('/space/chat-history')}
+              onPress={() => router.push('/mobile/27')}
               style={({ pressed }) => ({
                 minHeight: 36,
                 paddingHorizontal: 10,
@@ -504,7 +504,7 @@ export function ChatWorkspace() {
             <View style={{ flexDirection: 'row', gap: 8 }}>
               <Button
                 variant="secondary"
-                onPress={() => router.push('/space/chat-history')}
+                onPress={() => router.push('/mobile/27')}
               >
                 {t('Chat History')}
               </Button>

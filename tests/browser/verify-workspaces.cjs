@@ -29,6 +29,7 @@ assert.ok(simulation, 'Provide WORKSPACE_SIM_URL (including its routeKey).');
     await page.getByRole('button', { name: 'Math A', exact: true }).waitFor({ timeout: 60000 });
     assert.equal(await page.getByRole('button', { name: 'Archived space', exact: true }).count(), 0);
     await page.getByRole('button', { name: 'Math A', exact: true }).click();
+    await page.getByRole('button', { name: 'Use selected workspace', exact: true }).click();
     await page.waitForURL('**/learning');
     await page.getByText('Math A', { exact: true }).waitFor();
     assert.ok(requests.some(url => url.pathname.endsWith('/topics') && url.searchParams.get('dt_workspace') === 'ws-a'));

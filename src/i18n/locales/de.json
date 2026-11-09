@@ -2582,5 +2582,12 @@
   "Settings applied, but the draft could not be cleared. Retry Apply.": "Die Einstellungen wurden angewendet, aber der Entwurf konnte nicht gelöscht werden. Versuche das Anwenden erneut.",
   "Settings changed on the server. Reload before saving.": "Die Einstellungen auf dem Server wurden geändert. Lade sie vor dem Speichern neu.",
   "Applies General and Appearance changes.": "Wendet Änderungen unter Allgemein und Darstellung an.",
-  "This layout is saved on this device.": "Dieses Layout wird auf diesem Gerät gespeichert."
+  "This layout is saved on this device.": "Dieses Layout wird auf diesem Gerät gespeichert.",
+  "Choose a workspace": "Arbeitsbereich auswählen",
+  "Create collection": "Sammlung erstellen",
+  "Discard changes?": "Änderungen verwerfen?",
+  "Move": "Verschieben",
+  "No matching records": "Keine passenden Einträge",
+  "Search collections": "Sammlungen durchsuchen",
+  "Selection Tutor": "Tutor für markierten Text"
 }

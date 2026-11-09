@@ -1,2 +1,2 @@
-import { LiveChatScreen } from '@/features/chat/live/LiveChatScreen';
-export default function ChatHistoryRoute() { return <LiveChatScreen showHistory />; }
+import { Redirect } from 'expo-router';
+export default function Screen() { return <Redirect href="/mobile/27" />; }

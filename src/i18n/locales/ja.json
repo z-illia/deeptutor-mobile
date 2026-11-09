@@ -2582,5 +2582,12 @@
   "Settings applied, but the draft could not be cleared. Retry Apply.": "設定は適用されましたが、下書きを削除できませんでした。もう一度適用してください。",
   "Settings changed on the server. Reload before saving.": "サーバーの設定が変更されました。保存する前に再読み込みしてください。",
   "Applies General and Appearance changes.": "一般と外観の変更を適用します。",
-  "This layout is saved on this device.": "このレイアウトはこのデバイスに保存されます。"
+  "This layout is saved on this device.": "このレイアウトはこのデバイスに保存されます。",
+  "Choose a workspace": "ワークスペースを選択",
+  "Create collection": "コレクションを作成",
+  "Discard changes?": "変更を破棄しますか？",
+  "Move": "移動",
+  "No matching records": "一致する記録がありません",
+  "Search collections": "コレクションを検索",
+  "Selection Tutor": "選択テキストのチューター"
 }

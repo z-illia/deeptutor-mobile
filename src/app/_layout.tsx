@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { View } from 'react-native';
 import { ChatProvider } from '@/features/chat/ChatProvider';
-import { SaveToNotebookModal } from '@/features/favorites/SaveToNotebookModal';
+import { MobileSaveFavorite } from '@/features/favorites/MobileSaveFavorite';
 import { FavoritesProvider } from '@/features/favorites/FavoritesProvider';
 import { SettingsProvider } from '@/features/settings/SettingsProvider';
 import { WorkspaceProvider } from '@/features/workspaces/WorkspaceProvider';
@@ -37,7 +37,7 @@ function RootNavigation() {
   const theme = dark ? DarkTheme : DefaultTheme;
   return <ThemeProvider value={{ ...theme, colors: { ...theme.colors, primary: colors.primary, background: colors.background, card: colors.card, text: colors.foreground, border: colors.border, notification: colors.destructive } }}>
     <StatusBar style={dark ? 'light' : 'dark'} />
-    <FontGate><FeedbackProvider><AuthProvider><SettingsProvider><WorkspaceProvider><FixtureProvider><FavoritesProvider><ChatProvider><LearningProvider><Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background }, animation: 'none' }}><Stack.Screen name="ui/search" options={{ presentation: 'modal' }} /><Stack.Screen name="ui/session-viewer" options={{ presentation: 'modal' }} /><Stack.Screen name="ui/file-preview" options={{ presentation: 'modal' }} /></Stack><SaveToNotebookModal /></LearningProvider></ChatProvider></FavoritesProvider></FixtureProvider></WorkspaceProvider></SettingsProvider></AuthProvider></FeedbackProvider></FontGate>
+    <FontGate><FeedbackProvider><AuthProvider><SettingsProvider><WorkspaceProvider><FixtureProvider><FavoritesProvider><ChatProvider><LearningProvider><Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background }, animation: 'none' }}><Stack.Screen name="ui/search" options={{ presentation: 'modal' }} /><Stack.Screen name="ui/session-viewer" options={{ presentation: 'modal' }} /><Stack.Screen name="ui/file-preview" options={{ presentation: 'modal' }} /></Stack><MobileSaveFavorite /></LearningProvider></ChatProvider></FavoritesProvider></FixtureProvider></WorkspaceProvider></SettingsProvider></AuthProvider></FeedbackProvider></FontGate>
   </ThemeProvider>;
 }
 

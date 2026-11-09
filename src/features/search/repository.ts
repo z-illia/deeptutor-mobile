@@ -4,7 +4,7 @@ import type { WorkspaceId } from '../entry/model';
 export type SearchRecord = { id: string; label: string; kind: 'page' | 'session' | 'learning' | 'partner' | 'group'; href: string; workspace?: WorkspaceId };
 export const records: readonly SearchRecord[] = [
   ...shellRepository.items.map((item): SearchRecord => ({ id: `page:${item.key}`, label: item.label, kind: 'page', href: item.route })),
-  { id: 'new-chat', label: 'navigation.newChat', kind: 'page', href: '/chat' }, { id: 'settings', label: 'Settings', kind: 'page', href: '/settings/general' },
+  { id: 'new-chat', label: 'navigation.newChat', kind: 'page', href: '/chat' }, { id: 'settings', label: 'Settings', kind: 'page', href: '/mobile/82' },
   { id: 'session-a', label: 'Mathematics · session A', kind: 'session', href: '/chat/session-a', workspace: 'fixture-ws-a' },
   { id: 'session-b', label: 'Mathematics · session B', kind: 'session', href: '/chat/session-b', workspace: 'fixture-ws-b' },
   { id: 'path-a', label: 'Mathematics · mastery', kind: 'learning', href: '/learning/mastery/path-a', workspace: 'fixture-ws-a' },
