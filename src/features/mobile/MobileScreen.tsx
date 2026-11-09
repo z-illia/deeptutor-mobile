@@ -5,6 +5,7 @@ import { router, type Href } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as Clipboard from 'expo-clipboard';
 import { ChevronLeft, Layers, UserRound } from 'lucide-react-native';
+import { useWorkspaces } from '@/features/workspaces/WorkspaceProvider';
 import { useChat } from '@/features/chat/ChatProvider';
 import { useFixtures } from '@/features/entry/FixtureProvider';
 import { Button } from '@/shared/ui/Controls';
@@ -25,7 +26,9 @@ const subscribeClient = () => () => {};
 export function MobileScreen({ number }: { number: number }) {
   const clientReady = useSyncExternalStore(subscribeClient, () => true, () => false);
   const spec = screenByNumber.get(number);
-  const state = useMobileStore();
+  const localState = useMobileStore();
+  const workspaceState = useWorkspaces();
+  const state = { ...localState, workspace: workspaceState.selectedWorkspaceId };
   const design = useDesign();
   const t = useMobileCopy();
   const { dark } = design;
@@ -239,7 +242,7 @@ export function MobileScreen({ number }: { number: number }) {
       <FlatList key={number} data={visible} keyExtractor={node => node.id} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={{ paddingTop: 12, paddingHorizontal: 20, paddingBottom: 24, gap: 24 }} initialNumToRender={12} windowSize={5}
         ListHeaderComponent={error ? <Text accessibilityRole="alert" style={{ fontFamily: 'Inter', color: colors.danger, fontSize: 16, lineHeight: 24 }}>{t(error)}</Text> : undefined}
         renderItem={({ item }) => {
-          if (item.name === 'Context' && context && textOf(context) === 'Software Development') return <Text style={{ color: colors.muted, fontFamily: 'Inter', fontSize: 14, lineHeight: 20 }}>{t(state.workspace)}</Text>;
+          if (item.name === 'Context' && context && textOf(context) === 'Software Development') return <Text style={{ color: colors.muted, fontFamily: 'Inter', fontSize: 14, lineHeight: 20 }}>{workspaceState.workspaces.find(item => item.workspace_id === state.workspace)?.display_name ?? (state.workspace || t('General workspace'))}</Text>;
           if (number === 13 && item.name === 'Sources & session activity row' && sessionId) return <View style={{ gap: 20 }}><Text style={{ fontFamily: 'Inter', color: colors.muted, fontSize: 12 }}>{t("DEMO CONVERSATION · replies are simulated")}</Text>{messages.map(message => <View key={message.id} style={{ padding: message.role === 'user' ? 16 : 0, borderRadius: 12, backgroundColor: message.role === 'user' ? colors.soft : 'transparent', gap: 8 }}>{message.role === 'assistant' && <Text style={{ color: colors.accent, fontFamily: 'Inter', fontSize: 12, fontWeight: '600' }}>DEEPTUTOR</Text>}{paragraph(message.content)}{!!message.error && <Text accessibilityRole="alert" style={{ color: colors.danger }}>{t(message.error)}</Text>}</View>)}<NativeLayer node={item} ctx={ctx} /></View>;
           if (number === 38 && item.name === 'Correct · At each statement notice' && state.values[`${state.workspace}:practice-correct`] === 'false') return <View style={{ padding: 16, borderRadius: 12, backgroundColor: colors['error-surface'], gap: 8 }}><Text accessibilityRole="alert" style={{ color: colors.danger, fontFamily: 'Inter', fontSize: 16, fontWeight: '600' }}>{t("Not quite. Try the example again.")}</Text>{paragraph(t('Read committed takes a new snapshot at each statement. Two statements can see different committed data.'))}</View>;
           if (number === 52 && item.name === 'Tasks section' && localTasks.length > 0) return <View style={{ gap: 12 }}><Text accessibilityRole="header" style={{ fontFamily: 'Inter', fontWeight: '600', fontSize: 18, color: colors.ink }}>{t("Tasks")}</Text>{taskCards}<Button onPress={() => act({ id: 'add-task', type: 'text', name: 'Add a task', content: 'Add a task' })} style={{ minHeight: 52 }}>{t("Add a task")}</Button><Button variant="secondary" onPress={() => open(56)} style={{ minHeight: 52 }}>{t("Task board")}</Button></View>;

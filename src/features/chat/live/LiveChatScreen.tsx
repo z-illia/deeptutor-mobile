@@ -1,3 +1,5 @@
+import { WorkspaceSheet } from '@/features/entry/WorkspaceSheet';
+import { useWorkspaces } from '@/features/workspaces/WorkspaceProvider';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { useCopy } from '@/features/entry/copy';
 import { BottomNavigation } from '@/features/mobile/BottomNavigation';
@@ -6,7 +8,7 @@ import { Button, IconButton } from '@/shared/ui/Controls';
 import { InlineAlert, LoadingState, StatusChip } from '@/shared/ui/Feedback';
 import { DText } from '@/shared/ui/Text';
 import { router, useLocalSearchParams } from 'expo-router';
-import { ChevronLeft, History, Plus } from 'lucide-react-native';
+import { ChevronLeft, History, Layers, Plus } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -21,15 +23,18 @@ import { useLiveChat } from './useLiveChat';
 export function LiveChatScreen({ showHistory = false }: { showHistory?: boolean }) {
   const params = useLocalSearchParams<{ sessionId?: string; new?: string }>();
   const auth = useAuth();
+  const { selectedWorkspaceId } = useWorkspaces();
   const id = typeof params.sessionId === 'string' ? params.sessionId : null;
-  return <ConversationScreen key={`${auth.serverUrl}:${id ?? params.new ?? 'new'}`} sessionId={id} showHistory={showHistory} />;
+  return <ConversationScreen key={`${auth.serverUrl}:${auth.session?.profile?.id}:${selectedWorkspaceId}:${id ?? params.new ?? 'new'}`} sessionId={id} showHistory={showHistory} />;
 }
 
 function ConversationScreen({ sessionId, showHistory }: { sessionId: string | null; showHistory: boolean }) {
-  const chat = useLiveChat(sessionId);
+  const { selectedWorkspaceId } = useWorkspaces();
+  const chat = useLiveChat(sessionId, { workspace_id: selectedWorkspaceId, workspace_mode: 'chat' });
   const { colors, language } = useDesign();
   const t = useCopy();
   const [historyOpen, setHistoryOpen] = useState(showHistory);
+  const [workspaceOpen, setWorkspaceOpen] = useState(false);
   const [modelsOpen, setModelsOpen] = useState(false);
   const list = useRef<FlatList>(null);
   useEffect(() => {
@@ -43,6 +48,7 @@ function ConversationScreen({ sessionId, showHistory }: { sessionId: string | nu
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, gap: 8, minHeight: 60, borderBottomWidth: 1, borderColor: colors.border }}>
         <IconButton label={t('Back')} onPress={() => router.canGoBack() ? router.back() : router.replace('/mobile/1')}><ChevronLeft size={22} color={colors.foreground} /></IconButton>
         <DText accessibilityRole="header" numberOfLines={1} style={{ flex: 1, fontSize: 22 }}>{chat.serverSessionId ? chat.title : t('New chat')}</DText>
+        <IconButton label={t('Switch workspace')} onPress={() => setWorkspaceOpen(true)}><Layers size={22} color={colors.foreground} /></IconButton>
         <IconButton label={t('Recent conversations')} onPress={openHistory}><History size={22} color={colors.foreground} /></IconButton>
         <IconButton label={t('New chat')} onPress={newChat}><Plus size={22} color={colors.foreground} /></IconButton>
       </View>
@@ -67,6 +73,7 @@ function ConversationScreen({ sessionId, showHistory }: { sessionId: string | nu
         value={chat.draft} onChangeText={chat.setDraft}
         modelName={chat.model?.model_name ?? t('Server default model')}
         onChooseModel={() => setModelsOpen(true)}
+        workspace={selectedWorkspaceId}
         configuration={chat.configuration} onConfigure={chat.setConfiguration}
         loading={chat.loading} busy={chat.busy} waiting={chat.waiting} error={!!chat.error}
         onSend={() => { followBottom.current = true; void chat.send(language); }}
@@ -74,6 +81,7 @@ function ConversationScreen({ sessionId, showHistory }: { sessionId: string | nu
       />
     </KeyboardAvoidingView>
     <BottomNavigation activeScreen={12} />
+    <WorkspaceSheet open={workspaceOpen} onClose={() => setWorkspaceOpen(false)} />
     <FullScreenModal open={historyOpen} title={t('Recent conversations')} onClose={() => setHistoryOpen(false)} onShow={() => { if (showHistory) void chat.refreshHistory(); }}>
         {!!chat.historyError && <InlineAlert tone="danger">{t(chat.historyError)}</InlineAlert>}
         <FlatList contentContainerStyle={{ paddingHorizontal: 16, gap: 8 }} data={chat.sessions.filter(item => (!item.workspace_mode || item.workspace_mode === 'chat') && (!item.session_type || item.session_type === 'chat'))} keyExtractor={item => item.session_id} refreshing={chat.historyLoading} onRefresh={() => void chat.refreshHistory()} ListEmptyComponent={!chat.historyLoading ? <DText muted style={{ padding: 20 }}>{t('No conversations yet')}</DText> : <LoadingState />} renderItem={({ item }) => <ListRow title={item.title || t('New chat')} onPress={() => { setHistoryOpen(false); router.push(`/chat/${encodeURIComponent(item.session_id)}`); }} />} ListFooterComponent={<View style={{ padding: 16, gap: 8 }}>{!!chat.historyError && <Button onPress={() => void chat.refreshHistory()}>{t('Retry')}</Button>}{chat.hasMore && <Button loading={chat.historyLoading} onPress={() => void chat.refreshHistory(true)}>{t('Load more')}</Button>}</View>} />

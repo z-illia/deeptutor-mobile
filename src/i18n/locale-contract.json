@@ -560,9 +560,11 @@
     "Could not rename conversation.",
     "Could not rename topic while simulated failure is active.",
     "Could not reset progress while simulated failure is active.",
+    "Could not restore the selected workspace.",
     "Could not save custom strategy.",
     "Could not save page customization while failure mode is on.",
     "Could not save the draft. Free browser storage before switching workspaces.",
+    "Could not save the selected workspace. Please try again.",
     "Could not send message. Please retry.",
     "Could not send the message. Your draft is preserved.",
     "Could not switch review strategy.",
@@ -2184,6 +2186,8 @@
     "This turn / Every turn",
     "This turn only",
     "This turn only / Every turn",
+    "This workspace is unavailable. Choose another workspace.",
+    "This workspace is unavailable. Refresh the list and try again.",
     "Time available",
     "Time to review",
     "Timeout and message suggestions",
@@ -2264,6 +2268,7 @@
     "Unable to load Favorites",
     "Unable to load reference catalog",
     "Unable to load settings. Please try again.",
+    "Unable to load workspaces. Please try again.",
     "Unable to open link",
     "Unable to reach the server. Please try again.",
     "Unable to submit answers while simulated failure is active.",
@@ -3053,6 +3058,7 @@
     "Invalid learning data received from the server.",
     "Invalid model catalog received from the server.",
     "Invalid topic list received from the server.",
+    "Invalid workspace list received from the server.",
     "Invertibility only guarantees λ ≠ 0; defective matrices like [[2,1,0],[0,2,0],[0,0,5]] are still invertible.",
     "Isolation controls what concurrent transactions can see.\n\nRead committed sees committed changes at each statement.\n\nRepeatable read keeps a consistent snapshot during a transaction.\n\nSerializable provides the strongest isolation: concurrent work must behave like a serial order.",
     "Isolation levels",
@@ -3364,6 +3370,7 @@
     "Windowing, Spectral Leakage & FFT",
     "Work through a low-dimensional concrete example and test degenerate inputs.",
     "Worked 2×2 examples followed by invariant proofs",
+    "WorkspaceProvider is required",
     "Write two overlapping transactions. At each statement, list the rows the transaction can observe.",
     "XLSX · CSV · TSV · JSON",
     "You correctly identified the kernel dimension; next let us verify the rank-nullity balance.",
@@ -4448,6 +4455,7 @@
     "Mathematics · mastery",
     "Mathematics · partner",
     "Mathematics · group",
-    "Learning starts with a question. Explore an idea, connect it to what you know, and explain it in your own words."
+    "Learning starts with a question. Explore an idea, connect it to what you know, and explain it in your own words.",
+    "Invalid workspace list received from the server."
   ]
 }

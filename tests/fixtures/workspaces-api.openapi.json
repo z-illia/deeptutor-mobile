@@ -1,0 +1,187 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Workspace client verification",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/auth/status": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Existing mobile contract fixture",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "enabled": false,
+                  "authenticated": false
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Existing mobile contract fixture",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "detail": "Workspace service unavailable"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/settings/workspace/registrations": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Existing mobile contract fixture",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "workspaces": [
+                    {
+                      "workspace_id": "ws-a",
+                      "display_name": "Math A",
+                      "archived": false
+                    },
+                    {
+                      "workspace_id": "ws-b",
+                      "display_name": "Physics B",
+                      "archived": false
+                    },
+                    {
+                      "workspace_id": "old",
+                      "display_name": "Archived space",
+                      "archived": true
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Existing mobile contract fixture",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "detail": "Workspace service unavailable"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mastery-paths/topics": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Existing mobile contract fixture",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "topics": []
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Existing mobile contract fixture",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "detail": "Workspace service unavailable"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sessions": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Existing mobile contract fixture",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "sessions": []
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Existing mobile contract fixture",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "detail": "Workspace service unavailable"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/settings/llm-options": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Existing mobile contract fixture",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "options": [],
+                  "active": null
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Existing mobile contract fixture",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "detail": "Workspace service unavailable"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

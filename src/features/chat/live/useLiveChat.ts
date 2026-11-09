@@ -150,7 +150,7 @@ export function useLiveChat(initialId: string | null, learning?: LearningChatCon
     if (historyLock.current) return;
     historyLock.current = true; setHistoryLoading(true); setHistoryError('');
     try {
-      const rows = await listConversations(undefined, more ? sessions.length : 0);
+      const rows = await listConversations(undefined, more ? sessions.length : 0, workspaceId);
       if (mounted.current) { setSessions(old => more ? [...old, ...rows] : rows); setHasMore(rows.length === 50); }
     } catch (cause) { if (mounted.current) setHistoryError(chatError(cause)); }
     finally { historyLock.current = false; if (mounted.current) setHistoryLoading(false); }
@@ -171,7 +171,7 @@ export function useLiveChat(initialId: string | null, learning?: LearningChatCon
       await connection.current.send(replying ? {
         type: 'submit_user_reply', turn_id: turnId.current, text: content, command_id: commandId(),
       } : {
-        type: 'start_turn', content, session_id: sessionId.current, capability: 'chat', ...configuration, language,
+        type: 'start_turn', content, session_id: sessionId.current, capability: 'chat', ...configuration, language, workspace_id: workspaceId,
         ...(pendingAttachments.length ? { attachments: pendingAttachments } : {}),
         ...(submission?.mastery_answer ? { mastery_answer: submission.mastery_answer } : {}),
         ...(submission?.mastery_skip ? { mastery_skip: submission.mastery_skip } : {}),

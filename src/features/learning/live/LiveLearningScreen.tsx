@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { router, useLocalSearchParams, type Href } from 'expo-router';
-import { usePreferencesStore } from '@/shared/preferences/store';
+import { router, useFocusEffect, useLocalSearchParams, type Href } from 'expo-router';
+import { WorkspaceList } from '@/features/workspaces/WorkspaceList';
+import { useWorkspaces } from '@/features/workspaces/WorkspaceProvider';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { chatError } from '@/features/chat/live/useLiveChat';
 import { commandId } from '@/features/chat/live/protocol';
@@ -24,12 +25,15 @@ export function LiveLearningScreen({ view: fixedView }: { view?: string }) {
   const params = useLocalSearchParams<{ view?: string; workspace?: string; pathId?: string; moduleId?: string; sessionId?: string; id?: string; mode?: string; prompt?: string; new?: string }>();
   const view = fixedView ?? params.view ?? 'overview';
   const auth = useAuth();
-  const scopeKey = `learning-workspace:${auth.serverUrl}:${auth.session?.profile?.id ?? 'local'}`;
-  const remembered = usePreferencesStore(state => state.values[scopeKey]);
-  const setValue = usePreferencesStore(state => state.setValue);
-  const workspace = params.workspace ?? remembered ?? '';
+  const workspaceState = useWorkspaces();
+  const workspace = params.workspace ?? workspaceState.selectedWorkspaceId;
   const pathId = params.pathId ?? '';
-  useEffect(() => { if (params.workspace !== undefined) setValue(scopeKey, params.workspace); }, [params.workspace, scopeKey, setValue]);
+  const { loaded, selectWorkspace } = workspaceState;
+  // Only the focused route may adopt a workspace from a deep link. Screens
+  // retained in the navigation stack must not overwrite the active selection.
+  useFocusEffect(useCallback(() => {
+    if (loaded && params.workspace !== undefined) void selectWorkspace(params.workspace);
+  }, [loaded, params.workspace, selectWorkspace]));
   if (view === 'study') return <LiveStudyScreen key={`${auth.serverUrl}:${workspace}:${pathId}:${params.new ?? params.sessionId ?? 'new'}`} workspace={workspace} pathId={pathId} sessionId={params.sessionId ?? null} mode={params.mode} prompt={params.prompt} />;
   if (view === 'reader' || view === 'book') return <ReaderScreen key={`${workspace}:${view}:${params.id}`} workspace={workspace} id={params.id ?? ''} book={view === 'book'} />;
   if (view === 'practice') return <PracticeScreen workspace={workspace} />;
@@ -40,7 +44,7 @@ function LearningContent({ view, workspace, pathId, moduleId }: { view: string; 
   const [confirmText, setConfirmText] = useState('');
   const [importUrl, setImportUrl] = useState('');
   const [workspaceOpen, setWorkspaceOpen] = useState(false);
-  const workspaces = useLearningData(useCallback((signal: AbortSignal) => get<{ workspaces: { workspace_id: string; display_name: string; archived: boolean }[] }>('/settings/workspace/registrations', workspace, signal), [workspace]));
+  const workspaceState = useWorkspaces();
   const [goal, setGoal] = useState('');
   const [name, setName] = useState('');
   const [target, setTarget] = useState<number>();
@@ -77,7 +81,7 @@ function LearningContent({ view, workspace, pathId, moduleId }: { view: string; 
     {!!failure && <InlineAlert tone="danger">{failure}</InlineAlert>}
     {!!notice && <InlineAlert>{notice}</InlineAlert>}
     {view === 'overview' && <>
-      <DText muted>{workspaces.data?.workspaces.find(item => item.workspace_id === workspace)?.display_name ?? 'General workspace'}</DText>
+      <DText muted>{workspaceState.workspaces.find(item => item.workspace_id === workspace)?.display_name ?? (workspace || 'General workspace')}</DText>
       <Heading>Build understanding,{'\n'}one step at a time.</Heading>
       {!!state.data?.topics.length && <View style={{ gap: 12 }}><DText role="label">Continue your learning</DText>{state.data.topics.map(item => row(item.name, `${item.map.counts.mastered} / ${item.map.counts.total} knowledge points mastered`, () => router.push(learningHref('topic', workspace, item.path_id))))}</View>}
       {!state.loading && !state.error && !state.data?.topics.length && <DText muted>No learning paths yet. Start with a goal.</DText>}
@@ -186,9 +190,7 @@ function LearningContent({ view, workspace, pathId, moduleId }: { view: string; 
     </FullScreenModal>
     <FullScreenModal open={workspaceOpen} title="Switch workspace" onClose={() => setWorkspaceOpen(false)}>
       <View style={{ padding: 20, gap: 12 }}>
-        {!!workspaces.error && <InlineAlert tone="danger">{workspaces.error}</InlineAlert>}
-        <ListRow title="General workspace" selected={!workspace} onPress={() => router.replace(learningHref('overview', ''))} />
-        {workspaces.data?.workspaces.filter(item => !item.archived).map(item => <ListRow key={item.workspace_id} title={item.display_name} selected={item.workspace_id === workspace} onPress={() => router.replace(learningHref('overview', item.workspace_id))} />)}
+        <WorkspaceList open={workspaceOpen} currentId={workspace} onSelected={id => { setWorkspaceOpen(false); router.replace(learningHref('overview', id)); }} />
       </View>
     </FullScreenModal>
   </LearningLayout>;

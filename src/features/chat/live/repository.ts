@@ -2,8 +2,8 @@ import { contentFingerprint, richDiagnostic } from '@/shared/markdown/diagnostic
 import { api } from '@/api/client';
 import type { ChatModel, Conversation } from './protocol';
 
-export async function listConversations(signal?: AbortSignal, offset = 0) {
-  const { data } = await api.get<{ sessions: Conversation[] }>('/sessions', { params: { limit: 50, offset }, signal });
+export async function listConversations(signal?: AbortSignal, offset = 0, workspace?: string) {
+  const { data } = await api.get<{ sessions: Conversation[] }>('/sessions', { params: { limit: 50, offset, ...(workspace !== undefined ? { dt_workspace: workspace } : {}) }, signal });
   if (!Array.isArray(data.sessions)) throw new Error('Invalid conversation list received from the server.');
   return data.sessions;
 }

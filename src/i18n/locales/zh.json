@@ -2561,5 +2561,10 @@
   "Table": "Table",
   "This link uses an unsupported address.": "This link uses an unsupported address.",
   "Unable to copy this code. Please try again.": "Unable to copy this code. Please try again.",
-  "Unable to open link": "Unable to open link"
+  "Unable to open link": "Unable to open link",
+  "Could not restore the selected workspace.": "无法恢复所选工作区。",
+  "Could not save the selected workspace. Please try again.": "无法保存所选工作区。请重试。",
+  "This workspace is unavailable. Choose another workspace.": "此工作区不可用。请选择其他工作区。",
+  "This workspace is unavailable. Refresh the list and try again.": "此工作区不可用。请刷新列表后重试。",
+  "Unable to load workspaces. Please try again.": "无法加载工作区。请重试。"
 }

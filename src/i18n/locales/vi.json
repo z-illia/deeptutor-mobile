@@ -2561,5 +2561,10 @@
   "Table": "Table",
   "This link uses an unsupported address.": "This link uses an unsupported address.",
   "Unable to copy this code. Please try again.": "Unable to copy this code. Please try again.",
-  "Unable to open link": "Unable to open link"
+  "Unable to open link": "Unable to open link",
+  "Could not restore the selected workspace.": "Không thể khôi phục không gian làm việc đã chọn.",
+  "Could not save the selected workspace. Please try again.": "Không thể lưu không gian làm việc đã chọn. Vui lòng thử lại.",
+  "This workspace is unavailable. Choose another workspace.": "Không gian làm việc này không khả dụng. Hãy chọn không gian khác.",
+  "This workspace is unavailable. Refresh the list and try again.": "Không gian làm việc này không khả dụng. Hãy làm mới danh sách và thử lại.",
+  "Unable to load workspaces. Please try again.": "Không thể tải các không gian làm việc. Vui lòng thử lại."
 }

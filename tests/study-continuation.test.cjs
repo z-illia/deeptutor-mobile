@@ -43,8 +43,9 @@ function screenHarness(view, rows) {
   const overrides = Object.fromEntries(imports.map(node => [node.moduleSpecifier.text, new Proxy({}, { get: (_, key) => String(key) })]));
   Object.assign(overrides, {
     react: { useCallback: fn => fn, useEffect() {}, useState: initial => [initial, () => {}], useRef: value => ({ current: value }) },
-    'expo-router': { router: { push: url => navigations.push(url) }, useLocalSearchParams: () => ({ view, workspace: 'workspace', pathId: 'path' }) },
+    'expo-router': { router: { push: url => navigations.push(url) }, useFocusEffect() {}, useLocalSearchParams: () => ({ view, workspace: 'workspace', pathId: 'path' }) },
     '@/features/auth/AuthProvider': { useAuth: () => ({ serverUrl: 'server', session: { profile: { id: 'user' } } }) },
+    '@/features/workspaces/WorkspaceProvider': { useWorkspaces: () => ({ selectedWorkspaceId: '', workspaces: [] }) },
     '@/shared/preferences/store': { usePreferencesStore: selector => selector({ values: {}, setValue() {} }) },
     '@/features/chat/live/protocol': { commandId: () => 'navigation-instance' },
     './repository': repo,

@@ -3,7 +3,7 @@ import { normalizeInternalReturnPath } from './return-path';
 export type Principal = 'admin' | 'standard' | 'learner';
 export type EntryMode = Principal | 'disabled' | 'signed-out' | 'first-user' | 'closed' | 'temporary' | 'loading' | 'unavailable';
 export type ResourceState = 'ready' | 'loading' | 'empty' | 'error' | 'denied' | 'unavailable';
-export type WorkspaceId = '' | 'fixture-ws-a' | 'fixture-ws-b';
+export type WorkspaceId = string;
 export const workspaces: readonly { id: WorkspaceId; name: string }[] = [{ id: '', name: 'General workspace' }, { id: 'fixture-ws-a', name: 'Mathematics · A' }, { id: 'fixture-ws-b', name: 'Mathematics · B' }];
 export const entryModes: readonly EntryMode[] = ['disabled', 'admin', 'standard', 'learner', 'signed-out', 'first-user', 'closed', 'temporary', 'loading', 'unavailable'];
 export type Profile = { id: string; username: string; role: 'admin' | 'user' | 'teacher' | 'student'; avatar: string; mustChange: boolean; joined: string };

@@ -2561,5 +2561,10 @@
   "Table": "Table",
   "This link uses an unsupported address.": "This link uses an unsupported address.",
   "Unable to copy this code. Please try again.": "Unable to copy this code. Please try again.",
-  "Unable to open link": "Unable to open link"
+  "Unable to open link": "Unable to open link",
+  "Could not restore the selected workspace.": "Seçilen çalışma alanı geri yüklenemedi.",
+  "Could not save the selected workspace. Please try again.": "Seçilen çalışma alanı kaydedilemedi. Lütfen tekrar deneyin.",
+  "This workspace is unavailable. Choose another workspace.": "Bu çalışma alanı kullanılamıyor. Başka bir çalışma alanı seçin.",
+  "This workspace is unavailable. Refresh the list and try again.": "Bu çalışma alanı kullanılamıyor. Listeyi yenileyip tekrar deneyin.",
+  "Unable to load workspaces. Please try again.": "Çalışma alanları yüklenemedi. Lütfen tekrar deneyin."
 }

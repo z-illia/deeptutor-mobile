@@ -1,7 +1,8 @@
 import { createContext, useContext, useRef, useState, type PropsWithChildren } from 'react';
+import { useWorkspaces } from '@/features/workspaces/WorkspaceProvider';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { useDesign } from '@/shared/design/DesignProvider';
-import { defaultPreferences, principalFor, settingsTransition, type EntryMode, type Preferences, type ResourceState, type SettingsState, type WorkspaceId } from './model';
+import { defaultPreferences, principalFor, settingsTransition, type EntryMode, type Preferences, type ResourceState, type SettingsState } from './model';
 
 function useFixtureState() {
   const design = useDesign();
@@ -10,7 +11,8 @@ function useFixtureState() {
   const initialMode: EntryMode = !session?.status.enabled ? 'disabled' : !session.profile ? 'signed-out' : session.profile.mustChange ? 'temporary' : session.profile.role === 'admin' ? 'admin' : session.status.preset === 'learner' ? 'learner' : 'standard';
   const [mode, setMode] = useState<EntryMode>(initialMode);
   const [profile, setProfile] = useState(session?.profile ?? principalFor(initialMode));
-  const [workspace, setWorkspace] = useState<WorkspaceId>('');
+  const { selectedWorkspaceId: workspace, selectWorkspace } = useWorkspaces();
+  const setWorkspace = (id: string) => { void selectWorkspace(id); };
   const [resourceState, setResourceState] = useState<ResourceState>('ready');
   const [settingsState, setSettingsState] = useState<ResourceState>('ready');
   const [whisper, setWhisper] = useState(false);

@@ -2561,5 +2561,10 @@
   "Table": "Table",
   "This link uses an unsupported address.": "This link uses an unsupported address.",
   "Unable to copy this code. Please try again.": "Unable to copy this code. Please try again.",
-  "Unable to open link": "Unable to open link"
+  "Unable to open link": "Unable to open link",
+  "Could not restore the selected workspace.": "Nie udało się przywrócić wybranego obszaru roboczego.",
+  "Could not save the selected workspace. Please try again.": "Nie udało się zapisać wybranego obszaru roboczego. Spróbuj ponownie.",
+  "This workspace is unavailable. Choose another workspace.": "Ten obszar roboczy jest niedostępny. Wybierz inny.",
+  "This workspace is unavailable. Refresh the list and try again.": "Ten obszar roboczy jest niedostępny. Odśwież listę i spróbuj ponownie.",
+  "Unable to load workspaces. Please try again.": "Nie udało się wczytać obszarów roboczych. Spróbuj ponownie."
 }

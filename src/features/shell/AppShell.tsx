@@ -10,7 +10,8 @@ import { useChat } from '@/features/chat/ChatProvider';
 import { OrganizedSessionList } from '@/features/chat/OrganizedSessionList';
 import { useFixtures } from '@/features/entry/FixtureProvider';
 import { useCopy } from '@/features/entry/copy';
-import { workspaces, allowedDestination } from '@/features/entry/model';
+import { allowedDestination } from '@/features/entry/model';
+import { useWorkspaces } from '@/features/workspaces/WorkspaceProvider';
 import { WorkspaceSheet } from '@/features/entry/WorkspaceSheet';
 import { useDesign } from '@/shared/design/DesignProvider';
 import { geometry, alpha } from '@/shared/design/tokens';
@@ -30,7 +31,8 @@ export function AppShell({ children }: PropsWithChildren) {
   const activeChatSessionId = path.startsWith('/chat/') ? decodeURIComponent(path.slice('/chat/'.length)) : null;
   const activeWorkspaceSessions = chat.sessions.filter((s) => (s.workspace_id ?? '') === f.workspace && !s.preferences?.archived);
   const [workspaceSheet, setWorkspaceSheet] = useState(false);
-  const currentWorkspace = workspaces.find((row) => row.id === f.workspace)!;
+  const workspaceState = useWorkspaces();
+  const workspaceName = workspaceState.workspaces.find(row => row.workspace_id === f.workspace)?.display_name ?? (f.workspace ? f.workspace : t('General workspace'));
   const { width } = useLayoutDimensions();
   const compact = width < geometry.tablet;
   const [drawer, setDrawer] = useState(false);
@@ -61,7 +63,7 @@ export function AppShell({ children }: PropsWithChildren) {
   };
   const sidebar = (phone = false) => <SafeAreaView edges={['top', 'bottom']} style={{ height: '100%', width: phone ? Math.min(geometry.phoneSidebar, width * 0.85) : collapsed ? geometry.rail : sidebarWidth(preferredWidth, width), backgroundColor: colors.secondary, borderRightWidth: 1, borderColor: colors.border }}>
     <View style={{ paddingHorizontal: 8, paddingTop: 8, flexDirection: collapsed && !phone ? 'column' : 'row', alignItems: 'center' }}>
-      <Pressable accessibilityRole="button" accessibilityLabel={t('Workspace')} onPress={() => { setDrawer(false); setWorkspaceSheet(true); }} style={{ flex: collapsed && !phone ? undefined : 1, flexDirection: 'row', alignItems: 'center', minHeight: 48, minWidth: 48, gap: 4 }}><Image source={require('../../../assets/brand/color-logo.png')} style={{ width: 22, height: 22, marginHorizontal: 8 }} accessibilityLabel="DeepTutor" />{(!collapsed || phone) && <><DText role="section" numberOfLines={1} style={{ flex: 1 }}>{t(currentWorkspace.name)}</DText><ChevronDown size={14} color={colors.mutedForeground} /></>}</Pressable>
+      <Pressable accessibilityRole="button" accessibilityLabel={t('Workspace')} onPress={() => { setDrawer(false); setWorkspaceSheet(true); }} style={{ flex: collapsed && !phone ? undefined : 1, flexDirection: 'row', alignItems: 'center', minHeight: 48, minWidth: 48, gap: 4 }}><Image source={require('../../../assets/brand/color-logo.png')} style={{ width: 22, height: 22, marginHorizontal: 8 }} accessibilityLabel="DeepTutor" />{(!collapsed || phone) && <><DText role="section" numberOfLines={1} style={{ flex: 1 }}>{workspaceName}</DText><ChevronDown size={14} color={colors.mutedForeground} /></>}</Pressable>
       {!collapsed && <IconButton label={t('Search')} onPress={() => { setDrawer(false); router.navigate('/ui/search'); }}><Search size={16} color={colors.mutedForeground} /></IconButton>}
       <IconButton label={phone ? t('Close') : t(collapsed ? 'Expand sidebar' : 'Collapse sidebar')} onPress={() => phone ? setDrawer(false) : setCollapsed((old) => !old)}>{collapsed ? <ChevronsRight size={16} color={colors.mutedForeground} /> : <ChevronsLeft size={16} color={colors.mutedForeground} />}</IconButton>
     </View>

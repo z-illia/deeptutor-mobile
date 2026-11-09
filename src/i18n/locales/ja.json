@@ -2561,5 +2561,10 @@
   "Table": "Table",
   "This link uses an unsupported address.": "This link uses an unsupported address.",
   "Unable to copy this code. Please try again.": "Unable to copy this code. Please try again.",
-  "Unable to open link": "Unable to open link"
+  "Unable to open link": "Unable to open link",
+  "Could not restore the selected workspace.": "選択したワークスペースを復元できませんでした。",
+  "Could not save the selected workspace. Please try again.": "選択したワークスペースを保存できませんでした。もう一度お試しください。",
+  "This workspace is unavailable. Choose another workspace.": "このワークスペースは利用できません。別のワークスペースを選択してください。",
+  "This workspace is unavailable. Refresh the list and try again.": "このワークスペースは利用できません。一覧を更新してもう一度お試しください。",
+  "Unable to load workspaces. Please try again.": "ワークスペースを読み込めませんでした。もう一度お試しください。"
 }
