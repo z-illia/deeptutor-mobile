@@ -1,11 +1,10 @@
-import { MobileRow } from './ScreenLayout';
+import { MobileHeader, MobileRow } from './ScreenLayout';
 import { useMemo, useState, useSyncExternalStore } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, Pressable, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, type Href } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as Clipboard from 'expo-clipboard';
-import { ChevronLeft, Layers, UserRound } from 'lucide-react-native';
 import { useWorkspaces } from '@/features/workspaces/WorkspaceProvider';
 import { useChat } from '@/features/chat/ChatProvider';
 import { useFixtures } from '@/features/entry/FixtureProvider';
@@ -235,11 +234,7 @@ export function MobileScreen({ number }: { number: number }) {
   return <SafeAreaView testID={clientReady ? 'mobile-ready' : 'mobile-loading'} edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: colors.bg }}>
     <StatusBar style={dark ? 'light' : 'dark'} />
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1, width: '100%', maxWidth: 760, alignSelf: 'center' }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 12, paddingRight: 20, paddingBottom: 12, gap: 8 }}>
-        <Pressable accessibilityRole="button" accessibilityLabel={t(isRoot ? 'Switch workspace' : 'Back')} onPress={() => isRoot ? open(62) : back()} style={{ minWidth: 48, minHeight: 48, justifyContent: 'center', alignItems: 'center' }}>{isRoot ? <Layers size={22} color={colors.ink} /> : <ChevronLeft size={22} color={colors.ink} />}</Pressable>
-        <Text accessibilityRole="header" style={{ fontFamily: 'Inter', fontWeight: '600', fontSize: 22, lineHeight: 31, color: colors.ink, flex: 1 }}>{number === 13 && sessionId ? title : t(title)}</Text>
-        {isRoot ? <Pressable accessibilityRole="button" accessibilityLabel={t('Account and settings')} onPress={() => open(61)} style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.soft, alignItems: 'center', justifyContent: 'center' }}><UserRound size={22} color={colors.accent} /></Pressable> : spec.header.children?.some(node => /More actions/.test(node.name)) ? <Button variant="secondary" onPress={() => open(number === 13 ? 22 : 126)} style={{ minHeight: 52 }}>···</Button> : null}
-      </View>
+      <MobileHeader title={number === 13 && sessionId ? title : t(title)} root={isRoot} onBack={back} onWorkspace={() => open(62)} right={!isRoot && spec.header.children?.some(node => /More actions/.test(node.name)) ? <Button variant="secondary" onPress={() => open(number === 13 ? 22 : 126)} style={{ minHeight: 52 }}>···</Button> : undefined} />
       <FlatList key={number} data={visible} keyExtractor={node => node.id} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={{ paddingTop: 12, paddingHorizontal: 20, paddingBottom: 24, gap: 24 }} initialNumToRender={12} windowSize={5}
         ListHeaderComponent={error ? <Text accessibilityRole="alert" style={{ fontFamily: 'Inter', color: colors.danger, fontSize: 16, lineHeight: 24 }}>{t(error)}</Text> : undefined}
         renderItem={({ item }) => {

@@ -4,12 +4,13 @@ import { useWorkspaces } from '@/features/workspaces/WorkspaceProvider';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { useCopy } from '@/features/entry/copy';
 import { BottomNavigation } from '@/features/mobile/BottomNavigation';
+import { MobileHeader } from '@/features/mobile/ScreenLayout';
 import { useDesign } from '@/shared/design/DesignProvider';
 import { Button, IconButton } from '@/shared/ui/Controls';
 import { InlineAlert, LoadingState, StatusChip } from '@/shared/ui/Feedback';
 import { DText } from '@/shared/ui/Text';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Bookmark, ChevronLeft, History, Layers, Plus } from 'lucide-react-native';
+import { Bookmark, History, Layers, Plus } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -51,14 +52,12 @@ function ConversationScreen({ sessionId, showHistory, favorite }: { sessionId: s
   });
   return <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, gap: 8, minHeight: 60, borderBottomWidth: 1, borderColor: colors.border }}>
-        <IconButton label={t('Back')} onPress={() => router.canGoBack() ? router.back() : router.replace('/mobile/1')}><ChevronLeft size={22} color={colors.foreground} /></IconButton>
-        <DText accessibilityRole="header" numberOfLines={1} style={{ flex: 1, fontSize: 22 }}>{chat.serverSessionId ? chat.title : t('New chat')}</DText>
+      <MobileHeader title={chat.serverSessionId ? chat.title : t('New chat')} fallback="/mobile/1" bordered numberOfLines={1} right={<>
         <IconButton label={t('Save to Favorites')} disabled={chat.busy || chat.loading || !chat.messages.length} onPress={saveConversation}><Bookmark size={22} color={colors.foreground} /></IconButton>
         <IconButton label={t('Switch workspace')} onPress={() => setWorkspaceOpen(true)}><Layers size={22} color={colors.foreground} /></IconButton>
         <IconButton label={t('Recent conversations')} onPress={openHistory}><History size={22} color={colors.foreground} /></IconButton>
         <IconButton label={t('New chat')} onPress={newChat}><Plus size={22} color={colors.foreground} /></IconButton>
-      </View>
+      </>} />
       {!!chat.configuration.notebook_references?.length && <View style={{ paddingHorizontal: 16 }}><Button variant="ghost" onPress={() => chat.setConfiguration(previous => ({ ...previous, notebook_references: [] }))}>{t('Saved Original')} · {t('Remove')}</Button></View>}
       {chat.loading && <LoadingState />}
       {!!chat.error && <View style={{ padding: 16, gap: 8 }}><InlineAlert tone="danger">{t(chat.error)}</InlineAlert><Button variant="secondary" onPress={chat.reload}>{t('Reload conversation')}</Button></View>}

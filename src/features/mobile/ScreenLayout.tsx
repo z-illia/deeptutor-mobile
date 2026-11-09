@@ -2,7 +2,7 @@ import { useState, type ComponentProps, type ReactNode } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View, type TextInputProps, type TextProps } from 'react-native';
 import { router, type Href } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Check, ChevronLeft, ChevronRight } from 'lucide-react-native';
+import { Check, ChevronLeft, ChevronRight, Layers, UserRound } from 'lucide-react-native';
 import { useDesign } from '@/shared/design/DesignProvider';
 import { Dialog } from '@/shared/ui/Dialog';
 import { Button, Field } from '@/shared/ui/Controls';
@@ -13,15 +13,20 @@ export function MobileText({ muted, style, ...props }: TextProps & { muted?: boo
   const { colors } = useDesign();
   return <Text {...props} style={[{ fontFamily: 'Inter', fontSize: muted ? 14 : 16, lineHeight: muted ? 20 : 23, color: muted ? colors.mutedForeground : colors.foreground }, style]} />;
 }
-export function MobilePage({ title, children, footer, fallback = '/mobile/61', tab, headerLeft, headerRight }: { title: string; children: ReactNode; footer?: ReactNode; fallback?: Href; tab?: number; headerLeft?: ReactNode; headerRight?: ReactNode }) {
+export function MobileHeader({ title, root, fallback = '/mobile/61', onBack, onWorkspace, left, right, bordered, numberOfLines }: { title: string; root?: boolean; fallback?: Href; onBack?: () => void; onWorkspace?: () => void; left?: ReactNode; right?: ReactNode; bordered?: boolean; numberOfLines?: number }) {
   const { colors } = useDesign(); const t = useCopy();
+  const back = onBack ?? (() => router.canGoBack() ? router.back() : router.replace(fallback));
+  return <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center', minHeight: 60, paddingLeft: 12, paddingRight: right ? 12 : 20, borderBottomWidth: bordered ? 1 : 0, borderColor: colors.border }}>
+    {left ?? <Pressable accessibilityRole="button" accessibilityLabel={t(root ? 'Switch workspace' : 'Back')} onPress={() => root ? (onWorkspace ? onWorkspace() : router.push('/mobile/62')) : back()} style={{ width: 48, height: 48, alignItems: 'center', justifyContent: 'center' }}>{root ? <Layers size={22} color={colors.foreground} /> : <ChevronLeft size={24} color={colors.foreground} />}</Pressable>}
+    <MobileText accessibilityRole="header" numberOfLines={numberOfLines} style={{ flex: 1, fontSize: 22, lineHeight: 31, fontWeight: '600' }}>{title}</MobileText>
+    {right ?? (root ? <Pressable accessibilityRole="button" accessibilityLabel={t('Account and settings')} onPress={() => router.push('/mobile/61')} style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.secondary, alignItems: 'center', justifyContent: 'center' }}><UserRound size={22} color={colors.primary} /></Pressable> : null)}
+  </View>;
+}
+export function MobilePage({ title, children, footer, fallback = '/mobile/61', tab, root, onBack, onWorkspace, headerLeft, headerRight }: { title: string; children: ReactNode; footer?: ReactNode; fallback?: Href; tab?: number; root?: boolean; onBack?: () => void; onWorkspace?: () => void; headerLeft?: ReactNode; headerRight?: ReactNode }) {
+  const { colors } = useDesign();
   return <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center', paddingLeft: 12, paddingRight: 20, paddingBottom: 12 }}>
-        {headerLeft ?? <Pressable accessibilityRole="button" accessibilityLabel={t('Back')} onPress={() => router.canGoBack() ? router.back() : router.replace(fallback)} style={{ width: 48, height: 48, alignItems: 'center', justifyContent: 'center' }}><ChevronLeft size={24} color={colors.foreground} /></Pressable>}
-        <MobileText accessibilityRole="header" style={{ flex: 1, fontSize: 22, lineHeight: 31, fontWeight: '600' }}>{title}</MobileText>
-        {headerRight}
-      </View>
+      <MobileHeader title={title} root={root} fallback={fallback} onBack={onBack} onWorkspace={onWorkspace} left={headerLeft} right={headerRight} />
       <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 24, gap: 24 }}>{children}</ScrollView>
       {footer && <View style={{ padding: 20, gap: 12, borderTopWidth: 1, borderColor: colors.border }}>{footer}</View>}
       {tab !== undefined && <BottomNavigation activeScreen={tab} />}

@@ -4,11 +4,12 @@ import { ModelSelectionDialog } from '@/features/chat/ModelSelectionDialog';
 import { TutorComposer } from '@/features/chat/live/TutorComposer';
 import { chatError, useLiveChat, type ChatDraft, type LearningChatContext } from '@/features/chat/live/useLiveChat';
 import { useDesign } from '@/shared/design/DesignProvider';
+import { MobileHeader } from '@/features/mobile/ScreenLayout';
 import { BottomSheet } from '@/shared/ui/BottomSheet';
-import { Button, IconButton } from '@/shared/ui/Controls';
+import { Button } from '@/shared/ui/Controls';
 import { InlineAlert, LoadingState } from '@/shared/ui/Feedback';
 import { router } from 'expo-router';
-import { ArrowLeftRight, ChevronLeft, Clock3, Lightbulb, LogOut } from 'lucide-react-native';
+import { ArrowLeftRight, Clock3, Lightbulb, LogOut } from 'lucide-react-native';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -98,10 +99,7 @@ export function LiveStudyScreen({ workspace, pathId, sessionId, mode, prompt, re
   const sourceCount = activeResourceCount(chat.configuration, topic.data?.sources ?? [], chat.pendingAttachments);
   return <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, minHeight: 60, gap: 8 }}>
-        <IconButton label="Back" onPress={() => chat.busy ? setConfirmLeave('leave') : onLeave ? leave('leave') : router.canGoBack() ? router.back() : leave('leave')}><ChevronLeft color={colors.foreground} size={24} /></IconButton>
-        <DText accessibilityRole="header" style={{ fontSize: 22, fontWeight: '600' }}>Study session</DText>
-      </View>
+      <MobileHeader title="Study session" onBack={() => chat.busy ? setConfirmLeave('leave') : onLeave ? leave('leave') : router.canGoBack() ? router.back() : leave('leave')} />
       {(chat.loading || topic.loading) && <LoadingState />}
       {!!(chat.error || topic.error || failure) && <View style={{ padding: 20, gap: 8 }}><InlineAlert tone="danger">{chat.error || topic.error || failure}</InlineAlert><Button variant="secondary" onPress={() => { chat.reload(); topic.refresh(); setFailure(''); }}>Reload session</Button></View>}
       <FlatList ref={list} data={chat.messages} keyExtractor={item => String(item.id)} keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 20, gap: 24, flexGrow: 1 }}

@@ -1,5 +1,5 @@
-import { Pressable, View } from 'react-native';
-import { ChevronRight, Layers, UserRound } from 'lucide-react-native';
+import { View } from 'react-native';
+import { ChevronRight } from 'lucide-react-native';
 import { router, type Href } from 'expo-router';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { useWorkspaces } from '@/features/workspaces/WorkspaceProvider';
@@ -30,9 +30,7 @@ export function ResourceHubScreen({ personalization = false }: { personalization
   const auth = useAuth(); const scope = useWorkspaces(); const t = useCopy(); const { colors } = useDesign();
   const owner = JSON.stringify([auth.serverUrl, auth.session?.profile?.id ?? null]);
   const { counts, refresh } = useResourceCounts(personalization, scope.selectedWorkspaceId, owner);
-  return <MobilePage title={t(personalization ? 'Personalization' : 'Library')} fallback="/mobile/61" tab={personalization ? undefined : 26}
-    headerLeft={personalization ? undefined : <Pressable accessibilityRole="button" accessibilityLabel={t('Switch workspace')} onPress={() => router.push('/mobile/62')} style={{ width: 48, height: 48, alignItems: 'center', justifyContent: 'center' }}><Layers size={22} color={colors.foreground} /></Pressable>}
-    headerRight={personalization ? undefined : <Pressable accessibilityRole="button" accessibilityLabel={t('Account and settings')} onPress={() => router.push('/mobile/61')} style={{ width: 48, height: 48, alignItems: 'center', justifyContent: 'center' }}><UserRound size={22} color={colors.primary} /></Pressable>}>
+  return <MobilePage title={t(personalization ? 'Personalization' : 'Library')} root={!personalization} fallback="/mobile/61" tab={personalization ? undefined : 26}>
     <MobileText muted>{personalization ? t('Account resources can be assigned to multiple workspaces.') : scope.workspaces.find(item => item.workspace_id === scope.selectedWorkspaceId)?.display_name ?? (scope.selectedWorkspaceId || t('General workspace'))}</MobileText>
     {!personalization && <MobileRow title={t('Search library')} description={t('navigation.searchEverything')} onPress={() => router.push('/search')} />}
     {(personalization ? account : library).map(item => {

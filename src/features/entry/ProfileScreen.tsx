@@ -2,8 +2,9 @@ import { useState, type ReactNode } from 'react';
 import { Redirect, router, useLocalSearchParams } from 'expo-router';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ChevronLeft, ChevronRight, Check, Sparkles, Sprout, Leaf, Feather, Cloud, Droplet, Sun, Moon, Flame, Star, Heart, Lightbulb, Compass, Cherry, Cookie, Music } from 'lucide-react-native';
+import { ChevronRight, Check, Sparkles, Sprout, Leaf, Feather, Cloud, Droplet, Sun, Moon, Flame, Star, Heart, Lightbulb, Compass, Cherry, Cookie, Music } from 'lucide-react-native';
 import { useDesign } from '@/shared/design/DesignProvider';
+import { MobileHeader } from '@/features/mobile/ScreenLayout';
 import { Button, Field } from '@/shared/ui/Controls';
 import { InlineAlert } from '@/shared/ui/Feedback';
 import { useAuth } from '@/features/auth/AuthProvider';
@@ -50,10 +51,7 @@ export function ProfileScreen({ view = 'profile' }: { view?: ProfileView }) {
   const title = view === 'profile' ? 'My profile' : view === 'password' ? 'Change password' : 'Avatar';
   return <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 20, paddingBottom: 12 }}>
-        <Pressable accessibilityRole="button" accessibilityLabel={t('Back')} onPress={back} style={{ width: 48, height: 48, alignItems: 'center', justifyContent: 'center' }}><ChevronLeft size={24} color={colors.foreground} /></Pressable>
-        <Text accessibilityRole="header" style={{ ...textStyle, flex: 1, fontSize: 22, lineHeight: 31, fontWeight: '600' }}>{t(title)}</Text>
-      </View>
+      <MobileHeader title={t(title)} onBack={back} />
       <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 24, gap: 24 }}>
         <Text style={mutedStyle}>{view === 'profile' ? `${profile.username} · ${t(profile.role === 'admin' ? 'Administrator' : profile.role === 'student' ? 'Student' : profile.role === 'teacher' ? 'Teacher' : 'User')} · ${t('Joined')} ${profile.joined}` : t(view === 'password' ? 'Account security' : 'Personalize your profile')}</Text>
         {!!actions.error && <InlineAlert tone="danger">{t(actions.error)}</InlineAlert>}
