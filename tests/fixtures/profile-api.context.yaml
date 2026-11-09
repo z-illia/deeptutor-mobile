@@ -1,0 +1,12 @@
+purpose:
+  stands_in_for: The local profile API mock in profile-api-mock; no live provider verification.
+  unblocks: Mobile profile navigation and avatar/password/logout browser regression checks.
+assumptions:
+  - id: profile-mobile-actions
+    status: supported
+    claim: The mobile client preserves API-backed avatar, password and logout behavior across separate profile screens against the local stand-in.
+    reason: Browser checks exercise actual application requests and verify the mock state, including failed writes; the mock was reused from this repository, not fetched from an owning team.
+    verification: The 390px browser run checked staged icon persistence, avatar failures, upload size/type rejection, authenticated photos, removal, password failure/success, capability flags and logout failure/success. This establishes client behavior against the mock only; native device and live backend checks remain outstanding.
+    source: tests/browser/verify-profile.cjs; tests/fixtures/profile-api-mock/default.cjs; src/features/entry/ProfileScreen.tsx
+    updated_at: '2026-11-09'
+fingerprints: []
