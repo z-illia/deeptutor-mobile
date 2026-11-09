@@ -17,6 +17,8 @@ export default function DestinationBoundary() {
   if (path === '/space/journal') return <Redirect href="/mobile/39" />;
   if (!allowedDestination(f.mode, path)) return <View style={{ padding: 24, gap: 16 }}><InlineAlert tone="warning">{t('Unavailable')}</InlineAlert><BackButton /></View>;
   if (path === '/co-writer') return <Redirect href="/mobile/28" />;
+  if (path === '/calendar') return <Redirect href="/mobile/53" />;
+  if (path === '/kanban') return <Redirect href="/mobile/56" />;
   if (!knownDestination(path)) return <EmptyState title={t('Unavailable')} action={<BackButton />} />;
   return <View style={{ flex: 1, paddingHorizontal: 8, alignItems: 'flex-start' }}><Button variant="ghost" loading={f.busy === 'retry'} onPress={() => void f.run('retry', () => {})}>{t('Retry')}</Button>{__DEV__ && <DText role="caption" muted>{t("Source destination ·")}{path} {t("· implementation belongs to a later milestone")}</DText>}</View>;
 }

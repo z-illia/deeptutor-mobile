@@ -8,10 +8,11 @@ import { MobileConversationLibrary } from '@/features/chat/MobileConversationLib
 import { ProfileScreen } from '@/features/entry/ProfileScreen';
 import { MobileScreen } from '@/features/mobile/MobileScreen';
 import { EditNoteScreen, NotebookListScreen, ReviewNoteEditScreen } from '@/features/notes/MobileNotebookScreens';
+import { CalendarScreen, PlanOverviewScreen, TaskAppearanceScreen, TaskBoardScreen, TaskDetailsScreen } from '@/features/plan/MobilePlanScreens';
 import { ImportQuestionsScreen, LearningJournalScreen, ManageTagsScreen, PracticeQuestionScreen, QuestionBankScreen } from '@/features/questions/MobileLibraryScreens';
 
 export default function MobileRoute() {
-  const { screen, notebookId, recordId, docId } = useLocalSearchParams<{ screen: string; notebookId?: string; recordId?: string; docId?: string }>();
+  const { screen, notebookId, recordId, docId, taskId } = useLocalSearchParams<{ screen: string; notebookId?: string; recordId?: string; docId?: string; taskId?: string }>();
   const num = Number(screen);
   if ([26, 65].includes(num)) return <EntryBoundary><ResourceHubScreen key={screen} personalization={num === 65} /></EntryBoundary>;
   if ([82, 83].includes(num)) return <EntryBoundary><MobileSettingsScreen key={screen} appearance={num === 83} /></EntryBoundary>;
@@ -24,6 +25,11 @@ export default function MobileRoute() {
   if ([37, 38].includes(num)) return <EntryBoundary><PracticeQuestionScreen key={screen} review={num === 38} /></EntryBoundary>;
   if (num === 39) return <EntryBoundary><LearningJournalScreen /></EntryBoundary>;
   if (num === 130) return <EntryBoundary><ManageTagsScreen /></EntryBoundary>;
+  if (num === 52) return <EntryBoundary><PlanOverviewScreen /></EntryBoundary>;
+  if ([53, 54, 55].includes(num)) return <EntryBoundary><CalendarScreen key={screen} view={num === 53 ? 'month' : num === 54 ? 'day' : 'week'} /></EntryBoundary>;
+  if (num === 56) return <EntryBoundary><TaskBoardScreen /></EntryBoundary>;
+  if (num === 57) return <EntryBoundary><TaskDetailsScreen key={`${screen}:${taskId ?? ''}`} /></EntryBoundary>;
+  if (num === 129) return <EntryBoundary><TaskAppearanceScreen /></EntryBoundary>;
   if ([63, 64, 138].includes(num)) return <EntryBoundary><ProfileScreen key={screen} view={num === 64 ? 'password' : num === 138 ? 'avatar' : 'profile'} /></EntryBoundary>;
   if (num === 62) return <EntryBoundary><MobileWorkspaceScreen /></EntryBoundary>;
   if (num === 58) return <EntryBoundary><Redirect href="/learning/live?view=progress" /></EntryBoundary>;
