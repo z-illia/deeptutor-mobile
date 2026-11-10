@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { Redirect, router, useLocalSearchParams } from 'expo-router';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ChevronRight, Check, Sparkles, Sprout, Leaf, Feather, Cloud, Droplet, Sun, Moon, Flame, Star, Heart, Lightbulb, Compass, Cherry, Cookie, Music } from 'lucide-react-native';
+import { UserRound, KeyRound, Smartphone, LogOut, ChevronRight, Check, Sparkles, Sprout, Leaf, Feather, Cloud, Droplet, Sun, Moon, Flame, Star, Heart, Lightbulb, Compass, Cherry, Cookie, Music } from 'lucide-react-native';
 import { useDesign } from '@/shared/design/DesignProvider';
 import { MobileHeader } from '@/features/mobile/ScreenLayout';
 import { Button, Field } from '@/shared/ui/Controls';
@@ -37,7 +37,7 @@ export function ProfileScreen({ view = 'profile' }: { view?: ProfileView }) {
   const textStyle = { fontFamily: 'Inter', fontSize: 16, lineHeight: 22.4, color: colors.foreground };
   const mutedStyle = { ...textStyle, fontSize: 14, lineHeight: 19.6, color: colors.mutedForeground };
   const back = () => router.canGoBack() ? router.back() : router.replace(view === 'profile' ? '/account' : '/profile');
-  const action = (label: string, onPress: () => void, secondary = false) => <Button disabled={busy} loading={busy} onPress={onPress} variant={secondary ? 'secondary' : 'primary'} style={{ minHeight: 52, borderRadius: 12, backgroundColor: secondary ? colors.card : colors.primary }}><Text style={{ ...textStyle, fontWeight: '600', color: secondary ? colors.primary : colors.primaryForeground }}>{t(label)}</Text></Button>;
+  const action = (label: string, onPress: () => void, secondary = false, icon?: ReactNode) => <Button icon={icon} disabled={busy} loading={busy} onPress={onPress} variant={secondary ? 'secondary' : 'primary'} style={{ minHeight: 52, borderRadius: 12, backgroundColor: secondary ? colors.card : colors.primary }}><Text style={{ ...textStyle, fontWeight: '600', color: secondary ? colors.primary : colors.primaryForeground }}>{t(label)}</Text></Button>;
   const row = (label: string, description: string, onPress: () => void, selected?: boolean, leading?: ReactNode) => <Pressable key={label} accessibilityRole="button" accessibilityLabel={t(label)} aria-selected={selected} accessibilityState={{ selected, disabled: busy }} disabled={busy} onPress={onPress} style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: colors.border, opacity: pressed ? 0.65 : 1 })}>
     {leading}<View style={{ flex: 1, gap: 4 }}><Text style={{ ...textStyle, fontWeight: '500' }}>{t(label)}</Text>{!!description && <Text style={mutedStyle}>{t(description)}</Text>}</View>{selected ? <Check size={20} color={colors.primary} /> : <ChevronRight size={20} color={colors.mutedForeground} />}
   </Pressable>;
@@ -56,10 +56,10 @@ export function ProfileScreen({ view = 'profile' }: { view?: ProfileView }) {
         <Text style={mutedStyle}>{view === 'profile' ? `${profile.username} · ${t(profile.role === 'admin' ? 'Administrator' : profile.role === 'student' ? 'Student' : profile.role === 'teacher' ? 'Teacher' : 'User')} · ${t('Joined')} ${profile.joined}` : t(view === 'password' ? 'Account security' : 'Personalize your profile')}</Text>
         {!!actions.error && <InlineAlert tone="danger">{t(actions.error)}</InlineAlert>}
         {view === 'profile' && <>
-          {row('Avatar', 'Upload picture · choose icon · color', () => router.push('/profile/avatar'))}
-          {profile.canChangePassword && row('Change password', 'Current, new and confirm password', () => router.push('/profile/password'))}
-          {row('Public device sign-in', 'Create a link using a public HTTPS origin', () => router.push('/session-handoff'))}
-          {action('Sign out of this device', () => void actions.signOut(), true)}
+          {row('Avatar', 'Upload picture · choose icon · color', () => router.push('/profile/avatar'), undefined, <UserRound size={22} color={colors.primary} />)}
+          {profile.canChangePassword && row('Change password', 'Current, new and confirm password', () => router.push('/profile/password'), undefined, <KeyRound size={22} color={colors.primary} />)}
+          {row('Public device sign-in', 'Create a link using a public HTTPS origin', () => router.push('/session-handoff'), undefined, <Smartphone size={22} color={colors.primary} />)}
+          {action('Sign out of this device', () => void actions.signOut(), true, <LogOut size={22} color={colors.primary} />)}
         </>}
         {view === 'password' && <>
           {profile.mustChange && <InlineAlert tone="warning">{t('You are still using the password an administrator gave you. Please set your own below.')}</InlineAlert>}
