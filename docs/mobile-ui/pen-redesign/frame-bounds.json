@@ -1,0 +1,3102 @@
+[
+  {
+    "id": "z80aEc",
+    "name": "MOBILE 00 · Design system / components",
+    "bounds": {
+      "x": 47740,
+      "y": 0,
+      "width": 2100,
+      "height": 971
+    }
+  },
+  {
+    "id": "Ov0zp",
+    "name": "MOBILE 01 · Learning / Learn",
+    "bounds": {
+      "x": 47740,
+      "y": 2000,
+      "width": 390,
+      "height": 1234
+    }
+  },
+  {
+    "id": "rT3o8",
+    "name": "MOBILE 02 · Learning / New activity",
+    "bounds": {
+      "x": 48190,
+      "y": 2000,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "QaJ68",
+    "name": "MOBILE 03 · Learning / Backend engineering",
+    "bounds": {
+      "x": 48640,
+      "y": 2000,
+      "width": 390,
+      "height": 1486
+    }
+  },
+  {
+    "id": "KbCsA",
+    "name": "MOBILE 04 · Learning / Node.js & TypeScript",
+    "bounds": {
+      "x": 49090,
+      "y": 2000,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "g3IkH",
+    "name": "MOBILE 05 · Learning / Study session",
+    "bounds": {
+      "x": 49540,
+      "y": 2000,
+      "width": 390,
+      "height": 1092
+    }
+  },
+  {
+    "id": "Okd9c",
+    "name": "MOBILE 06 · Learning / Review plan",
+    "bounds": {
+      "x": 49990,
+      "y": 2000,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "q5CRfW",
+    "name": "MOBILE 07 · Learning / Learning profile",
+    "bounds": {
+      "x": 50440,
+      "y": 2000,
+      "width": 390,
+      "height": 854
+    }
+  },
+  {
+    "id": "mTwiq",
+    "name": "MOBILE 08 · Learning / Path sessions",
+    "bounds": {
+      "x": 50890,
+      "y": 2000,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "IPmHP",
+    "name": "MOBILE 09 · Learning / Books",
+    "bounds": {
+      "x": 51340,
+      "y": 2000,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "CH5Jk",
+    "name": "MOBILE 10 · Learning / Immersive reading",
+    "bounds": {
+      "x": 51790,
+      "y": 2000,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "BkhA4",
+    "name": "MOBILE 11 · Learning / Read & understand",
+    "bounds": {
+      "x": 52240,
+      "y": 2000,
+      "width": 390,
+      "height": 1374
+    }
+  },
+  {
+    "id": "I4bWau",
+    "name": "MOBILE 12 · Tutor / Tutor",
+    "bounds": {
+      "x": 47740,
+      "y": 3736,
+      "width": 390,
+      "height": 1241
+    }
+  },
+  {
+    "id": "kEc9H",
+    "name": "MOBILE 13 · Tutor / Isolation levels",
+    "bounds": {
+      "x": 48190,
+      "y": 3736,
+      "width": 390,
+      "height": 1091
+    }
+  },
+  {
+    "id": "KM9sk",
+    "name": "MOBILE 14 · Tutor / Connection interrupted",
+    "bounds": {
+      "x": 48640,
+      "y": 3736,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "wJsNH",
+    "name": "MOBILE 15 · Tutor / Turn setup",
+    "bounds": {
+      "x": 49090,
+      "y": 3736,
+      "width": 390,
+      "height": 1106
+    }
+  },
+  {
+    "id": "w7N1iG",
+    "name": "MOBILE 16 · Tutor / Choose a mode",
+    "bounds": {
+      "x": 49540,
+      "y": 3736,
+      "width": 390,
+      "height": 1062
+    }
+  },
+  {
+    "id": "tyqLV",
+    "name": "MOBILE 17 · Tutor / Add sources",
+    "bounds": {
+      "x": 49990,
+      "y": 3736,
+      "width": 390,
+      "height": 988
+    }
+  },
+  {
+    "id": "qP3Uw",
+    "name": "MOBILE 18 · Tutor / Choose model",
+    "bounds": {
+      "x": 50440,
+      "y": 3736,
+      "width": 390,
+      "height": 1184
+    }
+  },
+  {
+    "id": "L8LeMw",
+    "name": "MOBILE 19 · Tutor / Response & skills",
+    "bounds": {
+      "x": 50890,
+      "y": 3736,
+      "width": 390,
+      "height": 1096
+    }
+  },
+  {
+    "id": "q4P17P",
+    "name": "MOBILE 20 · Tutor / Session activity",
+    "bounds": {
+      "x": 51340,
+      "y": 3736,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "s1YFs",
+    "name": "MOBILE 21 · Tutor / Conversation note",
+    "bounds": {
+      "x": 51790,
+      "y": 3736,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "AZh1i",
+    "name": "MOBILE 22 · Tutor / Conversation actions",
+    "bounds": {
+      "x": 52240,
+      "y": 3736,
+      "width": 390,
+      "height": 888
+    }
+  },
+  {
+    "id": "ROhxF",
+    "name": "MOBILE 23 · Tutor / Customize Tutor",
+    "bounds": {
+      "x": 52690,
+      "y": 3736,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "fXca8",
+    "name": "MOBILE 24 · Tutor / Preparing response",
+    "bounds": {
+      "x": 53140,
+      "y": 3736,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "aCgWj",
+    "name": "MOBILE 25 · Tutor / Write a message",
+    "bounds": {
+      "x": 53590,
+      "y": 3736,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "iMtXF",
+    "name": "MOBILE 26 · Library / Library",
+    "bounds": {
+      "x": 47740,
+      "y": 5227,
+      "width": 390,
+      "height": 964
+    }
+  },
+  {
+    "id": "M14ot",
+    "name": "MOBILE 27 · Library / Conversations",
+    "bounds": {
+      "x": 48190,
+      "y": 5227,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "bJNMD",
+    "name": "MOBILE 28 · Library / Notebook",
+    "bounds": {
+      "x": 48640,
+      "y": 5227,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "uhhHq",
+    "name": "MOBILE 29 · Library / Edit note",
+    "bounds": {
+      "x": 49090,
+      "y": 5227,
+      "width": 390,
+      "height": 899
+    }
+  },
+  {
+    "id": "S732D",
+    "name": "MOBILE 30 · Library / Review note edit",
+    "bounds": {
+      "x": 49540,
+      "y": 5227,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "Yo7kz",
+    "name": "MOBILE 31 · Library / Favorites",
+    "bounds": {
+      "x": 49990,
+      "y": 5227,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "LPpAg",
+    "name": "MOBILE 32 · Library / Save to collection",
+    "bounds": {
+      "x": 50440,
+      "y": 5227,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "wOKkh",
+    "name": "MOBILE 33 · Library / Question bank",
+    "bounds": {
+      "x": 50890,
+      "y": 5227,
+      "width": 390,
+      "height": 942
+    }
+  },
+  {
+    "id": "DporA",
+    "name": "MOBILE 34 · Library / Mistakes",
+    "bounds": {
+      "x": 51340,
+      "y": 5227,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "dpWKW",
+    "name": "MOBILE 35 · Library / Import questions",
+    "bounds": {
+      "x": 51790,
+      "y": 5227,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "HjzFs",
+    "name": "MOBILE 36 · Library / Review import",
+    "bounds": {
+      "x": 52240,
+      "y": 5227,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "lcoqb",
+    "name": "MOBILE 37 · Library / Practice question",
+    "bounds": {
+      "x": 52690,
+      "y": 5227,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "t7AH5S",
+    "name": "MOBILE 38 · Library / Answer review",
+    "bounds": {
+      "x": 53140,
+      "y": 5227,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "f6RMng",
+    "name": "MOBILE 39 · Library / Learning journal",
+    "bounds": {
+      "x": 53590,
+      "y": 5227,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "C9mQk",
+    "name": "MOBILE 40 · Library / Knowledge bases",
+    "bounds": {
+      "x": 54040,
+      "y": 5227,
+      "width": 390,
+      "height": 1110
+    }
+  },
+  {
+    "id": "nIcZ4",
+    "name": "MOBILE 41 · Knowledge / Databases",
+    "bounds": {
+      "x": 47740,
+      "y": 6587,
+      "width": 390,
+      "height": 994
+    }
+  },
+  {
+    "id": "WgSa5",
+    "name": "MOBILE 42 · Knowledge / Source preview",
+    "bounds": {
+      "x": 48190,
+      "y": 6587,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "io5xa",
+    "name": "MOBILE 43 · Knowledge / New knowledge base",
+    "bounds": {
+      "x": 48640,
+      "y": 6587,
+      "width": 390,
+      "height": 994
+    }
+  },
+  {
+    "id": "dLSSm",
+    "name": "MOBILE 44 · Knowledge / Add documents",
+    "bounds": {
+      "x": 49090,
+      "y": 6587,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "bUvy1",
+    "name": "MOBILE 45 · Knowledge / Connected sources",
+    "bounds": {
+      "x": 49540,
+      "y": 6587,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "EC5N9",
+    "name": "MOBILE 46 · Knowledge / Add source",
+    "bounds": {
+      "x": 49990,
+      "y": 6587,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "T4OvZ",
+    "name": "MOBILE 47 · Knowledge / GitHub source",
+    "bounds": {
+      "x": 50440,
+      "y": 6587,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "P34fQv",
+    "name": "MOBILE 48 · Knowledge / Web source",
+    "bounds": {
+      "x": 50890,
+      "y": 6587,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "xFK5I",
+    "name": "MOBILE 49 · Knowledge / Linked folder",
+    "bounds": {
+      "x": 51340,
+      "y": 6587,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "GwGaU",
+    "name": "MOBILE 50 · Knowledge / Index & recovery",
+    "bounds": {
+      "x": 51790,
+      "y": 6587,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "Lj9EH",
+    "name": "MOBILE 51 · Knowledge / Library settings",
+    "bounds": {
+      "x": 52240,
+      "y": 6587,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "KXGfW",
+    "name": "MOBILE 52 · Plan / Plan",
+    "bounds": {
+      "x": 47740,
+      "y": 8181,
+      "width": 390,
+      "height": 906
+    }
+  },
+  {
+    "id": "Mu9zR",
+    "name": "MOBILE 53 · Plan / November 2026",
+    "bounds": {
+      "x": 48190,
+      "y": 8181,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "T1KPho",
+    "name": "MOBILE 54 · Plan / Friday, 6 Nov",
+    "bounds": {
+      "x": 48640,
+      "y": 8181,
+      "width": 390,
+      "height": 1934
+    }
+  },
+  {
+    "id": "OH9dr",
+    "name": "MOBILE 55 · Plan / 1–7 November",
+    "bounds": {
+      "x": 49090,
+      "y": 8181,
+      "width": 390,
+      "height": 1114
+    }
+  },
+  {
+    "id": "ni17R",
+    "name": "MOBILE 56 · Plan / Task board",
+    "bounds": {
+      "x": 49540,
+      "y": 8181,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "g1pSV",
+    "name": "MOBILE 57 · Plan / Task details",
+    "bounds": {
+      "x": 49990,
+      "y": 8181,
+      "width": 390,
+      "height": 908
+    }
+  },
+  {
+    "id": "PrI2K",
+    "name": "MOBILE 58 · Plan / Learning progress",
+    "bounds": {
+      "x": 50440,
+      "y": 8181,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "K6gVi",
+    "name": "MOBILE 59 · Knowledge / Knowledge engines",
+    "bounds": {
+      "x": 52690,
+      "y": 6587,
+      "width": 390,
+      "height": 1344
+    }
+  },
+  {
+    "id": "UCi5v",
+    "name": "MOBILE 60 · Knowledge / Engine configuration",
+    "bounds": {
+      "x": 53140,
+      "y": 6587,
+      "width": 390,
+      "height": 1248
+    }
+  },
+  {
+    "id": "iAdAa",
+    "name": "MOBILE 61 · Account / Account",
+    "bounds": {
+      "x": 47740,
+      "y": 9563,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "fm6lZ",
+    "name": "MOBILE 62 · Account / Switch workspace",
+    "bounds": {
+      "x": 48190,
+      "y": 9563,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "LJkBQ",
+    "name": "MOBILE 63 · Account / My profile",
+    "bounds": {
+      "x": 48640,
+      "y": 9563,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "q7s0F",
+    "name": "MOBILE 64 · Account / Change password",
+    "bounds": {
+      "x": 49090,
+      "y": 9563,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "hp4M8",
+    "name": "MOBILE 65 · Personalization / Personalization",
+    "bounds": {
+      "x": 47740,
+      "y": 10657,
+      "width": 390,
+      "height": 948
+    }
+  },
+  {
+    "id": "XdLlM",
+    "name": "MOBILE 66 · Personalization / Partners",
+    "bounds": {
+      "x": 48190,
+      "y": 10657,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "i7Spfd",
+    "name": "MOBILE 67 · Personalization / Partner identity",
+    "bounds": {
+      "x": 48640,
+      "y": 10657,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "rJbSj",
+    "name": "MOBILE 68 · Personalization / Partner personality",
+    "bounds": {
+      "x": 49090,
+      "y": 10657,
+      "width": 390,
+      "height": 931
+    }
+  },
+  {
+    "id": "PZQiZ",
+    "name": "MOBILE 69 · Personalization / Partner model & tools",
+    "bounds": {
+      "x": 49540,
+      "y": 10657,
+      "width": 390,
+      "height": 870
+    }
+  },
+  {
+    "id": "NxEP2",
+    "name": "MOBILE 70 · Personalization / Partner library",
+    "bounds": {
+      "x": 49990,
+      "y": 10657,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "hscGh",
+    "name": "MOBILE 71 · Personalization / Review partner",
+    "bounds": {
+      "x": 50440,
+      "y": 10657,
+      "width": 390,
+      "height": 870
+    }
+  },
+  {
+    "id": "E4mXhy",
+    "name": "MOBILE 72 · Personalization / Partner group",
+    "bounds": {
+      "x": 50890,
+      "y": 10657,
+      "width": 390,
+      "height": 1044
+    }
+  },
+  {
+    "id": "Y3LeV",
+    "name": "MOBILE 73 · Personalization / Personas & skills",
+    "bounds": {
+      "x": 51340,
+      "y": 10657,
+      "width": 390,
+      "height": 1008
+    }
+  },
+  {
+    "id": "Ufiyj",
+    "name": "MOBILE 74 · Personalization / Create a playbook",
+    "bounds": {
+      "x": 51790,
+      "y": 10657,
+      "width": 390,
+      "height": 1007
+    }
+  },
+  {
+    "id": "X2GMMQ",
+    "name": "MOBILE 75 · Personalization / Find extensions",
+    "bounds": {
+      "x": 52240,
+      "y": 10657,
+      "width": 390,
+      "height": 1018
+    }
+  },
+  {
+    "id": "E47Jas",
+    "name": "MOBILE 76 · Personalization / Connect MCP service",
+    "bounds": {
+      "x": 52690,
+      "y": 10657,
+      "width": 390,
+      "height": 1084
+    }
+  },
+  {
+    "id": "t5ao8B",
+    "name": "MOBILE 77 · Personalization / Subagents & imports",
+    "bounds": {
+      "x": 53140,
+      "y": 10657,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "HDQwP",
+    "name": "MOBILE 78 · Personalization / Memory",
+    "bounds": {
+      "x": 53590,
+      "y": 10657,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "u5xkwD",
+    "name": "MOBILE 79 · Personalization / Memory workbench",
+    "bounds": {
+      "x": 54040,
+      "y": 10657,
+      "width": 390,
+      "height": 1098
+    }
+  },
+  {
+    "id": "a3aWP",
+    "name": "MOBILE 80 · Personalization / Memory evidence",
+    "bounds": {
+      "x": 54490,
+      "y": 10657,
+      "width": 390,
+      "height": 914
+    }
+  },
+  {
+    "id": "wAVjN",
+    "name": "MOBILE 81 · Settings / Settings",
+    "bounds": {
+      "x": 47740,
+      "y": 12005,
+      "width": 390,
+      "height": 1010
+    }
+  },
+  {
+    "id": "hK3wN",
+    "name": "MOBILE 82 · Settings / General",
+    "bounds": {
+      "x": 48190,
+      "y": 12005,
+      "width": 390,
+      "height": 1089
+    }
+  },
+  {
+    "id": "J2A49F",
+    "name": "MOBILE 83 · Settings / Appearance",
+    "bounds": {
+      "x": 48640,
+      "y": 12005,
+      "width": 390,
+      "height": 1290
+    }
+  },
+  {
+    "id": "x5KnFw",
+    "name": "MOBILE 84 · Settings / Workspaces",
+    "bounds": {
+      "x": 49090,
+      "y": 12005,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "Sye7t",
+    "name": "MOBILE 85 · Settings / Workspace details",
+    "bounds": {
+      "x": 49540,
+      "y": 12005,
+      "width": 390,
+      "height": 896
+    }
+  },
+  {
+    "id": "HcvYD",
+    "name": "MOBILE 86 · Settings / Data migration",
+    "bounds": {
+      "x": 49990,
+      "y": 12005,
+      "width": 390,
+      "height": 1307
+    }
+  },
+  {
+    "id": "A2wyH5",
+    "name": "MOBILE 87 · Settings / Review migration",
+    "bounds": {
+      "x": 50440,
+      "y": 12005,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "qBIgS",
+    "name": "MOBILE 88 · Settings / Usage statistics",
+    "bounds": {
+      "x": 50890,
+      "y": 12005,
+      "width": 390,
+      "height": 1019
+    }
+  },
+  {
+    "id": "HtqZ4",
+    "name": "MOBILE 89 · Services / Providers",
+    "bounds": {
+      "x": 47740,
+      "y": 22775,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "psMFN",
+    "name": "MOBILE 90 · Services / Provider connection",
+    "bounds": {
+      "x": 48190,
+      "y": 22775,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "IreNY",
+    "name": "MOBILE 91 · Services / Models",
+    "bounds": {
+      "x": 48640,
+      "y": 22775,
+      "width": 390,
+      "height": 972
+    }
+  },
+  {
+    "id": "FslaO",
+    "name": "MOBILE 92 · Services / Model configuration",
+    "bounds": {
+      "x": 49090,
+      "y": 22775,
+      "width": 390,
+      "height": 882
+    }
+  },
+  {
+    "id": "vp5W2",
+    "name": "MOBILE 93 · Services / Task models",
+    "bounds": {
+      "x": 49540,
+      "y": 22775,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "wKNze",
+    "name": "MOBILE 94 · Services / Search service",
+    "bounds": {
+      "x": 49990,
+      "y": 22775,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "zmqvJ",
+    "name": "MOBILE 95 · Services / Voice & playback",
+    "bounds": {
+      "x": 50440,
+      "y": 22775,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "R8ZM3Y",
+    "name": "MOBILE 96 · Services / Media generation",
+    "bounds": {
+      "x": 50890,
+      "y": 22775,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "EeBOY",
+    "name": "MOBILE 97 · Settings / Attachments",
+    "bounds": {
+      "x": 51340,
+      "y": 12005,
+      "width": 390,
+      "height": 894
+    }
+  },
+  {
+    "id": "bkoBY",
+    "name": "MOBILE 98 · Settings / Video learning",
+    "bounds": {
+      "x": 51790,
+      "y": 12005,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "oG2Pv",
+    "name": "MOBILE 99 · Settings / Agents",
+    "bounds": {
+      "x": 52240,
+      "y": 12005,
+      "width": 390,
+      "height": 1202
+    }
+  },
+  {
+    "id": "YYgSq",
+    "name": "MOBILE 100 · Settings / Document parsing",
+    "bounds": {
+      "x": 52690,
+      "y": 12005,
+      "width": 390,
+      "height": 1308
+    }
+  },
+  {
+    "id": "H31Yh",
+    "name": "MOBILE 101 · Settings / Conversation",
+    "bounds": {
+      "x": 53140,
+      "y": 12005,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "wSMU3",
+    "name": "MOBILE 102 · Settings / Memory processing",
+    "bounds": {
+      "x": 53590,
+      "y": 12005,
+      "width": 390,
+      "height": 1838
+    }
+  },
+  {
+    "id": "OIisv",
+    "name": "MOBILE 103 · Settings / Capabilities",
+    "bounds": {
+      "x": 54040,
+      "y": 12005,
+      "width": 390,
+      "height": 2697
+    }
+  },
+  {
+    "id": "CysOq",
+    "name": "MOBILE 104 · Settings / Tools",
+    "bounds": {
+      "x": 54490,
+      "y": 12005,
+      "width": 390,
+      "height": 950
+    }
+  },
+  {
+    "id": "n2L4z",
+    "name": "MOBILE 105 · Administration / Network",
+    "bounds": {
+      "x": 47740,
+      "y": 24303,
+      "width": 390,
+      "height": 1511
+    }
+  },
+  {
+    "id": "CcWYk",
+    "name": "MOBILE 106 · Administration / Runtime status",
+    "bounds": {
+      "x": 48190,
+      "y": 24303,
+      "width": 390,
+      "height": 1402
+    }
+  },
+  {
+    "id": "fIAKv",
+    "name": "MOBILE 107 · Administration / About DeepTutor",
+    "bounds": {
+      "x": 48640,
+      "y": 24303,
+      "width": 390,
+      "height": 902
+    }
+  },
+  {
+    "id": "L4A56m",
+    "name": "MOBILE 108 · Library / Archived chats",
+    "bounds": {
+      "x": 54490,
+      "y": 5227,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "voMpt",
+    "name": "MOBILE 109 · Administration / User management",
+    "bounds": {
+      "x": 49090,
+      "y": 24303,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "R2JbPQ",
+    "name": "MOBILE 110 · Administration / Add user",
+    "bounds": {
+      "x": 49540,
+      "y": 24303,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "akbFY",
+    "name": "MOBILE 111 · Administration / Import users",
+    "bounds": {
+      "x": 49990,
+      "y": 24303,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "UMq2C",
+    "name": "MOBILE 112 · States / Review deletion",
+    "bounds": {
+      "x": 47740,
+      "y": 27343,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "Sf2Jt",
+    "name": "MOBILE 113 · States / Changes saved",
+    "bounds": {
+      "x": 48190,
+      "y": 27343,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "qe4ki",
+    "name": "MOBILE 114 · States / Connection unavailable",
+    "bounds": {
+      "x": 48640,
+      "y": 27343,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "siSHO",
+    "name": "MOBILE 115 · States / Questions imported",
+    "bounds": {
+      "x": 49090,
+      "y": 27343,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "CzLWi",
+    "name": "MOBILE 116 · States / No search results",
+    "bounds": {
+      "x": 49540,
+      "y": 27343,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "C0oKTm",
+    "name": "MOBILE 117 · Personalization / Extension details",
+    "bounds": {
+      "x": 54940,
+      "y": 10657,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "rbT7B",
+    "name": "MOBILE 118 · Services / Task overrides",
+    "bounds": {
+      "x": 51340,
+      "y": 22775,
+      "width": 390,
+      "height": 1278
+    }
+  },
+  {
+    "id": "fF39q",
+    "name": "MOBILE 119 · Settings / Tool directory",
+    "bounds": {
+      "x": 54940,
+      "y": 12005,
+      "width": 390,
+      "height": 10520
+    }
+  },
+  {
+    "id": "FKI3i",
+    "name": "MOBILE 120 · Settings / Tool details",
+    "bounds": {
+      "x": 55390,
+      "y": 12005,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "TLMSm",
+    "name": "MOBILE 121 · Administration / Modules",
+    "bounds": {
+      "x": 50440,
+      "y": 24303,
+      "width": 390,
+      "height": 2790
+    }
+  },
+  {
+    "id": "Q14xC",
+    "name": "MOBILE 122 · Settings / Migration bundles",
+    "bounds": {
+      "x": 55840,
+      "y": 12005,
+      "width": 390,
+      "height": 2520
+    }
+  },
+  {
+    "id": "v2qn7k",
+    "name": "MOBILE 123 · Personalization / Import conversations",
+    "bounds": {
+      "x": 55390,
+      "y": 10657,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "Tog9e",
+    "name": "MOBILE 124 · Tutor / Research options",
+    "bounds": {
+      "x": 54040,
+      "y": 3736,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "FyVjG",
+    "name": "MOBILE 125 · Tutor / Who answers",
+    "bounds": {
+      "x": 54490,
+      "y": 3736,
+      "width": 390,
+      "height": 916
+    }
+  },
+  {
+    "id": "YKHMT",
+    "name": "MOBILE 126 · Learning / Learning actions",
+    "bounds": {
+      "x": 52690,
+      "y": 2000,
+      "width": 390,
+      "height": 1104
+    }
+  },
+  {
+    "id": "Z8cfDB",
+    "name": "MOBILE 127 · Learning / Review strategies",
+    "bounds": {
+      "x": 53140,
+      "y": 2000,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "AFntW",
+    "name": "MOBILE 128 · Knowledge / Web sources",
+    "bounds": {
+      "x": 53590,
+      "y": 6587,
+      "width": 390,
+      "height": 1268
+    }
+  },
+  {
+    "id": "UDlc0",
+    "name": "MOBILE 129 · Plan / Task appearance",
+    "bounds": {
+      "x": 50890,
+      "y": 8181,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "bPDy2",
+    "name": "MOBILE 130 · Library / Manage tags",
+    "bounds": {
+      "x": 54940,
+      "y": 5227,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "qBCPO",
+    "name": "MOBILE 131 · Learning / Module 2",
+    "bounds": {
+      "x": 53590,
+      "y": 1200,
+      "width": 390,
+      "height": 1080
+    }
+  },
+  {
+    "id": "JEMVb",
+    "name": "MOBILE 132 · Learning / Module 3",
+    "bounds": {
+      "x": 54040,
+      "y": 1200,
+      "width": 390,
+      "height": 982
+    }
+  },
+  {
+    "id": "H56XFV",
+    "name": "MOBILE 133 · Learning / Module 4",
+    "bounds": {
+      "x": 54490,
+      "y": 1200,
+      "width": 390,
+      "height": 1004
+    }
+  },
+  {
+    "id": "kxbKB",
+    "name": "MOBILE 134 · Learning / Module 5",
+    "bounds": {
+      "x": 54940,
+      "y": 1200,
+      "width": 390,
+      "height": 982
+    }
+  },
+  {
+    "id": "Yja0Q",
+    "name": "MOBILE 135 · Learning / Module 6",
+    "bounds": {
+      "x": 55390,
+      "y": 1200,
+      "width": 390,
+      "height": 1102
+    }
+  },
+  {
+    "id": "RrYsk",
+    "name": "MOBILE 136 · Learning / Module 7",
+    "bounds": {
+      "x": 55840,
+      "y": 1200,
+      "width": 390,
+      "height": 1032
+    }
+  },
+  {
+    "id": "S3tx9g",
+    "name": "MOBILE 137 · Learning / Learning goal",
+    "bounds": {
+      "x": 56290,
+      "y": 1200,
+      "width": 390,
+      "height": 1050
+    }
+  },
+  {
+    "id": "KVyuF",
+    "name": "MOBILE 138 · Account / Avatar",
+    "bounds": {
+      "x": 49540,
+      "y": 13200,
+      "width": 390,
+      "height": 849
+    }
+  },
+  {
+    "id": "ApkqK",
+    "name": "MOBILE 139 · Account / Device sign-in",
+    "bounds": {
+      "x": 49990,
+      "y": 13200,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "C9MxCS",
+    "name": "MOBILE 140 · Knowledge / Library move",
+    "bounds": {
+      "x": 54040,
+      "y": 8400,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "uy7Ve",
+    "name": "MOBILE 141 · Settings / Preferences",
+    "bounds": {
+      "x": 56290,
+      "y": 18000,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "GbyMz",
+    "name": "MOBILE 142 · Settings / Workspaces & data",
+    "bounds": {
+      "x": 56740,
+      "y": 18000,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "mhL8r",
+    "name": "MOBILE 143 · Settings / Models & services",
+    "bounds": {
+      "x": 57190,
+      "y": 18000,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "t71FQj",
+    "name": "MOBILE 144 · Settings / Learning tools",
+    "bounds": {
+      "x": 57640,
+      "y": 18000,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "khoTC",
+    "name": "MOBILE 145 · Settings / Advanced",
+    "bounds": {
+      "x": 58090,
+      "y": 18000,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "MUDwO",
+    "name": "MOBILE 146 · Settings / Administration",
+    "bounds": {
+      "x": 58540,
+      "y": 18000,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "PpChT",
+    "name": "MOBILE 147 · Knowledge / Node.js & TypeScript",
+    "bounds": {
+      "x": 54490,
+      "y": 8400,
+      "width": 390,
+      "height": 1169
+    }
+  },
+  {
+    "id": "uaPKa",
+    "name": "MOBILE 148 · Knowledge / Software Architecture",
+    "bounds": {
+      "x": 54940,
+      "y": 8400,
+      "width": 390,
+      "height": 891
+    }
+  },
+  {
+    "id": "b8nD83",
+    "name": "MOBILE 149 · Knowledge / System Design & Distributed Systems",
+    "bounds": {
+      "x": 55390,
+      "y": 8400,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "EQb2N",
+    "name": "MOBILE 150 · Knowledge / Practical Challenges & Engineering Exercises",
+    "bounds": {
+      "x": 55840,
+      "y": 8400,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "WtX78",
+    "name": "MOBILE 151 · Knowledge / Production Engineering, Reliability & Security",
+    "bounds": {
+      "x": 56290,
+      "y": 8400,
+      "width": 390,
+      "height": 872
+    }
+  },
+  {
+    "id": "wn1Pu",
+    "name": "MOBILE 152 · States / Delete conversation",
+    "bounds": {
+      "x": 49990,
+      "y": 25200,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "KmqIP",
+    "name": "MOBILE 153 · States / Reset path progress",
+    "bounds": {
+      "x": 50440,
+      "y": 25200,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "u2rJcx",
+    "name": "MOBILE 154 · States / Delete learning path",
+    "bounds": {
+      "x": 50890,
+      "y": 25200,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "e2o6q",
+    "name": "MOBILE DARK 01 · Learning / Learn",
+    "bounds": {
+      "x": 47740,
+      "y": 29687,
+      "width": 390,
+      "height": 1234
+    }
+  },
+  {
+    "id": "hvR8U",
+    "name": "MOBILE DARK 02 · Learning / New activity",
+    "bounds": {
+      "x": 48190,
+      "y": 29687,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "DefJ1",
+    "name": "MOBILE DARK 03 · Learning / Backend engineering",
+    "bounds": {
+      "x": 48640,
+      "y": 29687,
+      "width": 390,
+      "height": 1486
+    }
+  },
+  {
+    "id": "IQnCc",
+    "name": "MOBILE DARK 04 · Learning / Node.js & TypeScript",
+    "bounds": {
+      "x": 49090,
+      "y": 29687,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "FqRwt",
+    "name": "MOBILE DARK 05 · Learning / Study session",
+    "bounds": {
+      "x": 49540,
+      "y": 29687,
+      "width": 390,
+      "height": 1092
+    }
+  },
+  {
+    "id": "ubH7b",
+    "name": "MOBILE DARK 06 · Learning / Review plan",
+    "bounds": {
+      "x": 49990,
+      "y": 29687,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "NFIba",
+    "name": "MOBILE DARK 07 · Learning / Learning profile",
+    "bounds": {
+      "x": 50440,
+      "y": 29687,
+      "width": 390,
+      "height": 854
+    }
+  },
+  {
+    "id": "N9RlAh",
+    "name": "MOBILE DARK 08 · Learning / Path sessions",
+    "bounds": {
+      "x": 50890,
+      "y": 29687,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "mIKUD",
+    "name": "MOBILE DARK 09 · Learning / Books",
+    "bounds": {
+      "x": 51340,
+      "y": 29687,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "ZnZ4h",
+    "name": "MOBILE DARK 10 · Learning / Immersive reading",
+    "bounds": {
+      "x": 51790,
+      "y": 29687,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "NeYvW",
+    "name": "MOBILE DARK 11 · Learning / Read & understand",
+    "bounds": {
+      "x": 52240,
+      "y": 29687,
+      "width": 390,
+      "height": 1374
+    }
+  },
+  {
+    "id": "Xmj8E",
+    "name": "MOBILE DARK 12 · Tutor / Tutor",
+    "bounds": {
+      "x": 47740,
+      "y": 31433,
+      "width": 390,
+      "height": 1241
+    }
+  },
+  {
+    "id": "eAAWE",
+    "name": "MOBILE DARK 13 · Tutor / Isolation levels",
+    "bounds": {
+      "x": 48190,
+      "y": 31433,
+      "width": 390,
+      "height": 1091
+    }
+  },
+  {
+    "id": "thxA8",
+    "name": "MOBILE DARK 14 · Tutor / Connection interrupted",
+    "bounds": {
+      "x": 48640,
+      "y": 31433,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "wpadl",
+    "name": "MOBILE DARK 15 · Tutor / Turn setup",
+    "bounds": {
+      "x": 49090,
+      "y": 31433,
+      "width": 390,
+      "height": 1106
+    }
+  },
+  {
+    "id": "f4wsFy",
+    "name": "MOBILE DARK 16 · Tutor / Choose a mode",
+    "bounds": {
+      "x": 49540,
+      "y": 31433,
+      "width": 390,
+      "height": 1062
+    }
+  },
+  {
+    "id": "Jyv43",
+    "name": "MOBILE DARK 17 · Tutor / Add sources",
+    "bounds": {
+      "x": 49990,
+      "y": 31433,
+      "width": 390,
+      "height": 988
+    }
+  },
+  {
+    "id": "xfccS",
+    "name": "MOBILE DARK 18 · Tutor / Choose model",
+    "bounds": {
+      "x": 50440,
+      "y": 31433,
+      "width": 390,
+      "height": 1184
+    }
+  },
+  {
+    "id": "NfyQr",
+    "name": "MOBILE DARK 19 · Tutor / Response & skills",
+    "bounds": {
+      "x": 50890,
+      "y": 31433,
+      "width": 390,
+      "height": 1096
+    }
+  },
+  {
+    "id": "nw4zC",
+    "name": "MOBILE DARK 20 · Tutor / Session activity",
+    "bounds": {
+      "x": 51340,
+      "y": 31433,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "dIpzf",
+    "name": "MOBILE DARK 21 · Tutor / Conversation note",
+    "bounds": {
+      "x": 51790,
+      "y": 31433,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "F9n6m",
+    "name": "MOBILE DARK 22 · Tutor / Conversation actions",
+    "bounds": {
+      "x": 52240,
+      "y": 31433,
+      "width": 390,
+      "height": 888
+    }
+  },
+  {
+    "id": "dXqAU",
+    "name": "MOBILE DARK 23 · Tutor / Customize Tutor",
+    "bounds": {
+      "x": 52690,
+      "y": 31433,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "SOfLM",
+    "name": "MOBILE DARK 24 · Tutor / Preparing response",
+    "bounds": {
+      "x": 53140,
+      "y": 31433,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "gOUl1",
+    "name": "MOBILE DARK 25 · Tutor / Write a message",
+    "bounds": {
+      "x": 53590,
+      "y": 31433,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "KLPVx",
+    "name": "MOBILE DARK 26 · Library / Library",
+    "bounds": {
+      "x": 47740,
+      "y": 32934,
+      "width": 390,
+      "height": 964
+    }
+  },
+  {
+    "id": "qFXfU",
+    "name": "MOBILE DARK 27 · Library / Conversations",
+    "bounds": {
+      "x": 48190,
+      "y": 32934,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "mb4sO",
+    "name": "MOBILE DARK 28 · Library / Notebook",
+    "bounds": {
+      "x": 48640,
+      "y": 32934,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "lLYsP",
+    "name": "MOBILE DARK 29 · Library / Edit note",
+    "bounds": {
+      "x": 49090,
+      "y": 32934,
+      "width": 390,
+      "height": 899
+    }
+  },
+  {
+    "id": "YrhPn",
+    "name": "MOBILE DARK 30 · Library / Review note edit",
+    "bounds": {
+      "x": 49540,
+      "y": 32934,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "ahPir",
+    "name": "MOBILE DARK 31 · Library / Favorites",
+    "bounds": {
+      "x": 49990,
+      "y": 32934,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "ayUkc",
+    "name": "MOBILE DARK 32 · Library / Save to collection",
+    "bounds": {
+      "x": 50440,
+      "y": 32934,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "o9wdFG",
+    "name": "MOBILE DARK 33 · Library / Question bank",
+    "bounds": {
+      "x": 50890,
+      "y": 32934,
+      "width": 390,
+      "height": 942
+    }
+  },
+  {
+    "id": "N792w",
+    "name": "MOBILE DARK 34 · Library / Mistakes",
+    "bounds": {
+      "x": 51340,
+      "y": 32934,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "OkfyR",
+    "name": "MOBILE DARK 35 · Library / Import questions",
+    "bounds": {
+      "x": 51790,
+      "y": 32934,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "hYNVZ",
+    "name": "MOBILE DARK 36 · Library / Review import",
+    "bounds": {
+      "x": 52240,
+      "y": 32934,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "KVD5F",
+    "name": "MOBILE DARK 37 · Library / Practice question",
+    "bounds": {
+      "x": 52690,
+      "y": 32934,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "xpkSq",
+    "name": "MOBILE DARK 38 · Library / Answer review",
+    "bounds": {
+      "x": 53140,
+      "y": 32934,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "GEQ42",
+    "name": "MOBILE DARK 39 · Library / Learning journal",
+    "bounds": {
+      "x": 53590,
+      "y": 32934,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "r2ialJ",
+    "name": "MOBILE DARK 40 · Library / Knowledge bases",
+    "bounds": {
+      "x": 54040,
+      "y": 32934,
+      "width": 390,
+      "height": 1110
+    }
+  },
+  {
+    "id": "rmdU0",
+    "name": "MOBILE DARK 41 · Knowledge / Databases",
+    "bounds": {
+      "x": 47740,
+      "y": 34304,
+      "width": 390,
+      "height": 994
+    }
+  },
+  {
+    "id": "c8KLh",
+    "name": "MOBILE DARK 42 · Knowledge / Source preview",
+    "bounds": {
+      "x": 48190,
+      "y": 34304,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "b9nXD",
+    "name": "MOBILE DARK 43 · Knowledge / New knowledge base",
+    "bounds": {
+      "x": 48640,
+      "y": 34304,
+      "width": 390,
+      "height": 994
+    }
+  },
+  {
+    "id": "FEuUv",
+    "name": "MOBILE DARK 44 · Knowledge / Add documents",
+    "bounds": {
+      "x": 49090,
+      "y": 34304,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "DWjBY",
+    "name": "MOBILE DARK 45 · Knowledge / Connected sources",
+    "bounds": {
+      "x": 49540,
+      "y": 34304,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "ylwOC",
+    "name": "MOBILE DARK 46 · Knowledge / Add source",
+    "bounds": {
+      "x": 49990,
+      "y": 34304,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "pePRE",
+    "name": "MOBILE DARK 47 · Knowledge / GitHub source",
+    "bounds": {
+      "x": 50440,
+      "y": 34304,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "Q5C2cY",
+    "name": "MOBILE DARK 48 · Knowledge / Web source",
+    "bounds": {
+      "x": 50890,
+      "y": 34304,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "vxVyv",
+    "name": "MOBILE DARK 49 · Knowledge / Linked folder",
+    "bounds": {
+      "x": 51340,
+      "y": 34304,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "MwqBz",
+    "name": "MOBILE DARK 50 · Knowledge / Index & recovery",
+    "bounds": {
+      "x": 51790,
+      "y": 34304,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "ShxOa",
+    "name": "MOBILE DARK 51 · Knowledge / Library settings",
+    "bounds": {
+      "x": 52240,
+      "y": 34304,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "o29Sk",
+    "name": "MOBILE DARK 52 · Plan / Plan",
+    "bounds": {
+      "x": 47740,
+      "y": 35908,
+      "width": 390,
+      "height": 906
+    }
+  },
+  {
+    "id": "t1RkPv",
+    "name": "MOBILE DARK 53 · Plan / November 2026",
+    "bounds": {
+      "x": 48190,
+      "y": 35908,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "MNAyU",
+    "name": "MOBILE DARK 54 · Plan / Friday, 6 Nov",
+    "bounds": {
+      "x": 48640,
+      "y": 35908,
+      "width": 390,
+      "height": 1934
+    }
+  },
+  {
+    "id": "P4G8pC",
+    "name": "MOBILE DARK 55 · Plan / 1–7 November",
+    "bounds": {
+      "x": 49090,
+      "y": 35908,
+      "width": 390,
+      "height": 1114
+    }
+  },
+  {
+    "id": "uW0hU",
+    "name": "MOBILE DARK 56 · Plan / Task board",
+    "bounds": {
+      "x": 49540,
+      "y": 35908,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "DvSsV",
+    "name": "MOBILE DARK 57 · Plan / Task details",
+    "bounds": {
+      "x": 49990,
+      "y": 35908,
+      "width": 390,
+      "height": 908
+    }
+  },
+  {
+    "id": "ZutbM",
+    "name": "MOBILE DARK 58 · Plan / Learning progress",
+    "bounds": {
+      "x": 50440,
+      "y": 35908,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "A3jtP",
+    "name": "MOBILE DARK 59 · Knowledge / Knowledge engines",
+    "bounds": {
+      "x": 52690,
+      "y": 34304,
+      "width": 390,
+      "height": 1344
+    }
+  },
+  {
+    "id": "seMLo",
+    "name": "MOBILE DARK 60 · Knowledge / Engine configuration",
+    "bounds": {
+      "x": 53140,
+      "y": 34304,
+      "width": 390,
+      "height": 1248
+    }
+  },
+  {
+    "id": "vaQ3x",
+    "name": "MOBILE DARK 61 · Account / Account",
+    "bounds": {
+      "x": 47740,
+      "y": 38102,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "Gbb4W",
+    "name": "MOBILE DARK 62 · Account / Switch workspace",
+    "bounds": {
+      "x": 48190,
+      "y": 38102,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "QQzLN",
+    "name": "MOBILE DARK 63 · Account / My profile",
+    "bounds": {
+      "x": 48640,
+      "y": 38102,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "rESEm",
+    "name": "MOBILE DARK 64 · Account / Change password",
+    "bounds": {
+      "x": 49090,
+      "y": 38102,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "JUBdj",
+    "name": "MOBILE DARK 65 · Personalization / Personalization",
+    "bounds": {
+      "x": 47740,
+      "y": 39211,
+      "width": 390,
+      "height": 948
+    }
+  },
+  {
+    "id": "efAym",
+    "name": "MOBILE DARK 66 · Personalization / Partners",
+    "bounds": {
+      "x": 48190,
+      "y": 39211,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "FZlSF",
+    "name": "MOBILE DARK 67 · Personalization / Partner identity",
+    "bounds": {
+      "x": 48640,
+      "y": 39211,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "LTG4A",
+    "name": "MOBILE DARK 68 · Personalization / Partner personality",
+    "bounds": {
+      "x": 49090,
+      "y": 39211,
+      "width": 390,
+      "height": 931
+    }
+  },
+  {
+    "id": "l5bNRp",
+    "name": "MOBILE DARK 69 · Personalization / Partner model & tools",
+    "bounds": {
+      "x": 49540,
+      "y": 39211,
+      "width": 390,
+      "height": 870
+    }
+  },
+  {
+    "id": "Fp9Ky",
+    "name": "MOBILE DARK 70 · Personalization / Partner library",
+    "bounds": {
+      "x": 49990,
+      "y": 39211,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "jot8D",
+    "name": "MOBILE DARK 71 · Personalization / Review partner",
+    "bounds": {
+      "x": 50440,
+      "y": 39211,
+      "width": 390,
+      "height": 870
+    }
+  },
+  {
+    "id": "Iv1MS",
+    "name": "MOBILE DARK 72 · Personalization / Partner group",
+    "bounds": {
+      "x": 50890,
+      "y": 39211,
+      "width": 390,
+      "height": 1044
+    }
+  },
+  {
+    "id": "Fr6Wh",
+    "name": "MOBILE DARK 73 · Personalization / Personas & skills",
+    "bounds": {
+      "x": 51340,
+      "y": 39211,
+      "width": 390,
+      "height": 1008
+    }
+  },
+  {
+    "id": "bhuUy",
+    "name": "MOBILE DARK 74 · Personalization / Create a playbook",
+    "bounds": {
+      "x": 51790,
+      "y": 39211,
+      "width": 390,
+      "height": 1007
+    }
+  },
+  {
+    "id": "L1V0V",
+    "name": "MOBILE DARK 75 · Personalization / Find extensions",
+    "bounds": {
+      "x": 52240,
+      "y": 39211,
+      "width": 390,
+      "height": 1018
+    }
+  },
+  {
+    "id": "kgb6l",
+    "name": "MOBILE DARK 76 · Personalization / Connect MCP service",
+    "bounds": {
+      "x": 52690,
+      "y": 39211,
+      "width": 390,
+      "height": 1084
+    }
+  },
+  {
+    "id": "K3g15t",
+    "name": "MOBILE DARK 77 · Personalization / Subagents & imports",
+    "bounds": {
+      "x": 53140,
+      "y": 39211,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "hn6d5",
+    "name": "MOBILE DARK 78 · Personalization / Memory",
+    "bounds": {
+      "x": 53590,
+      "y": 39211,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "BmvRl",
+    "name": "MOBILE DARK 79 · Personalization / Memory workbench",
+    "bounds": {
+      "x": 54040,
+      "y": 39211,
+      "width": 390,
+      "height": 1098
+    }
+  },
+  {
+    "id": "y9w7AC",
+    "name": "MOBILE DARK 80 · Personalization / Memory evidence",
+    "bounds": {
+      "x": 54490,
+      "y": 39211,
+      "width": 390,
+      "height": 914
+    }
+  },
+  {
+    "id": "cCr3w",
+    "name": "MOBILE DARK 81 · Settings / Settings",
+    "bounds": {
+      "x": 47740,
+      "y": 40569,
+      "width": 390,
+      "height": 1010
+    }
+  },
+  {
+    "id": "atAjS",
+    "name": "MOBILE DARK 82 · Settings / General",
+    "bounds": {
+      "x": 48190,
+      "y": 40569,
+      "width": 390,
+      "height": 1089
+    }
+  },
+  {
+    "id": "NVFkQ",
+    "name": "MOBILE DARK 83 · Settings / Appearance",
+    "bounds": {
+      "x": 48640,
+      "y": 40569,
+      "width": 390,
+      "height": 1290
+    }
+  },
+  {
+    "id": "KGTX9",
+    "name": "MOBILE DARK 84 · Settings / Workspaces",
+    "bounds": {
+      "x": 49090,
+      "y": 40569,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "c6XXMI",
+    "name": "MOBILE DARK 85 · Settings / Workspace details",
+    "bounds": {
+      "x": 49540,
+      "y": 40569,
+      "width": 390,
+      "height": 896
+    }
+  },
+  {
+    "id": "NJV9P",
+    "name": "MOBILE DARK 86 · Settings / Data migration",
+    "bounds": {
+      "x": 49990,
+      "y": 40569,
+      "width": 390,
+      "height": 1307
+    }
+  },
+  {
+    "id": "wS7fj",
+    "name": "MOBILE DARK 87 · Settings / Review migration",
+    "bounds": {
+      "x": 50440,
+      "y": 40569,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "jV7TW",
+    "name": "MOBILE DARK 88 · Settings / Usage statistics",
+    "bounds": {
+      "x": 50890,
+      "y": 40569,
+      "width": 390,
+      "height": 1019
+    }
+  },
+  {
+    "id": "T8N3M",
+    "name": "MOBILE DARK 89 · Services / Providers",
+    "bounds": {
+      "x": 47740,
+      "y": 51349,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "KDc3t",
+    "name": "MOBILE DARK 90 · Services / Provider connection",
+    "bounds": {
+      "x": 48190,
+      "y": 51349,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "f0rYQ",
+    "name": "MOBILE DARK 91 · Services / Models",
+    "bounds": {
+      "x": 48640,
+      "y": 51349,
+      "width": 390,
+      "height": 972
+    }
+  },
+  {
+    "id": "aL3kX",
+    "name": "MOBILE DARK 92 · Services / Model configuration",
+    "bounds": {
+      "x": 49090,
+      "y": 51349,
+      "width": 390,
+      "height": 882
+    }
+  },
+  {
+    "id": "fut21",
+    "name": "MOBILE DARK 93 · Services / Task models",
+    "bounds": {
+      "x": 49540,
+      "y": 51349,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "j3mxh",
+    "name": "MOBILE DARK 94 · Services / Search service",
+    "bounds": {
+      "x": 49990,
+      "y": 51349,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "yLJFK",
+    "name": "MOBILE DARK 95 · Services / Voice & playback",
+    "bounds": {
+      "x": 50440,
+      "y": 51349,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "qwS93",
+    "name": "MOBILE DARK 96 · Services / Media generation",
+    "bounds": {
+      "x": 50890,
+      "y": 51349,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "xiSVC",
+    "name": "MOBILE DARK 97 · Settings / Attachments",
+    "bounds": {
+      "x": 51340,
+      "y": 40569,
+      "width": 390,
+      "height": 894
+    }
+  },
+  {
+    "id": "U9WY1",
+    "name": "MOBILE DARK 98 · Settings / Video learning",
+    "bounds": {
+      "x": 51790,
+      "y": 40569,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "HXimi",
+    "name": "MOBILE DARK 99 · Settings / Agents",
+    "bounds": {
+      "x": 52240,
+      "y": 40569,
+      "width": 390,
+      "height": 1202
+    }
+  },
+  {
+    "id": "CUy6A",
+    "name": "MOBILE DARK 100 · Settings / Document parsing",
+    "bounds": {
+      "x": 52690,
+      "y": 40569,
+      "width": 390,
+      "height": 1308
+    }
+  },
+  {
+    "id": "DsfLB",
+    "name": "MOBILE DARK 101 · Settings / Conversation",
+    "bounds": {
+      "x": 53140,
+      "y": 40569,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "Ocptb",
+    "name": "MOBILE DARK 102 · Settings / Memory processing",
+    "bounds": {
+      "x": 53590,
+      "y": 40569,
+      "width": 390,
+      "height": 1838
+    }
+  },
+  {
+    "id": "jLrXB",
+    "name": "MOBILE DARK 103 · Settings / Capabilities",
+    "bounds": {
+      "x": 54040,
+      "y": 40569,
+      "width": 390,
+      "height": 2697
+    }
+  },
+  {
+    "id": "qXfZg",
+    "name": "MOBILE DARK 104 · Settings / Tools",
+    "bounds": {
+      "x": 54490,
+      "y": 40569,
+      "width": 390,
+      "height": 950
+    }
+  },
+  {
+    "id": "Q9wz5g",
+    "name": "MOBILE DARK 105 · Administration / Network",
+    "bounds": {
+      "x": 47740,
+      "y": 52887,
+      "width": 390,
+      "height": 1511
+    }
+  },
+  {
+    "id": "URMyY",
+    "name": "MOBILE DARK 106 · Administration / Runtime status",
+    "bounds": {
+      "x": 48190,
+      "y": 52887,
+      "width": 390,
+      "height": 1402
+    }
+  },
+  {
+    "id": "ASlSJ",
+    "name": "MOBILE DARK 107 · Administration / About DeepTutor",
+    "bounds": {
+      "x": 48640,
+      "y": 52887,
+      "width": 390,
+      "height": 902
+    }
+  },
+  {
+    "id": "Szr1b",
+    "name": "MOBILE DARK 108 · Library / Archived chats",
+    "bounds": {
+      "x": 54490,
+      "y": 32934,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "LEBDm",
+    "name": "MOBILE DARK 109 · Administration / User management",
+    "bounds": {
+      "x": 49090,
+      "y": 52887,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "fS1wh",
+    "name": "MOBILE DARK 110 · Administration / Add user",
+    "bounds": {
+      "x": 49540,
+      "y": 52887,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "E85hW",
+    "name": "MOBILE DARK 111 · Administration / Import users",
+    "bounds": {
+      "x": 49990,
+      "y": 52887,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "DHoGp",
+    "name": "MOBILE DARK 112 · States / Review deletion",
+    "bounds": {
+      "x": 47740,
+      "y": 55937,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "X6Zdb",
+    "name": "MOBILE DARK 113 · States / Changes saved",
+    "bounds": {
+      "x": 48190,
+      "y": 55937,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "SLCqe",
+    "name": "MOBILE DARK 114 · States / Connection unavailable",
+    "bounds": {
+      "x": 48640,
+      "y": 55937,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "wohCh",
+    "name": "MOBILE DARK 115 · States / Questions imported",
+    "bounds": {
+      "x": 49090,
+      "y": 55937,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "suBj8",
+    "name": "MOBILE DARK 116 · States / No search results",
+    "bounds": {
+      "x": 49540,
+      "y": 55937,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "RSJ6o",
+    "name": "MOBILE DARK 117 · Personalization / Extension details",
+    "bounds": {
+      "x": 54940,
+      "y": 39211,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "x1iuNn",
+    "name": "MOBILE DARK 118 · Services / Task overrides",
+    "bounds": {
+      "x": 51340,
+      "y": 51349,
+      "width": 390,
+      "height": 1278
+    }
+  },
+  {
+    "id": "e8T4tT",
+    "name": "MOBILE DARK 119 · Settings / Tool directory",
+    "bounds": {
+      "x": 54940,
+      "y": 40569,
+      "width": 390,
+      "height": 10520
+    }
+  },
+  {
+    "id": "ChyOt",
+    "name": "MOBILE DARK 120 · Settings / Tool details",
+    "bounds": {
+      "x": 55390,
+      "y": 40569,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "gT111",
+    "name": "MOBILE DARK 121 · Administration / Modules",
+    "bounds": {
+      "x": 50440,
+      "y": 52887,
+      "width": 390,
+      "height": 2790
+    }
+  },
+  {
+    "id": "YnCeZ",
+    "name": "MOBILE DARK 122 · Settings / Migration bundles",
+    "bounds": {
+      "x": 55840,
+      "y": 40569,
+      "width": 390,
+      "height": 2520
+    }
+  },
+  {
+    "id": "jM68L",
+    "name": "MOBILE DARK 123 · Personalization / Import conversations",
+    "bounds": {
+      "x": 55390,
+      "y": 39211,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "WWQmb",
+    "name": "MOBILE DARK 124 · Tutor / Research options",
+    "bounds": {
+      "x": 54040,
+      "y": 31433,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "maNQI",
+    "name": "MOBILE DARK 125 · Tutor / Who answers",
+    "bounds": {
+      "x": 54490,
+      "y": 31433,
+      "width": 390,
+      "height": 916
+    }
+  },
+  {
+    "id": "C9U3t",
+    "name": "MOBILE DARK 126 · Learning / Learning actions",
+    "bounds": {
+      "x": 52690,
+      "y": 29687,
+      "width": 390,
+      "height": 1104
+    }
+  },
+  {
+    "id": "jJi1S",
+    "name": "MOBILE DARK 127 · Learning / Review strategies",
+    "bounds": {
+      "x": 53140,
+      "y": 29687,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "psR0y",
+    "name": "MOBILE DARK 128 · Knowledge / Web sources",
+    "bounds": {
+      "x": 53590,
+      "y": 34304,
+      "width": 390,
+      "height": 1268
+    }
+  },
+  {
+    "id": "etwql",
+    "name": "MOBILE DARK 129 · Plan / Task appearance",
+    "bounds": {
+      "x": 50890,
+      "y": 35908,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "j8poIG",
+    "name": "MOBILE DARK 130 · Library / Manage tags",
+    "bounds": {
+      "x": 54940,
+      "y": 32934,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "xtS37",
+    "name": "MOBILE DARK 131 · Learning / Module 2",
+    "bounds": {
+      "x": 53590,
+      "y": 29687,
+      "width": 390,
+      "height": 1080
+    }
+  },
+  {
+    "id": "D8RyO",
+    "name": "MOBILE DARK 132 · Learning / Module 3",
+    "bounds": {
+      "x": 54040,
+      "y": 29687,
+      "width": 390,
+      "height": 982
+    }
+  },
+  {
+    "id": "NqVNL",
+    "name": "MOBILE DARK 133 · Learning / Module 4",
+    "bounds": {
+      "x": 54490,
+      "y": 29687,
+      "width": 390,
+      "height": 1004
+    }
+  },
+  {
+    "id": "RIo1P",
+    "name": "MOBILE DARK 134 · Learning / Module 5",
+    "bounds": {
+      "x": 54940,
+      "y": 29687,
+      "width": 390,
+      "height": 982
+    }
+  },
+  {
+    "id": "y1ljt1",
+    "name": "MOBILE DARK 135 · Learning / Module 6",
+    "bounds": {
+      "x": 55390,
+      "y": 29687,
+      "width": 390,
+      "height": 1102
+    }
+  },
+  {
+    "id": "HMZgk",
+    "name": "MOBILE DARK 136 · Learning / Module 7",
+    "bounds": {
+      "x": 55840,
+      "y": 29687,
+      "width": 390,
+      "height": 1032
+    }
+  },
+  {
+    "id": "OGDxL",
+    "name": "MOBILE DARK 137 · Learning / Learning goal",
+    "bounds": {
+      "x": 56290,
+      "y": 29687,
+      "width": 390,
+      "height": 1050
+    }
+  },
+  {
+    "id": "cTVpE",
+    "name": "MOBILE DARK 138 · Account / Avatar",
+    "bounds": {
+      "x": 49540,
+      "y": 38102,
+      "width": 390,
+      "height": 849
+    }
+  },
+  {
+    "id": "xQnfU",
+    "name": "MOBILE DARK 139 · Account / Device sign-in",
+    "bounds": {
+      "x": 49990,
+      "y": 38102,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "c2Dnz",
+    "name": "MOBILE DARK 140 · Knowledge / Library move",
+    "bounds": {
+      "x": 54040,
+      "y": 34304,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "eHYBb",
+    "name": "MOBILE DARK 141 · Settings / Preferences",
+    "bounds": {
+      "x": 56290,
+      "y": 40569,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "VuSaZ",
+    "name": "MOBILE DARK 142 · Settings / Workspaces & data",
+    "bounds": {
+      "x": 56740,
+      "y": 40569,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "IlHDl",
+    "name": "MOBILE DARK 143 · Settings / Models & services",
+    "bounds": {
+      "x": 57190,
+      "y": 40569,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "iy1vW",
+    "name": "MOBILE DARK 144 · Settings / Learning tools",
+    "bounds": {
+      "x": 57640,
+      "y": 40569,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "OfH4X",
+    "name": "MOBILE DARK 145 · Settings / Advanced",
+    "bounds": {
+      "x": 58090,
+      "y": 40569,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "GkRF4",
+    "name": "MOBILE DARK 146 · Settings / Administration",
+    "bounds": {
+      "x": 58540,
+      "y": 40569,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "JoQ7E",
+    "name": "MOBILE DARK 147 · Knowledge / Node.js & TypeScript",
+    "bounds": {
+      "x": 54490,
+      "y": 34304,
+      "width": 390,
+      "height": 1169
+    }
+  },
+  {
+    "id": "fN246",
+    "name": "MOBILE DARK 148 · Knowledge / Software Architecture",
+    "bounds": {
+      "x": 54940,
+      "y": 34304,
+      "width": 390,
+      "height": 891
+    }
+  },
+  {
+    "id": "dGDo6",
+    "name": "MOBILE DARK 149 · Knowledge / System Design & Distributed Systems",
+    "bounds": {
+      "x": 55390,
+      "y": 34304,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "K1zNA6",
+    "name": "MOBILE DARK 150 · Knowledge / Practical Challenges & Engineering Exercises",
+    "bounds": {
+      "x": 55840,
+      "y": 34304,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "Gjx3x",
+    "name": "MOBILE DARK 151 · Knowledge / Production Engineering, Reliability & Security",
+    "bounds": {
+      "x": 56290,
+      "y": 34304,
+      "width": 390,
+      "height": 872
+    }
+  },
+  {
+    "id": "EbIeH",
+    "name": "MOBILE DARK 152 · States / Delete conversation",
+    "bounds": {
+      "x": 49990,
+      "y": 55937,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "EmQ3t",
+    "name": "MOBILE DARK 153 · States / Reset path progress",
+    "bounds": {
+      "x": 50440,
+      "y": 55937,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "vtPMF",
+    "name": "MOBILE DARK 154 · States / Delete learning path",
+    "bounds": {
+      "x": 50890,
+      "y": 55937,
+      "width": 390,
+      "height": 844
+    }
+  },
+  {
+    "id": "r8ibhR",
+    "name": "MOBILE DARK 00 · Theme system and states",
+    "bounds": {
+      "x": 47740,
+      "y": 28587,
+      "width": 2100,
+      "height": 592
+    }
+  }
+]

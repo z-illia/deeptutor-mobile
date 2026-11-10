@@ -1,0 +1,25 @@
+{
+  "environment": "actual-expo-web-study-session",
+  "version": "rich-math-runtime-3",
+  "apiContent": {
+    "length": 6091,
+    "fingerprint": "a2ed6453",
+    "dollarDelimited": true
+  },
+  "historyDecoded": true,
+  "rendererMounted": true,
+  "mathInput": {
+    "length": 109,
+    "fingerprint": "d059a7df",
+    "exact": true
+  },
+  "svg": {
+    "present": true,
+    "paths": 75,
+    "width": 508.640625,
+    "height": 13.984375
+  },
+  "rawLatexVisible": false,
+  "pageOverflow": false,
+  "androidRuntimeVerified": false
+}
