@@ -9,7 +9,7 @@ import { chatError } from '@/features/chat/live/useLiveChat';
 import { Heading, LearningLayout } from './LearningLayout';
 import { bookBlockContent, bookOperation, get, mutate, type Book, type MaterialDetail, type Page } from './repository';
 import { useLearningData } from './useLearningData';
-import { learningHref } from './LiveLearningScreen';
+import { learningHref } from './routes';
 import { LiveStudyScreen } from './LiveStudyScreen';
 
 export function ReaderScreen({ workspace, id, book }: { workspace: string; id: string; book: boolean }) {

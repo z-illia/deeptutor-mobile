@@ -48,6 +48,7 @@ function screenHarness(view, rows) {
     '@/features/workspaces/WorkspaceProvider': { useWorkspaces: () => ({ selectedWorkspaceId: '', workspaces: [] }) },
     '@/shared/preferences/store': { usePreferencesStore: selector => selector({ values: {}, setValue() {} }) },
     '@/features/chat/live/protocol': { commandId: () => 'navigation-instance' },
+    './routes': load('src/features/learning/live/routes.ts'),
     './repository': repo,
     './useLearningData': { useLearningData: loader => { loaders.push(loader); return state; } },
   });

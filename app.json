@@ -8,7 +8,8 @@
     "scheme": "mobile",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/brand/color-logo.png"
+      "icon": "./assets/brand/color-logo.png",
+      "bundleIdentifier": "com.deeptutor.mobile"
     },
     "android": {
       "adaptiveIcon": {
@@ -16,7 +17,8 @@
         "foregroundImage": "./assets/brand/color-logo.png",
         "monochromeImage": "./assets/brand/black-logo.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.deeptutor.mobile"
     },
     "web": {
       "output": "server",
@@ -40,6 +42,16 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "ba46f0b6-da91-4683-9c39-a72d95ba10cb"
+      }
     }
   }
 }

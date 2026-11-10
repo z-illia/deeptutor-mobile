@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { router, useFocusEffect, useLocalSearchParams, type Href } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { WorkspaceList } from '@/features/workspaces/WorkspaceList';
 import { useWorkspaces } from '@/features/workspaces/WorkspaceProvider';
 import { useAuth } from '@/features/auth/AuthProvider';
@@ -13,14 +13,12 @@ import { FullScreenModal } from '@/shared/ui/FullScreenModal';
 import { Heading, LearningLayout } from './LearningLayout';
 import { continuationSessionId, getTopicWithSessions, get, listTopics, mutate, progressPath, topicPath, type Book, type Material, type StudySession, type Topic } from './repository';
 import { useLearningData } from './useLearningData';
+import { learningHref } from './routes';
 import { ReaderScreen } from './ReaderScreen';
 import { BookTools } from './BookTools';
 import { PracticeScreen } from './PracticeScreen';
 import { LiveStudyScreen } from './LiveStudyScreen';
 
-export function learningHref(view: string, workspace = '', pathId = '', extra: Record<string, string> = {}): Href {
-  return `/learning/live?${new URLSearchParams({ view, workspace, pathId, ...extra })}` as Href;
-}
 export function LiveLearningScreen({ view: fixedView }: { view?: string }) {
   const params = useLocalSearchParams<{ view?: string; workspace?: string; pathId?: string; moduleId?: string; sessionId?: string; id?: string; mode?: string; prompt?: string; new?: string }>();
   const view = fixedView ?? params.view ?? 'overview';

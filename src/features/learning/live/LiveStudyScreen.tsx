@@ -14,7 +14,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DText } from './LearningText';
-import { learningHref } from './LiveLearningScreen';
+import { learningHref } from './routes';
 import { MasteryQuestionCard } from './MasteryQuestionCard';
 import { StudyActionRow } from './StudyActionRow';
 import { StudyResourcesSheet } from './StudyResourcesSheet';
