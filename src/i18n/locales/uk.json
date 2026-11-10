@@ -2642,5 +2642,7 @@
   "Use main model": "Використовувати основну модель",
   "User import file exceeds 2 MB.": "Файл імпорту користувачів перевищує 2 МБ.",
   "Working directory": "Робочий каталог",
-  "Authorization header": "Заголовок авторизації"
+  "Authorization header": "Заголовок авторизації",
+  "Leave session": "Залишити сесію",
+  "Switch learning path": "Змінити навчальний шлях"
 }

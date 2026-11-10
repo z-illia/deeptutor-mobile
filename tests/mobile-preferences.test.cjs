@@ -100,13 +100,3 @@ test('the locale contract stays in sync with strings used by application screens
   const { keys, invariant } = require('../scripts/locale-contract.cjs');
   assert.deepEqual(load('src/i18n/locale-contract.json').keys, keys.filter(key => !invariant(key)));
 });
-
-test('authored notebook and conversation titles keep their original content and identifiers', () => {
-  const { disclosure } = load('src/features/mobile/model.ts');
-  const row = disclosure('note:local-1', 'General', 'My authored note 123');
-  assert.equal(row.localize, false);
-  assert.equal(row.id, 'note:local-1');
-  const title = row.children[0].children[0];
-  assert.equal(title.localize, false);
-  assert.equal(title.content, 'General');
-});

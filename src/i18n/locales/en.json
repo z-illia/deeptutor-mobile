@@ -2642,5 +2642,7 @@
   "Use main model": "Use main model",
   "User import file exceeds 2 MB.": "User import file exceeds 2 MB.",
   "Working directory": "Working directory",
-  "Authorization header": "Authorization header"
+  "Authorization header": "Authorization header",
+  "Leave session": "Leave session",
+  "Switch learning path": "Switch learning path"
 }

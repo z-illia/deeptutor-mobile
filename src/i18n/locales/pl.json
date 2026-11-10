@@ -2642,5 +2642,7 @@
   "Use main model": "Użyj głównego modelu",
   "User import file exceeds 2 MB.": "Plik importu użytkowników przekracza 2 MB.",
   "Working directory": "Katalog roboczy",
-  "Authorization header": "Nagłówek autoryzacji"
+  "Authorization header": "Nagłówek autoryzacji",
+  "Leave session": "Opuść sesję",
+  "Switch learning path": "Zmień ścieżkę nauki"
 }

@@ -2642,5 +2642,7 @@
   "Use main model": "使用主模型",
   "User import file exceeds 2 MB.": "用户导入文件超过 2 MB。",
   "Working directory": "工作目录",
-  "Authorization header": "授权请求头"
+  "Authorization header": "授权请求头",
+  "Leave session": "离开会话",
+  "Switch learning path": "切换学习路径"
 }

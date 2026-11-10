@@ -2642,5 +2642,7 @@
   "Use main model": "Ana modeli kullan",
   "User import file exceeds 2 MB.": "Kullanıcı içe aktarma dosyası 2 MB’ı aşıyor.",
   "Working directory": "Çalışma dizini",
-  "Authorization header": "Yetkilendirme başlığı"
+  "Authorization header": "Yetkilendirme başlığı",
+  "Leave session": "Oturumdan ayrıl",
+  "Switch learning path": "Öğrenme yolunu değiştir"
 }

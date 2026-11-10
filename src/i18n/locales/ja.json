@@ -2642,5 +2642,7 @@
   "Use main model": "メインモデルを使用",
   "User import file exceeds 2 MB.": "ユーザーインポートファイルが 2 MB を超えています。",
   "Working directory": "作業ディレクトリ",
-  "Authorization header": "認証ヘッダー"
+  "Authorization header": "認証ヘッダー",
+  "Leave session": "セッションを終了",
+  "Switch learning path": "学習パスを切り替える"
 }

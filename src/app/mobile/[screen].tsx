@@ -20,7 +20,6 @@ import { MobileSettingsScreen } from '@/features/settings/MobileSettingsScreen';
 import { MobileFavoritesScreen } from '@/features/favorites/MobileFavoritesScreen';
 import { MobileConversationLibrary } from '@/features/chat/MobileConversationLibrary';
 import { ProfileScreen } from '@/features/entry/ProfileScreen';
-import { MobileScreen } from '@/features/mobile/MobileScreen';
 import {
   ImportConversationsScreen,
   MemoryEvidenceScreen,
@@ -123,5 +122,5 @@ function MobileRouteContent() {
   if ([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 126, 127, 131, 132, 133, 134, 135, 136, 137, 153, 154].includes(num)) return <EntryBoundary><Redirect href={num === 2 ? '/learning/new' : num === 9 ? '/learning/books' : [10, 11].includes(num) ? '/learning/reading' : '/learning'} /></EntryBoundary>;
   if ([12, 13, 14, 24, 25].includes(num)) return <EntryBoundary><Redirect href="/chat" /></EntryBoundary>;
   if ([27, 108].includes(num)) return <EntryBoundary><MobileConversationLibrary key={screen} archive={num === 108} /></EntryBoundary>;
-  return <EntryBoundary><MobileScreen key={screen} number={num} /></EntryBoundary>;
+  return <EntryBoundary><Redirect href="/learning" /></EntryBoundary>;
 }

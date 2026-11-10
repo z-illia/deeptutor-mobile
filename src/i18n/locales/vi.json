@@ -2642,5 +2642,7 @@
   "Use main model": "Dùng mô hình chính",
   "User import file exceeds 2 MB.": "Tệp nhập người dùng vượt quá 2 MB.",
   "Working directory": "Thư mục làm việc",
-  "Authorization header": "Tiêu đề xác thực"
+  "Authorization header": "Tiêu đề xác thực",
+  "Leave session": "Rời phiên học",
+  "Switch learning path": "Chuyển lộ trình học"
 }

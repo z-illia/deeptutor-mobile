@@ -2642,5 +2642,7 @@
   "Use main model": "Usar modelo principal",
   "User import file exceeds 2 MB.": "O arquivo de importação excede 2 MB.",
   "Working directory": "Diretório de trabalho",
-  "Authorization header": "Cabeçalho de autorização"
+  "Authorization header": "Cabeçalho de autorização",
+  "Leave session": "Sair da sessão",
+  "Switch learning path": "Mudar percurso de aprendizagem"
 }
