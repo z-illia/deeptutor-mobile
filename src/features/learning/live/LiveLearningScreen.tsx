@@ -14,6 +14,7 @@ import { Heading, LearningLayout } from './LearningLayout';
 import { continuationSessionId, getTopicWithSessions, get, listTopics, mutate, progressPath, topicPath, type Book, type Material, type StudySession, type Topic } from './repository';
 import { useLearningData } from './useLearningData';
 import { learningHref } from './routes';
+import { LearningOverview } from './LearningOverview';
 import { ReaderScreen } from './ReaderScreen';
 import { BookTools } from './BookTools';
 import { PracticeScreen } from './PracticeScreen';
@@ -81,16 +82,7 @@ function LearningContent({ view, workspace, pathId, moduleId }: { view: string; 
     {view === 'overview' && <>
       <DText muted>{workspaceState.workspaces.find(item => item.workspace_id === workspace)?.display_name ?? (workspace || 'General workspace')}</DText>
       <Heading>Build understanding,{'\n'}one step at a time.</Heading>
-      {!!state.data?.topics.length && <View style={{ gap: 12 }}><DText role="label">Continue your learning</DText>{state.data.topics.map(item => row(item.name, `${item.map.counts.mastered} / ${item.map.counts.total} knowledge points mastered`, () => router.push(learningHref('topic', workspace, item.path_id))))}</View>}
-      {!state.loading && !state.error && !state.data?.topics.length && <DText muted>No learning paths yet. Start with a goal.</DText>}
-      <View style={{ gap: 12 }}><DText role="label">Your learning</DText>
-      {row('Mastery paths', 'Build a route toward a learning goal', () => nav('paths'))}
-      {row('Books', 'Generate, browse and study AI-authored books', () => nav('books'))}
-      {row('Immersive reading', 'Read materials with a tutor beside you', () => nav('reading'))}</View>
-      <DText role="label">Practice & reflection</DText>
-      {row('Learning progress', 'Your reading and learning activity', () => nav('progress'))}
-      {row('Practice', 'Review questions from your question bank', () => nav('practice'))}
-      <Button variant="secondary" onPress={() => nav('new')}>New learning activity</Button>
+      <LearningOverview topics={state.data?.topics ?? []} workspace={workspace} loading={state.loading} error={state.error} />
     </>}
     {view === 'progress' && <>
       <DText muted>Your reading and learning activity</DText>
