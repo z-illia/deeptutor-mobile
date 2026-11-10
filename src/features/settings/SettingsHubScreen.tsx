@@ -6,16 +6,54 @@ import { useCopy } from '@/features/entry/copy';
 import { useState } from 'react';
 import { InlineAlert } from '@/shared/ui/Feedback';
 import { conversationError } from '@/features/chat/live/repository';
-import { ChartNoAxesCombined, Layers, Settings, SlidersHorizontal, Smartphone, UserRound, type LucideIcon } from 'lucide-react-native';
+import {
+  Activity, Archive, ArrowLeftRight, Blocks, BookOpen, Bot, Brain,
+  ChartNoAxesCombined, ClipboardList, Cpu, Database, FileSearch, Image,
+  Info, Layers, ListTree, MessageSquare, Network, Palette, Paperclip,
+  Plug, Search, Settings, ShieldCheck, SlidersHorizontal, Smartphone,
+  Sparkles, UserRound, Users, Video, Volume2, Wrench, type LucideIcon,
+} from 'lucide-react-native';
 import { useDesign } from '@/shared/design/DesignProvider';
 
-const accountIcons: Record<number, LucideIcon> = {
+const sectionIcons: Record<number, LucideIcon> = {
   63: UserRound,
   62: Layers,
   65: SlidersHorizontal,
   81: Settings,
   88: ChartNoAxesCombined,
   139: Smartphone,
+  141: SlidersHorizontal,
+  142: Database,
+  143: Cpu,
+  144: BookOpen,
+  145: Wrench,
+  146: ShieldCheck,
+  82: Settings,
+  83: Palette,
+  84: Layers,
+  86: ArrowLeftRight,
+  89: Plug,
+  91: Cpu,
+  93: ClipboardList,
+  94: Search,
+  95: Volume2,
+  96: Image,
+  97: Paperclip,
+  98: Video,
+  99: Bot,
+  100: FileSearch,
+  101: MessageSquare,
+  102: Brain,
+  103: Sparkles,
+  104: Wrench,
+  105: Network,
+  106: Activity,
+  107: Info,
+  109: Users,
+  118: SlidersHorizontal,
+  119: ListTree,
+  121: Blocks,
+  122: Archive,
 };
 
 const groups: Record<number, [string, number[]]> = {
@@ -41,7 +79,7 @@ export function SettingsHubScreen({ number }: { number: number }) {
   const [title, routes] = groups[number] ?? ['Account', [63, 62, 65, 81, 88, 139]];
   return <MobilePage title={t(title)}>
     {number === 61 && <MobileText>{auth.session?.profile?.username ?? t('Local account')}</MobileText>}
-    {routes.filter(route => route !== 146 || auth.session?.profile?.role === 'admin' || !auth.session?.status.enabled).map(route => { const Icon = number === 61 ? accountIcons[route] : undefined; return <MobileRow key={route} icon={Icon ? <Icon size={22} color={colors.primary} /> : undefined} title={t(titles[route] ?? groups[route]?.[0] ?? ({ 63: 'My profile', 62: 'Switch workspace', 65: 'Personalization', 88: 'Usage statistics', 139: 'Device sign-in' } as Record<number, string>)[route])} onPress={() => router.push(`${screenPath(route)}` as Href)} />; })}
+    {routes.filter(route => route !== 146 || auth.session?.profile?.role === 'admin' || !auth.session?.status.enabled).map(route => { const Icon = sectionIcons[route]; return <MobileRow key={route} icon={Icon ? <Icon size={22} color={colors.primary} /> : undefined} title={t(titles[route] ?? groups[route]?.[0] ?? ({ 63: 'My profile', 62: 'Switch workspace', 65: 'Personalization', 88: 'Usage statistics', 139: 'Device sign-in' } as Record<number, string>)[route])} onPress={() => router.push(`${screenPath(route)}` as Href)} />; })}
     {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
     {number === 61 && <MobileAction variant="secondary" loading={signingOut} onPress={() => void signOut()}>{t('Sign out')}</MobileAction>}
   </MobilePage>;

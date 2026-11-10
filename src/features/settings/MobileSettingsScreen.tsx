@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Activity, Cpu, Palette, Plug, Settings, Wrench } from 'lucide-react-native';
 import { router, type Href } from 'expo-router';
 import { View } from 'react-native';
 import { useDesign } from '@/shared/design/DesignProvider';
@@ -33,7 +34,7 @@ export function MobileSettingsScreen({ appearance = false }: { appearance?: bool
   </> : undefined}>
     <MobileText muted>{t(appearance ? 'Changes preview before you apply.' : 'Choose languages and complete the required chat setup.')}</MobileText>
     {!!settings.error && <InlineAlert tone="danger">{t(settings.error)}</InlineAlert>}
-    <MobileRow title={t(appearance ? 'General' : 'Appearance')} onPress={() => router.replace(appearance ? '/settings/general' : '/settings/appearance')} />
+    <MobileRow icon={appearance ? <Settings size={22} color={colors.primary} /> : <Palette size={22} color={colors.primary} />} title={t(appearance ? 'General' : 'Appearance')} onPress={() => router.replace(appearance ? '/settings/general' : '/settings/appearance')} />
     <MobileAction variant="secondary" disabled={disabled} onPress={() => { if (settings.state.phase === 'unsaved' || settings.state.phase === 'saved-draft') setConfirmReload(true); else void settings.refresh(); }}>{t('Refresh')}</MobileAction>
     <ConfirmDialog open={confirmReload} title={t('Reload settings?')} confirmLabel={t('Refresh')} tone="default" onCancel={() => setConfirmReload(false)} onConfirm={() => { setConfirmReload(false); void settings.refresh(); }}>{t('Local edits will be replaced with the server settings and saved draft.')}</ConfirmDialog>
     {appearance ? <>
@@ -52,9 +53,9 @@ export function MobileSettingsScreen({ appearance = false }: { appearance?: bool
       <MobileChoice label={t('Interface layout')} disabled={disabled} value={p.layout} options={[{ value: 'classic', label: t('Classic') }, { value: 'modern', label: t('Modern') }]} onChange={layout => edit({ layout })} />
       <MobileText muted>{t('Mobile · web Classic / Modern preference retained for web')}</MobileText>
       {catalogEditable(f.mode) && <View style={{ gap: 12 }}><MobileText style={{ fontSize: 18, fontWeight: '600' }}>{t('Set up chat')}</MobileText>
-        {[['/settings/connections', '1 · Connect provider', 'Add credentials and test connection'], ['/settings/llm', '2 · Choose chat model', 'Test and set a default'], ['/settings/status', '3 · Check service readiness', 'Basic chat needs no optional integrations']].map(([href, label, description]) => <MobileRow key={href} title={t(label)} description={t(description)} onPress={() => router.push(href as Href)} />)}
+        {[['/settings/connections', '1 · Connect provider', 'Add credentials and test connection'], ['/settings/llm', '2 · Choose chat model', 'Test and set a default'], ['/settings/status', '3 · Check service readiness', 'Basic chat needs no optional integrations']].map(([href, label, description], index) => { const Icon = [Plug, Cpu, Activity][index]; return <MobileRow key={href} icon={<Icon size={22} color={colors.primary} />} title={t(label)} description={t(description)} onPress={() => router.push(href as Href)} />; })}
       </View>}
-      <MobileRow title={t('Optional services')} description={t('Knowledge search · Web search · Task models')} onPress={() => router.push('/settings/services')} />
+      <MobileRow icon={<Wrench size={22} color={colors.primary} />} title={t('Optional services')} description={t('Knowledge search · Web search · Task models')} onPress={() => router.push('/settings/services')} />
     </>}
   </MobilePage>;
 }
