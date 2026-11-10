@@ -54,8 +54,14 @@ also needs an iOS/Android device check. Browser access requires the backend to
 allow the web origin and credentialed cookies. The local source checkout may
 need comparison with the deployed server if its protocol version differs.
 
-This integration covers text chat, history, models, stop and basic input replies.
-Attachments, advanced capabilities, tools/cards, branching controls, rename,
-archive and deletion are not exposed by this screen. Other feature screens
-continue using the existing presentation providers; their fixture data is not
-merged into the live conversation history.
+The live screen also exposes scoped rename, pin, archive, move and delete actions
+through `SessionActionsSheet` and the existing session HTTP repository. Rename
+updates the heading without reloading the socket or discarding the input draft.
+The resource sheet reuses Learning's API-backed source picker and attachment
+policy/file preparation, passing real reference IDs and files into turn commands.
+MCP choices come from the per-user `/space/mcp/servers` catalog. The old numbered
+Tutor routes open these live controls; action routes open the conversation
+library, with `sessionId` selecting a particular conversation's action menu.
+
+Advanced capability cards and branching controls remain outside this text chat
+surface. Fixture messages are never merged into live history.

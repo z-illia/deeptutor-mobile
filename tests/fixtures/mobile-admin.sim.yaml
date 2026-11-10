@@ -1,0 +1,6 @@
+simulation: mobile-admin
+routing: path
+mocks:
+  - name: mobile-admin
+    routeKey: backend
+    path: ./mobile-admin-mock

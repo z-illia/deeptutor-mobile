@@ -1,4 +1,18 @@
+import { ConfigurationScreen } from '@/features/settings/ConfigurationScreen';
+import { RemoteSettingsScreen, remoteSettings } from '@/features/settings/RemoteSettingsScreen';
+import { SettingsHubScreen } from '@/features/settings/SettingsHubScreen';
+import { ServicesScreen } from '@/features/settings/ServicesScreen';
+import { ToolsScreen } from '@/features/settings/ToolsScreen';
+import { MigrationScreen } from '@/features/settings/MigrationScreen';
+import { ManageWorkspacesScreen } from '@/features/workspaces/ManageWorkspacesScreen';
+import { ExtensionsScreen, McpScreen, PersonasSkillsScreen, PlaybookScreen, SubagentsScreen } from '@/features/resources/PersonalizationScreens';
+import { PartnerGroupsScreen, PartnerScreen, PartnersScreen } from '@/features/resources/PartnerScreens';
 import { ResourceHubScreen } from '@/features/resources/ResourceHubScreen';
+import { LiveChatScreen } from '@/features/chat/live/LiveChatScreen';
+import type { Panel } from '@/features/chat/live/TutorComposer';
+import { AddUserScreen, AuxiliaryStateScreen, DeviceHandoffScreen, ImportUsersScreen, UsersScreen } from '@/features/settings/AccountAdminScreens';
+import { useAuth } from '@/features/auth/AuthProvider';
+import { useWorkspaces } from '@/features/workspaces/WorkspaceProvider';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { EntryBoundary } from '@/features/entry/Boundary';
 import { MobileWorkspaceScreen } from '@/features/workspaces/MobileWorkspaceScreen';
@@ -37,8 +51,35 @@ import {
 } from '@/features/knowledge/MobileKnowledgeScreens';
 
 export default function MobileRoute() {
+  const auth = useAuth(); const scope = useWorkspaces(); const params = useLocalSearchParams();
+  return <MobileRouteContent key={JSON.stringify([auth.serverUrl, auth.session?.profile?.id, scope.selectedWorkspaceId, params])} />;
+}
+
+function MobileRouteContent() {
   const { screen, notebookId, recordId, docId, taskId, kb, file, engine } = useLocalSearchParams<{ screen: string; notebookId?: string; recordId?: string; docId?: string; taskId?: string; kb?: string; file?: string; engine?: string }>();
   const num = Number(screen);
+  if ([15, 16, 17, 18, 19, 20, 23, 124, 125].includes(num)) return <EntryBoundary><LiveChatScreen chooseModel={num === 18} initialPanel={({ 15: 'More tools', 16: 'Mode', 17: 'Attachments', 19: 'Skills', 23: 'Preferences', 124: 'research', 125: 'Partners' } as Record<number, Panel>)[num]} /></EntryBoundary>;
+  if ([22, 152].includes(num)) return <EntryBoundary><MobileConversationLibrary actions /></EntryBoundary>;
+  if (num === 109) return <EntryBoundary><UsersScreen /></EntryBoundary>;
+  if (num === 110) return <EntryBoundary><AddUserScreen /></EntryBoundary>;
+  if (num === 111) return <EntryBoundary><ImportUsersScreen /></EntryBoundary>;
+  if (num === 139) return <EntryBoundary><DeviceHandoffScreen /></EntryBoundary>;
+  if ([113, 114, 116].includes(num)) return <EntryBoundary><AuxiliaryStateScreen number={num} /></EntryBoundary>;
+  if ([61, 81, 141, 142, 143, 144, 145, 146].includes(num)) return <EntryBoundary><SettingsHubScreen key={screen} number={num} /></EntryBoundary>;
+  if ([84, 85].includes(num)) return <EntryBoundary><ManageWorkspacesScreen key={screen} details={num === 85} /></EntryBoundary>;
+  if ([86, 87, 122].includes(num)) return <EntryBoundary><MigrationScreen key={screen} bundles={num === 122} /></EntryBoundary>;
+  if (remoteSettings[num]) return <EntryBoundary><RemoteSettingsScreen key={screen} number={num} /></EntryBoundary>;
+  if ([98, 99, 102, 103].includes(num)) return <EntryBoundary><ConfigurationScreen key={screen} number={num} /></EntryBoundary>;
+  if ([89, 90, 91, 92, 93, 94, 95, 96, 118].includes(num)) return <EntryBoundary><ServicesScreen key={screen} number={num} /></EntryBoundary>;
+  if ([104, 119, 120].includes(num)) return <EntryBoundary><ToolsScreen key={screen} details={num === 120} /></EntryBoundary>;
+  if (num === 66) return <EntryBoundary><PartnersScreen /></EntryBoundary>;
+  if ([67, 68, 69, 70, 71].includes(num)) return <EntryBoundary><PartnerScreen key={screen} number={num} /></EntryBoundary>;
+  if (num === 72) return <EntryBoundary><PartnerGroupsScreen /></EntryBoundary>;
+  if (num === 73) return <EntryBoundary><PersonasSkillsScreen /></EntryBoundary>;
+  if (num === 74) return <EntryBoundary><PlaybookScreen /></EntryBoundary>;
+  if ([75, 117].includes(num)) return <EntryBoundary><ExtensionsScreen key={screen} details={num === 117} /></EntryBoundary>;
+  if (num === 76) return <EntryBoundary><McpScreen /></EntryBoundary>;
+  if (num === 77) return <EntryBoundary><SubagentsScreen /></EntryBoundary>;
   if ([26, 65].includes(num)) return <EntryBoundary><ResourceHubScreen key={screen} personalization={num === 65} /></EntryBoundary>;
   if ([82, 83].includes(num)) return <EntryBoundary><MobileSettingsScreen key={screen} appearance={num === 83} /></EntryBoundary>;
   if (num === 28) return <EntryBoundary><NotebookListScreen /></EntryBoundary>;

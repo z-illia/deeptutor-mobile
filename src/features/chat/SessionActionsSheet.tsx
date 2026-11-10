@@ -43,6 +43,7 @@ export interface SessionActionsSheetProps {
   messages?: ChatMessageItem[];
   workspaceOptions?: { id: string; name: string }[];
   onClose: () => void;
+  onSave?: () => void;
   onStartInlineRename?: (session: SessionSummary) => void;
   onRename: (
     sessionId: string,
@@ -63,6 +64,7 @@ export function SessionActionsSheet({
   messages = [],
   workspaceOptions,
   onClose,
+  onSave,
   onStartInlineRename,
   onRename,
   onOrganize,
@@ -249,6 +251,10 @@ export function SessionActionsSheet({
       >
         <ScrollView style={{ maxHeight: 420 }}>
           <View style={{ gap: 8 }}>
+            {onSave && <Pressable accessibilityRole="button" accessibilityLabel={t('Save to Favorites')} disabled={isRunning || busy}
+              onPress={() => { onClose(); onSave(); }} style={actionButtonStyle(false, isRunning || busy)}>
+              <Bookmark size={16} color={colors.foreground} /><DText role="label">{t('Save to Favorites')}</DText>
+            </Pressable>}
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={t('Rename chat')}

@@ -10,6 +10,7 @@ export function conversationError(cause: unknown): string {
     if (cause.response?.status === 403) return 'This page is not available for your account.';
     const detail = (cause.response?.data as { detail?: unknown } | undefined)?.detail;
     if (typeof detail === 'string' && detail.trim()) return detail;
+    if (detail && typeof detail === 'object' && 'message' in detail && typeof detail.message === 'string') return detail.message;
     if (!cause.response) return "Couldn't reach the server. Please check your connection and retry.";
   }
   return cause instanceof Error ? cause.message : 'Failed to save';

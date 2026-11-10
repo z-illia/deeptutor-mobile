@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 import { MoreHorizontal } from 'lucide-react-native';
 import { useWorkspaces } from '@/features/workspaces/WorkspaceProvider';
@@ -27,7 +27,8 @@ import {
   type SessionSummary,
 } from './model';
 
-export function MobileConversationLibrary({ archive = false }: { archive?: boolean }) {
+export function MobileConversationLibrary({ archive = false, actions = false }: { archive?: boolean; actions?: boolean }) {
+  const { sessionId } = useLocalSearchParams<{ sessionId?: string }>();
   const workspaceScope = useWorkspaces();
   const workspace = workspaceScope.selectedWorkspaceId;
   const t = useCopy();
@@ -39,6 +40,8 @@ export function MobileConversationLibrary({ archive = false }: { archive?: boole
   const [type, setType] = useState<HistoryTypeFilter>('all');
   const [filter, setFilter] = useState<HistoryArchiveFilter>('active');
   const [target, setTarget] = useState<SessionSummary | null>(null);
+  const [actionsOpen, setActionsOpen] = useState(false);
+  const openedDirect = useRef(false);
   const [deleteAll, setDeleteAll] = useState(false);
   const [error, setError] = useState('');
   const lock = useRef(false);
@@ -52,13 +55,17 @@ export function MobileConversationLibrary({ archive = false }: { archive?: boole
       const items = await listWorkspaceSessionSummaries(workspace, signal);
       if (signal?.aborted || current !== seq.current) return;
       setAllSessions(items);
+      if (actions && sessionId && !openedDirect.current) {
+        const session = items.find(item => item.session_id === sessionId);
+        if (session) { setTarget(session); setActionsOpen(true); openedDirect.current = true; }
+      }
     } catch (cause) {
       if (signal?.aborted || current !== seq.current) return;
       setError(conversationError(cause));
     } finally {
       if (!signal?.aborted && current === seq.current) setLoading(false);
     }
-  }, [workspace]);
+  }, [workspace, actions, sessionId]);
 
   useFocusEffect(useCallback(() => {
     const controller = new AbortController();
@@ -177,7 +184,7 @@ export function MobileConversationLibrary({ archive = false }: { archive?: boole
             onPress={() => router.push(`/chat/${encodeURIComponent(session.session_id)}`)}
           />
         </View>
-        <IconButton label={`${t('More actions')} ${displaySessionTitle(session.title, t('New chat'))}`} onPress={event => { event.stopPropagation(); setTarget(session); }}>
+        <IconButton label={`${t('More actions')} ${displaySessionTitle(session.title, t('New chat'))}`} onPress={event => { event.stopPropagation(); setTarget(session); setActionsOpen(true); }}>
           <MoreHorizontal size={22} color={colors.mutedForeground} />
         </IconButton>
       </View>
@@ -189,10 +196,10 @@ export function MobileConversationLibrary({ archive = false }: { archive?: boole
     </View>)}
     {archive && <MobileAction variant="secondary" disabled={!archivedCount || busy} loading={busy} onPress={() => setDeleteAll(true)}>{t('Delete all archived chats')}</MobileAction>}
     <SessionActionsSheet
-      open={!!target}
+      open={actionsOpen}
       session={target}
       workspaceOptions={workspaceOptions}
-      onClose={() => setTarget(null)}
+      onClose={() => setActionsOpen(false)}
       onRename={handleRename}
       onOrganize={handleOrganize}
       onDelete={handleDelete}

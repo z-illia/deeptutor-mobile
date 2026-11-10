@@ -11,14 +11,16 @@ import { ListRow } from '@/shared/ui/ListRow';
 import { DText } from '@/shared/ui/Text';
 import type { TutorConfiguration } from './configuration';
 import prompts from './learning-prompts.json';
+import { router } from 'expo-router';
 
 type Action = keyof typeof prompts;
-type Panel = 'Mode' | 'Skills' | 'Connections' | 'More tools' | 'Partners' | 'Preferences' | 'Create' | 'Attachments' | Action;
+export type Panel = 'Mode' | 'Skills' | 'Connections' | 'More tools' | 'Partners' | 'Preferences' | 'Create' | 'Attachments' | Action;
 type Option = { id: string; label: string; description?: string };
 const actions = [ ['explain', 'Explain', Lightbulb], ['solve', 'Solve', Wrench], ['practice', 'Practice', Dumbbell], ['plan', 'Plan', CalendarCheck2], ['research', 'Research', Search] ] as const;
 const modes = [ ['chat', 'Explain'], ['solve', 'Solve'] ] as const;
 
 export interface TutorComposerProps {
+  initialPanel?: Panel;
   compact?: boolean;
   onMoreActions?: (openSessionSetup: () => void) => void;
   moreActionsOpen?: boolean;
@@ -44,9 +46,9 @@ export function TutorComposer(props: TutorComposerProps) {
   const { colors, dark } = useDesign();
   const t = useCopy();
   const [height, setHeight] = useState(props.compact ? 52 : 64);
-  const [panel, setPanel] = useState<Panel | null>(null);
+  const [panel, setPanel] = useState<Panel | null>(props.initialPanel ?? null);
   const [options, setOptions] = useState<Option[]>([]);
-  const [fetching, setFetching] = useState(false);
+  const [fetching, setFetching] = useState(!!props.initialPanel && ['Skills', 'Preferences', 'Connections', 'Partners'].includes(props.initialPanel));
   const [failure, setFailure] = useState('');
   const [retry, setRetry] = useState(0);
   const locked = props.loading || props.busy;
@@ -54,11 +56,12 @@ export function TutorComposer(props: TutorComposerProps) {
   const config = props.configuration;
   const configure = (patch: TutorConfiguration) => props.onConfigure({ ...config, ...patch });
   const openPanel = (next: Panel) => {
+    if (next === 'Attachments' && props.onResources) { setPanel(null); props.onResources(); return; }
     setOptions([]); setFailure(''); setFetching(['Skills', 'Preferences', 'Connections', 'Partners'].includes(next)); setPanel(next);
   };
   useEffect(() => {
     const abort = new AbortController();
-    const paths: Partial<Record<Panel, string>> = { Skills: '/skills/list', Preferences: '/personas', Connections: '/settings/mcp', Partners: '/partners' };
+    const paths: Partial<Record<Panel, string>> = { Skills: '/skills/list', Preferences: '/personas', Connections: '/space/mcp/servers', Partners: '/partners' };
     const path = panel ? paths[panel] : undefined;
     if (path) void api.get(path, { signal: abort.signal, ...(props.workspace !== undefined ? { params: { dt_workspace: props.workspace } } : {}) }).then(({ data }) => {
       let rows: Option[];
@@ -69,7 +72,7 @@ export function TutorComposer(props: TutorComposerProps) {
         const items = panel === 'Skills' ? data.skills : panel === 'Preferences' ? data.personas : data;
         if (!Array.isArray(items)) throw new Error('Invalid configuration catalog.');
         rows = items.map(item => {
-          const id = panel === 'Partners' ? item.id : item.name;
+          const id = panel === 'Partners' ? item.partner_id : item.name;
           if (typeof id !== 'string') throw new Error('Invalid configuration identifier.');
           return { id, label: item.name || id, description: item.description };
         });
@@ -94,7 +97,7 @@ export function TutorComposer(props: TutorComposerProps) {
         trailing={<Button accessibilityLabel={t(stop ? 'Stop response' : 'Send')} disabled={!stop && (!props.value.trim() || props.loading || props.error || (props.busy && !props.waiting))} onPress={stop ? props.onStop : props.onSend} style={{ width: 40, height: 40, minWidth: 40, minHeight: 40, paddingHorizontal: 0, paddingVertical: 0, borderRadius: 999 }}>{stop ? <Square size={16} color={colors.primaryForeground} fill={colors.primaryForeground} /> : <ArrowUp size={18} color={colors.primaryForeground} />}</Button>}
       />
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, height: props.compact ? 44 : 36, justifyContent: 'flex-end' }}>
-        {props.compact && <Pressable accessibilityRole="button" accessibilityLabel={`Resources, ${props.resourceCount ?? 0} attached`} onPress={props.onResources} style={[toolStyle, { width: 44, height: 44, position: 'relative' }]}><Paperclip size={18} color={colors.primary} />{(props.resourceCount ?? 0) > 0 && <View style={{ position: 'absolute', top: 0, right: 0, minWidth: 16, height: 16, borderRadius: 8, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' }}><DText style={{ fontSize: 10, lineHeight: 14, color: colors.primaryForeground }}>{props.resourceCount}</DText></View>}</Pressable>}
+        {(props.compact || props.onResources) && <Pressable accessibilityRole="button" accessibilityLabel={`Resources, ${props.resourceCount ?? 0} attached`} onPress={props.onResources} style={[toolStyle, { width: 44, height: 44, position: 'relative' }]}><Paperclip size={18} color={colors.primary} />{(props.resourceCount ?? 0) > 0 && <View style={{ position: 'absolute', top: 0, right: 0, minWidth: 16, height: 16, borderRadius: 8, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' }}><DText style={{ fontSize: 10, lineHeight: 14, color: colors.primaryForeground }}>{props.resourceCount}</DText></View>}</Pressable>}
         {(!props.compact ? ([['Mode', SlidersHorizontal, 15], ['Skills', Sparkles, 15], ['Connections', Plug, 17], ['More tools', Ellipsis, 18]] as const) : ([['More tools', Ellipsis, 18]] as const)).map(([name, Icon, size]) => <Pressable key={name} accessibilityRole="button" accessibilityLabel={t(name === 'More tools' && props.onMoreActions ? 'More actions' : name)} disabled={toolLocked(name)} accessibilityState={{ disabled: toolLocked(name), expanded: name === 'More tools' && props.onMoreActions ? props.moreActionsOpen : panel === name }} onPress={() => name === 'More tools' && props.onMoreActions ? props.onMoreActions(() => openPanel('More tools')) : openPanel(name)} style={({ pressed }) => [toolStyle, { width: props.compact ? 44 : 34, height: props.compact ? 44 : 34, backgroundColor: name === 'More tools' && !props.compact ? colors.primary : toolBackground, opacity: toolLocked(name) ? 0.5 : pressed ? 0.7 : 1 }]}><Icon size={size} color={name === 'More tools' && !props.compact ? colors.primaryForeground : colors.primary} /></Pressable>)}
         {!props.compact && <Pressable accessibilityRole="button" accessibilityLabel={props.modelName} accessibilityHint={t('Choose model')} disabled={locked} onPress={props.onChooseModel} style={[toolStyle, { width: undefined, flex: 1, minWidth: 0, paddingHorizontal: 8, flexDirection: 'row', gap: 4, opacity: locked ? 0.5 : 1 }]}>
           <DText numberOfLines={1} style={{ flex: 1, fontSize: 11, color: colors.mutedForeground }}>{props.modelName}</DText><ChevronDown size={14} color={colors.mutedForeground} />
@@ -108,7 +111,7 @@ export function TutorComposer(props: TutorComposerProps) {
       <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 20, gap: 16 }}>
         {fetching && <LoadingState />}
         {!!failure && <><InlineAlert tone="danger">{t(failure)}</InlineAlert><Button onPress={() => { setFailure(''); setFetching(true); setRetry(value => value + 1); }}>{t('Retry')}</Button></>}
-        {panel === 'More tools' && props.compact && <>
+        {panel === 'More tools' && <>
           <ListRow title={props.modelName} description={t('Choose model')} onPress={() => { setPanel(null); props.onChooseModel(); }} />
           {(['Skills', 'Connections'] as const).map(name => <ListRow key={name} title={t(name)} onPress={() => openPanel(name)} />)}
           {props.learningActions?.map(action => <Button key={action.label} variant="secondary" disabled={action.disabled || locked} onPress={() => { setPanel(null); action.onPress(); }}>{t(action.label)}</Button>)}
@@ -124,17 +127,18 @@ export function TutorComposer(props: TutorComposerProps) {
           <Button variant="secondary" style={selectionStyle(!(panel === 'Skills' ? config.skills : config.mcp)?.length)} accessibilityState={{ selected: !(panel === 'Skills' ? config.skills : config.mcp)?.length }} onPress={() => configure(panel === 'Skills' ? { skills: [] } : { mcp: [] })}>{t('Auto')}</Button>
           {options.map(option => <Button key={option.id} variant="secondary" style={selectionStyle(!!(panel === 'Skills' ? config.skills : config.mcp)?.includes(option.id))} accessibilityState={{ selected: (panel === 'Skills' ? config.skills : config.mcp)?.includes(option.id) }} onPress={() => toggle(panel === 'Skills' ? 'skills' : 'mcp', option.id)}>{option.label}</Button>)}
           {!options.length && <DText muted>{t('No available options')}</DText>}
-          {panel === 'Connections' && <DText muted>{t('Select existing enabled services. Add or test connections in DeepTutor web settings.')}</DText>}
+          {panel === 'Connections' && <Button variant="secondary" onPress={() => { setPanel(null); router.push('/mobile/76'); }}>{t('Connect MCP service')}</Button>}
+          {panel === 'Skills' && <Button variant="secondary" onPress={() => { setPanel(null); router.push('/mobile/73'); }}>{t('Manage personas & skills')}</Button>}
         </>}
         {(panel === 'Preferences' || panel === 'Partners') && !fetching && !failure && <>
           <Button variant="secondary" style={selectionStyle(panel === 'Preferences' ? !config.persona : !config.answer_by)} accessibilityState={{ selected: panel === 'Preferences' ? !config.persona : !config.answer_by }} onPress={() => configure(panel === 'Preferences' ? { persona: null } : { answer_by: '' })}>{t('DeepTutor')}</Button>
           {options.map(option => <Button key={option.id} variant="secondary" style={selectionStyle(panel === 'Preferences' ? config.persona === option.id : config.answer_by === `partner:${option.id}`)} accessibilityState={{ selected: panel === 'Preferences' ? config.persona === option.id : config.answer_by === `partner:${option.id}` }} onPress={() => configure(panel === 'Preferences' ? { persona: option.id } : { answer_by: `partner:${option.id}` })}>{option.label}</Button>)}
           {!options.length && <DText muted>{t('No available options')}</DText>}
           <DText muted>{t('Choices apply to subsequent turns in this conversation.')}</DText>
-          {panel === 'Partners' && <DText muted>{t('Create partners and partner groups in DeepTutor web.')}</DText>}
+          {panel === 'Partners' && <Button variant="secondary" onPress={() => { setPanel(null); router.push('/mobile/66'); }}>{t('Partners')}</Button>}
         </>}
         {panel === 'Create' && <>
-          <DText muted>{t('Ask the tutor to author a playbook. Review and save the result in DeepTutor web.')}</DText>
+          <Button variant="secondary" onPress={() => { setPanel(null); router.push('/mobile/74'); }}>{t('Create a playbook')}</Button>
           {(['skill', 'persona'] as const).map(kind => <Button key={kind} variant="secondary" style={selectionStyle(config.create_target === kind)} accessibilityState={{ selected: config.create_target === kind }} onPress={() => { configure({ create_target: kind }); setPanel(null); }}>{t(kind === 'skill' ? 'Skill' : 'Persona')}</Button>)}
           <Button variant="ghost" onPress={() => { configure({ create_target: null }); setPanel(null); }}>{t('Clear')}</Button>
         </>}

@@ -5,6 +5,18 @@ import codeOptions from './code-options.json';
 import responseLanguages from './response-languages.json';
 
 export type UiSettings = Record<string, unknown>;
+export async function readRemote(path: string, signal?: AbortSignal): Promise<unknown> {
+  return (await api.get(path, { signal })).data;
+}
+export async function writeRemote(path: string, method: 'put' | 'post' | 'patch', payload: unknown, signal?: AbortSignal): Promise<unknown> {
+  return (await api[method](path, payload, { signal })).data;
+}
+export async function importUserFile(file: { file?: File; uri: string; name: string; mimeType?: string }): Promise<unknown> {
+  const form = new FormData();
+  if (file.file) form.append('file', file.file, file.name);
+  else form.append('file', { uri: file.uri, name: file.name, type: file.mimeType || 'text/csv' } as unknown as Blob);
+  return (await api.post('/auth/users/import', form, { headers: { 'Content-Type': 'multipart/form-data' } })).data;
+}
 export type Draft = { catalog: Record<string, unknown> | null; extensions: Record<string, unknown> };
 const fields = {
   theme: 'theme', language: 'language', responseLanguage: 'response_language', scale: 'content_font_scale', spacing: 'content_line_spacing',

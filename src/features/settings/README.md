@@ -1,5 +1,43 @@
 # General and Appearance settings
 
+## Additional mobile API screens
+
+The numbered routes now use dedicated API screens instead of the design snapshot
+renderer for settings 81, 84–107, 109–111, 118–122 and the category hubs 141–146.
+Workspace removal follows the backend's archive operation; no DELETE endpoint is
+invented. Migration loads the source inventory, requests a preview, and only
+posts `/settings/workspace/data/migrate` after the user confirms that preview.
+User CSV imports use multipart uploads; device sign-in creates a one-time HTTPS
+session handoff through `/auth/session-handoff`.
+
+`api.ts` owns HTTP transport. `RemoteSettingsScreen` cancels superseded reads and
+never exposes data from the previous request while a new path loads.
+`ServerForm` preserves a failed draft, prevents duplicate saves, rejects invalid
+numbers, and cancels response handling when its owner unmounts. The mobile route
+tree remounts on server, account, workspace or entity changes. Credentials remain
+in form state and are submitted only when entered. Provider/model edits use the
+scoped `/settings/apply/registry` endpoint, preserving unrelated catalog entries
+and drafts. General/Appearance keep their existing draft/apply protocol below.
+
+Personalization 66–77 and 117 uses the actual partners, groups, personas, skills,
+hub, per-user MCP and subagent endpoints. Existing memory/import integrations
+78–80 and 123 remain in use. The Account screen reads the current auth profile;
+113/114/116 are navigation/recovery states and do not manufacture successful API
+operations.
+
+Contracts were checked against the local `deeptutor-source` router and settings
+service implementations. `tests/browser/verify-admin-integration.cjs` runs the
+mobile UI against `tests/fixtures/mobile-admin.sim.yaml` with a 390×844 viewport.
+It exercises failed saves/retry, workspace and playbook writes, provider/model
+registration, partner settings, MCP payloads, migration preview/confirmation,
+tools, user creation, handoff, session actions and direct routes.
+
+Run the simulation with `postman simulation run tests/fixtures/mobile-admin.sim.yaml
+--port 4517`, Expo web on port 8101, then the browser test with `PLAYWRIGHT_MODULE`
+pointing to Playwright. These are simulated HTTP/browser checks. Real deployment
+authorization, external providers, file migrations and native CSV/file picking
+still require live/device verification.
+
 The client contract comes from DeepTutor's `api/routers/settings.py`,
 `web/features/settings/store/SettingsStore.tsx`, and `web/lib/settings-extensions.ts`.
 

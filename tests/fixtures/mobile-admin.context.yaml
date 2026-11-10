@@ -1,0 +1,17 @@
+purpose:
+  stands_in_for: DeepTutor backend routes used by mobile settings and personalization.
+  unblocks: Browser verification without changing a live account or deployment.
+assumptions:
+  - id: contract-source
+    status: supported
+    claim: Paths and representative request/response shapes follow deeptutor-source/deeptutor/api/routers and services/settings/registry_edit.py, inspected on 2026-11-09.
+    reason: Local backend sources available; Postman CLI signed out, so published owner mock lookup was skipped.
+  - id: limits
+    status: unverified
+    claim: Native file picking, live external providers, migrations of real files and server authorization policy require live/device verification.
+    reason: Simulation validates mobile HTTP behavior, not the backend implementation.
+  - id: mobile-browser-flows
+    status: supported
+    claim: The mobile UI sends the modeled API requests, preserves a failed settings draft for retry, and requires a reviewed migration before execution.
+    reason: A 390x844 Chromium run exercised attachments settings, workspace writes, skill create/edit, MCP, provider/model registration, partner settings, migrations, tools, user creation, handoff and session actions; direct settings/Tutor routes rendered without browser errors.
+    verification: tests/browser/verify-admin-integration.cjs against mobile-admin.sim.yaml on 2026-11-09.

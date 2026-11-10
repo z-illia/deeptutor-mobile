@@ -1,0 +1,9 @@
+version: 1
+name: mobile-admin
+slug: mobile-admin
+protocol: http
+interceptRequests: true
+scenarios:
+  - name: default
+    path: ./default.cjs
+    default: true
