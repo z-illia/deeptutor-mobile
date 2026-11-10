@@ -85,3 +85,9 @@ docs/mobile-ui
 
 # Rich content architecture and sanitized rendering comparisons.
 !/docs/rich-content/
+
+# Local assistant and editor configuration
+/.claude/
+/.opencode/
+/.serena/
+/.vscode/
