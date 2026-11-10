@@ -42,6 +42,23 @@ export function PartnerScreen({ number }: { number: number }) {
   </MobilePage>;
 }
 export function PartnerGroupsScreen() {
+  const { groupId } = useLocalSearchParams<{ groupId?: string }>();
+  return groupId ? <PartnerGroupDetails key={groupId} groupId={groupId} /> : <PartnerGroupsList />;
+}
+
+function PartnerGroupDetails({ groupId }: { groupId: string }) {
+  const remote = useRemoteData(`/partner-groups/${encodeURIComponent(groupId)}`);
+  const t = useCopy();
+  const group = isRecord(remote.data) ? remote.data : null;
+  return <MobilePage title={group && typeof group.name === 'string' ? group.name : t('Partner group')}>
+    {remote.loading && <LoadingState />}
+    {!!remote.error && <InlineAlert tone="danger">{t(remote.error)}</InlineAlert>}
+    {!remote.loading && !remote.error && group && <DataDetails value={group} />}
+    <MobileAction variant="secondary" onPress={remote.refresh}>{t('Reload')}</MobileAction>
+  </MobilePage>;
+}
+
+function PartnerGroupsList() {
   const remote = useRemoteData('/partner-groups'); const partners = useRemoteData('/partners'); const t = useCopy();
   const members = Array.isArray(partners.data) ? partners.data.filter(isRecord) : [];
   return <MobilePage title={t('Partner group')}>
