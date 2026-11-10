@@ -1,3 +1,4 @@
+import { useCopy } from '@/features/entry/copy';
 import {
   Tabs,
   TabList,
@@ -17,16 +18,17 @@ import { ThemedText } from './themed-text';
 import { ThemedView } from './themed-view';
 
 export default function AppTabs() {
+  const t = useCopy();
   return (
     <Tabs>
       <TabSlot style={{ height: '100%' }} />
       <TabList asChild>
         <CustomTabList>
           <TabTrigger name="home" href="/" asChild>
-            <TabButton>Home</TabButton>
+            <TabButton>{t('Home')}</TabButton>
           </TabTrigger>
           <TabTrigger name="explore" href="/explore" asChild>
-            <TabButton>Explore</TabButton>
+            <TabButton>{t('Explore')}</TabButton>
           </TabTrigger>
         </CustomTabList>
       </TabList>
@@ -53,6 +55,7 @@ export function TabButton({ children, isFocused, ref, ...props }: TabButtonProps
 }
 
 export function CustomTabList(props: TabListProps) {
+  const t = useCopy();
   const scheme = useColorScheme();
   const colors = Colors[scheme === 'dark' ? 'dark' : 'light'];
 
@@ -67,7 +70,7 @@ export function CustomTabList(props: TabListProps) {
 
         <ExternalLink href="https://docs.expo.dev" asChild>
           <Pressable style={styles.externalPressable}>
-            <ThemedText type="link">Docs</ThemedText>
+            <ThemedText type="link">{t('Docs')}</ThemedText>
             <SymbolView
               tintColor={colors.text}
               name={{ ios: 'arrow.up.right.square', web: 'link' }}

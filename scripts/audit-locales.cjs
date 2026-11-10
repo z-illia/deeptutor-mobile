@@ -9,6 +9,12 @@ const unchanged = new Set([...contract.invariants, ...contract.authored]);
 const entries = [];
 const dynamicLookups = [];
 const sourceKeys = new Set();
+// Product names, the text-size glyph and a required CSV header are not prose.
+const literalExceptions = new Map([
+  ['Expo Starter', 'Starter product name'],
+  ['Aa', 'Text-size control glyph'],
+  [': username,password,preset', 'Required CSV schema'],
+]);
 function files(dir) {
   return fs.readdirSync(path.join(root, dir), { withFileTypes: true }).flatMap(item => {
     const file = path.join(dir, item.name);
@@ -26,14 +32,15 @@ for (const file of files('src')) {
   function visit(node) {
     if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) sourceKeys.add(node.text);
     if (ts.isCallExpression(node) && node.expression.getText(sf) === 't' && node.arguments[0]) {
-      const arg = node.arguments[0];
-      if (ts.isStringLiteral(arg) || ts.isNoSubstitutionTemplateLiteral(arg)) add(arg, arg.text, 'localized');
-      else if (ts.isConditionalExpression(arg)) {
-        for (const branch of [arg.whenTrue, arg.whenFalse]) if (ts.isStringLiteral(branch)) add(branch, branch.text, 'localized');
-      } else dynamicLookups.push({ file, line: sf.getLineAndCharacterOfPosition(arg.getStart(sf)).line + 1, expression: arg.getText(sf) });
+      function argument(arg) {
+        if (ts.isStringLiteral(arg) || ts.isNoSubstitutionTemplateLiteral(arg)) add(arg, arg.text, 'localized');
+        else if (ts.isConditionalExpression(arg)) { argument(arg.whenTrue); argument(arg.whenFalse); }
+        else dynamicLookups.push({ file, line: sf.getLineAndCharacterOfPosition(arg.getStart(sf)).line + 1, expression: arg.getText(sf) });
+      }
+      argument(node.arguments[0]);
     }
     if (ts.isJsxText(node) && node.text.trim() && !/^(DeepTutor|DEEPTUTOR)$/.test(node.text.trim())) add(node, node.text.replace(/\s+/g, ' ').trim(), 'unwrapped');
-    if (ts.isJsxAttribute(node) && ['accessibilityLabel', 'accessibilityHint', 'placeholder', 'title', 'label', 'description', 'message'].includes(node.name.getText(sf)) && node.initializer && ts.isStringLiteral(node.initializer)) add(node.initializer, node.initializer.text, 'literal-prop');
+    if (ts.isJsxAttribute(node) && ['accessibilityLabel', 'accessibilityHint', 'placeholder', 'title', 'label', 'description', 'message', 'hint'].includes(node.name.getText(sf)) && node.initializer && ts.isStringLiteral(node.initializer)) add(node.initializer, node.initializer.text, 'literal-prop');
     ts.forEachChild(node, visit);
   }
   visit(sf);
@@ -61,7 +68,8 @@ const report = {
   mobileScreens: screens.length,
   routes: files('src/app').filter(file => file.endsWith('.tsx')),
   dynamicLookups,
-  unwrapped: entries.filter(entry => entry.kind === 'unwrapped'),
+  unwrapped: entries.filter(entry => entry.kind === 'unwrapped' && !unchanged.has(entry.key) && !literalExceptions.has(entry.key)),
+  intentionalLiterals: entries.filter(entry => entry.kind === 'unwrapped' && (unchanged.has(entry.key) || literalExceptions.has(entry.key))),
   literalProps: entries.filter(entry => entry.kind === 'literal-prop'),
   locales: Object.fromEntries(languages.filter(language => language !== 'en').map(language => {
     const missing = entries.filter(entry => entry.key.trim() && !unchanged.has(entry.key) && !merged[language][entry.key]);
@@ -72,7 +80,14 @@ const report = {
     }];
   })),
 };
+// A nonempty English placeholder in every locale is still an untranslated UI label.
+report.englishPlaceholders = entries.filter(entry => entry.kind === 'localized' && !unchanged.has(entry.key) &&
+  languages.every(language => merged[language][entry.key] === (merged.en[entry.key] ?? entry.key)));
 fs.writeFileSync(path.join(root, 'docs/localization-audit.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(`Audited ${report.routes.length} route files and ${screens.length} mobile screens.`);
-console.log(`Unwrapped JSX text: ${report.unwrapped.length} (includes development/sample labels).`);
+console.log(`Unwrapped UI text: ${report.unwrapped.length}; intentional technical/product literals: ${report.intentionalLiterals.length}.`);
+console.log(`English placeholders across all locales: ${report.englishPlaceholders.length}.`);
 for (const [language, locale] of Object.entries(report.locales)) console.log(`${language}: ${locale.missingLocalizedCalls.length} localized call sites without a translated value; ${locale.mobileScreens.filter(screen => screen.missing.length).length} mobile screens contain untranslated snapshot text.`);
+if (process.argv.includes('--check') && (report.unwrapped.length || report.englishPlaceholders.length ||
+  Object.values(report.locales).some(locale => locale.missingLocalizedCalls.length || locale.mobileScreens.some(screen => screen.missing.length)))) process.exitCode = 1;
+module.exports = report;

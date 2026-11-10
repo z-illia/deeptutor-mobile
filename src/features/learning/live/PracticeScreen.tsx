@@ -1,3 +1,4 @@
+import { useCopy } from '@/features/entry/copy';
 import { useCallback, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { Button, Field } from '@/shared/ui/Controls';
@@ -10,6 +11,7 @@ import { get, mutate, type PracticeQuestion } from './repository';
 import { useLearningData } from './useLearningData';
 const root = '/question-notebook/practice';
 export function PracticeScreen({ workspace }: { workspace: string }) {
+  const t = useCopy();
   const [answer, setAnswer] = useState('');
   const [result, setResult] = useState<string>();
   const [failure, setFailure] = useState('');
@@ -31,14 +33,14 @@ export function PracticeScreen({ workspace }: { workspace: string }) {
       else { await mutate('post', `${path}/review`, question.content_workspace_id ?? workspace, { request_id: commandId(), version: question.state.version, rating, answer }); setAnswer(''); setResult(undefined); state.refresh(); }
     } catch (cause) { setFailure(chatError(cause)); } finally { lock.current = false; setBusy(false); }
   };
-  return <LearningLayout title="Practice" loading={state.loading} error={state.error} refresh={state.refresh}>
-    {state.data && <DText muted>{state.data.summary.total} questions · {state.data.summary.due} due · {state.data.summary.reviewed_today} reviewed today</DText>}
-    {!!failure && <InlineAlert tone="danger">{failure}</InlineAlert>}
+  return <LearningLayout title={t("Practice")} loading={state.loading} error={state.error} refresh={state.refresh}>
+    {state.data && <DText muted>{t('{total} questions · {due} due · {reviewed} reviewed today', { total: state.data.summary.total, due: state.data.summary.due, reviewed: state.data.summary.reviewed_today })}</DText>}
+    {!!failure && <InlineAlert tone="danger">{t(failure)}</InlineAlert>}
     {question ? <View style={{ gap: 24 }} key={question.entry.id}><Heading>{question.entry.question}</Heading>
       {Object.entries(question.entry.options ?? {}).map(([key, value]) => <Button key={key} variant="secondary" accessibilityState={{ selected: answer === key }} onPress={() => { setAnswer(key); setResult(undefined); }}>{`${key}. ${value}`}</Button>)}
-      <Field label="Your answer" multiline value={answer} onChangeText={value => { setAnswer(value); setResult(undefined); }} />
-      <Button loading={busy} disabled={!answer.trim() || state.loading} onPress={() => void run()}>Check answer</Button>
-      {!!result && <><InlineAlert>{result}</InlineAlert><DText muted>How well did you recall it?</DText>{['again', 'hard', 'good', 'easy'].map(rating => <Button key={rating} variant="secondary" disabled={busy || state.loading} onPress={() => void run(rating)}>{rating}</Button>)}</>}
-    </View> : !state.loading && !state.error ? <><Heading>Nothing due right now.</Heading><DText muted>Add questions to your question bank in DeepTutor web. Practice progress here uses the server’s review schedule.</DText></> : null}
+      <Field label={t("Your answer")} multiline value={answer} onChangeText={value => { setAnswer(value); setResult(undefined); }} />
+      <Button loading={busy} disabled={!answer.trim() || state.loading} onPress={() => void run()}>{t("Check answer")}</Button>
+      {!!result && <><InlineAlert>{t(result)}</InlineAlert><DText muted>{t("How well did you recall it?")}</DText>{['again', 'hard', 'good', 'easy'].map(rating => <Button key={rating} variant="secondary" disabled={busy || state.loading} onPress={() => void run(rating)}>{t(({ again: 'Again', hard: 'Hard', good: 'Good', easy: 'Easy' } as Record<string, string>)[rating])}</Button>)}</>}
+    </View> : !state.loading && !state.error ? <><Heading>{t("Nothing due right now.")}</Heading><DText muted>{t("Add questions to your question bank in DeepTutor web. Practice progress here uses the server’s review schedule.")}</DText></> : null}
   </LearningLayout>;
 }

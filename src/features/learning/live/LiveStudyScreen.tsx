@@ -1,3 +1,4 @@
+import { useCopy } from '@/features/entry/copy';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { ChatMarkdown } from '@/features/chat/ChatMarkdown';
 import { ModelSelectionDialog } from '@/features/chat/ModelSelectionDialog';
@@ -26,6 +27,7 @@ import { activeResourceCount } from './study-resources';
 import { useLearningData } from './useLearningData';
 
 export function LiveStudyScreen({ workspace, pathId, sessionId, mode, prompt, reading, onLeave }: { workspace: string; pathId: string; sessionId: string | null; mode?: string; prompt?: string; reading?: LearningChatContext; onLeave?: () => void }) {
+  const t = useCopy();
   const { colors, language: interfaceLanguage, preferences } = useDesign();
   const language = preferences?.responseLanguage ?? interfaceLanguage;
   const auth = useAuth();
@@ -95,48 +97,48 @@ export function LiveStudyScreen({ workspace, pathId, sessionId, mode, prompt, re
     else if (onLeave) onLeave();
     else router.replace(learningHref('topic', workspace, pathId));
   };
-  const starters = !reading ? <View style={{ gap: 8 }}><StudyActionRow selected={selectedStrategy?.objectiveId === topic.data?.next.knowledge_point_id ? selectedStrategy?.id : undefined} disabled={locked || !objectiveReady} onSelect={strategy => void startStrategy(strategy)} />{!objectiveReady && !topic.loading && <DText muted style={{ fontSize: 12 }}>Learning actions become available when your route has a current objective.</DText>}</View> : null;
+  const starters = !reading ? <View style={{ gap: 8 }}><StudyActionRow selected={selectedStrategy?.objectiveId === topic.data?.next.knowledge_point_id ? selectedStrategy?.id : undefined} disabled={locked || !objectiveReady} onSelect={strategy => void startStrategy(strategy)} />{!objectiveReady && !topic.loading && <DText muted style={{ fontSize: 12 }}>{t("Learning actions become available when your route has a current objective.")}</DText>}</View> : null;
   const sourceCount = activeResourceCount(chat.configuration, topic.data?.sources ?? [], chat.pendingAttachments);
   return <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <MobileHeader title="Study session" onBack={() => chat.busy ? setConfirmLeave('leave') : onLeave ? leave('leave') : router.canGoBack() ? router.back() : leave('leave')} />
+      <MobileHeader title={t("Study session")} onBack={() => chat.busy ? setConfirmLeave('leave') : onLeave ? leave('leave') : router.canGoBack() ? router.back() : leave('leave')} />
       {(chat.loading || topic.loading) && <LoadingState />}
-      {!!(chat.error || topic.error || failure) && <View style={{ padding: 20, gap: 8 }}><InlineAlert tone="danger">{chat.error || topic.error || failure}</InlineAlert><Button variant="secondary" onPress={() => { chat.reload(); topic.refresh(); setFailure(''); }}>Reload session</Button></View>}
+      {!!(chat.error || topic.error || failure) && <View style={{ padding: 20, gap: 8 }}><InlineAlert tone="danger">{t(chat.error || topic.error || failure)}</InlineAlert><Button variant="secondary" onPress={() => { chat.reload(); topic.refresh(); setFailure(''); }}>{t("Reload session")}</Button></View>}
       <FlatList ref={list} data={chat.messages} keyExtractor={item => String(item.id)} keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 20, gap: 24, flexGrow: 1 }}
         onScroll={({ nativeEvent: e }) => { follow.current = e.contentSize.height - e.contentOffset.y - e.layoutMeasurement.height < 100; }} scrollEventThrottle={100}
         onContentSizeChange={() => { if (follow.current) list.current?.scrollToEnd({ animated: false }); }}
-        ListHeaderComponent={<View style={{ gap: 16, marginBottom: 24 }}><DText muted>{topic.data?.name ?? 'Read & understand'}</DText>{!!topic.data?.next.knowledge_point_name && <><DText style={{ fontSize: 23, lineHeight: 39, fontWeight: '600' }}>{topic.data.next.knowledge_point_name}</DText><View style={{ backgroundColor: colors.secondary, padding: 16, borderRadius: 12, gap: 6 }}><DText style={{ color: colors.primary, fontSize: 16, fontWeight: '600' }}>Your next knowledge point</DText><DText muted>{topic.data.next.reason || 'Path progress changes only after assessment.'}</DText></View></>}{!chat.messages.length && <DText muted>{topic.data?.next.reason || 'Ask your tutor to begin. Your conversation will be saved.'}</DText>}</View>}
+        ListHeaderComponent={<View style={{ gap: 16, marginBottom: 24 }}><DText muted>{topic.data?.name ?? t('Read & understand')}</DText>{!!topic.data?.next.knowledge_point_name && <><DText style={{ fontSize: 23, lineHeight: 39, fontWeight: '600' }}>{topic.data.next.knowledge_point_name}</DText><View style={{ backgroundColor: colors.secondary, padding: 16, borderRadius: 12, gap: 6 }}><DText style={{ color: colors.primary, fontSize: 16, fontWeight: '600' }}>{t("Your next knowledge point")}</DText><DText muted>{topic.data.next.reason || t('Path progress changes only after assessment.')}</DText></View></>}{!chat.messages.length && <DText muted>{topic.data?.next.reason || t('Ask your tutor to begin. Your conversation will be saved.')}</DText>}</View>}
         ListFooterComponent={!lastAssistantId && starters ? starters : undefined}
         renderItem={({ item }) => {
           const activeAssistant = item.role === 'assistant' && item.id === lastAssistantId;
           const parts = activeAssistant ? splitCurrentQuestion(item.content, topic.data?.next.pending_prompt) : { explanation: item.content, question: '' };
           return <View style={{ gap: 16, padding: item.role === 'user' ? 16 : 0, borderRadius: 12, backgroundColor: item.role === 'user' ? colors.secondary : 'transparent' }}>
-            <DText muted role="small">{item.role === 'user' ? 'You' : 'DeepTutor'}</DText>
+            <DText muted role="small">{item.role === 'user' ? t('You') : 'DeepTutor'}</DText>
             {!!parts.explanation && <ChatMarkdown learning content={parts.explanation} />}
-            {!item.content && chat.busy && <DText muted>Thinking…</DText>}
+            {!item.content && chat.busy && <DText muted>{t("Thinking…")}</DText>}
             {activeAssistant && starters}
             {!!parts.question && <ChatMarkdown learning content={parts.question} />}
             {[...collectMasteryQuestions(item.events).values()].map(question => <MasteryQuestionCard key={question.questionId} question={question} grade={grades.get(question.questionId)} skipped={skipped.has(question.questionId)} disabled={locked || question.questionId !== latestQuestion} onAnswer={(text, answers) => { follow.current = true; void chat.send(language, { content: text, mastery_answer: { question_id: question.questionId, text, ...(answers ? { answers } : {}) } }); }} />)}
           </View>;
         }} />
       <TutorComposer workspace={workspace} compact resourceCount={sourceCount} onResources={() => setResources(true)} moreActionsOpen={more} onMoreActions={setup => { openSetup.current = setup; setMore(true); }}
-        value={chat.draft} onChangeText={chat.setDraft} modelName={chat.model?.model_name ?? 'Server default model'} onChooseModel={() => setModels(true)} configuration={chat.configuration} onConfigure={chat.setConfiguration}
+        value={chat.draft} onChangeText={chat.setDraft} modelName={chat.model?.model_name ?? t('Server default model')} onChooseModel={() => setModels(true)} configuration={chat.configuration} onConfigure={chat.setConfiguration}
         loading={chat.loading || topic.loading || actionBusy} busy={chat.busy} waiting={chat.waiting} error={!!chat.error || !!topic.error} onSend={() => { follow.current = true; void chat.send(language); }} onStop={() => void chat.stop()}
-        learningActions={!reading ? ['outline', 'study', 'review'].map(next => ({ label: `Mode: ${next}${next !== 'outline' && !topic.data?.map.modules.length ? ' · outline required' : ''}${(sessionMode ?? chat.configuration.mastery_session_mode) === next ? ' · selected' : ''}`, onPress: () => void changeMode(next), disabled: next !== 'outline' && !topic.data?.map.modules.length })) : []} />
+        learningActions={!reading ? ['outline', 'study', 'review'].map(next => ({ label: `${t('Mode: {mode}', { mode: t(({ outline: 'Outline', study: 'Study', review: 'Review' } as Record<string, string>)[next]) })}${next !== 'outline' && !topic.data?.map.modules.length ? ` · ${t('Outline required')}` : ''}${(sessionMode ?? chat.configuration.mastery_session_mode) === next ? ` · ${t('Selected')}` : ''}`, onPress: () => void changeMode(next), disabled: next !== 'outline' && !topic.data?.map.modules.length })) : []} />
     </KeyboardAvoidingView>
     <StudyResourcesSheet open={resources} onClose={() => setResources(false)} workspace={workspace} sessionId={chat.serverSessionId} configuration={chat.configuration} onConfigure={chat.setConfiguration} files={chat.pendingAttachments} onFiles={chat.setPendingAttachments} pathSources={topic.data?.sources ?? []} savedFiles={chat.messages.flatMap(message => message.attachments ?? [])} disabled={chat.busy || chat.loading} />
-    <BottomSheet open={more} title="More actions" onClose={() => setMore(false)}><ScrollView contentContainerStyle={{ gap: 8 }}>
-      <Button variant="ghost" style={{ justifyContent: 'flex-start', minHeight: 44, paddingHorizontal: 8 }} icon={<Lightbulb size={18} color={colors.primary} />} disabled={locked || !objectiveReady} onPress={() => void startStrategy('hint')}><DText style={{ color: colors.foreground, fontSize: 14 }}>Hint</DText></Button>
-      <Button variant="ghost" style={{ justifyContent: 'flex-start', minHeight: 44, paddingHorizontal: 8 }} icon={<Clock3 size={18} color={colors.primary} />} disabled={locked || !objectiveReady} onPress={() => void startStrategy('defer')}><DText style={{ color: colors.foreground, fontSize: 14 }}>Defer objective</DText></Button>
-      <Button variant="ghost" style={{ justifyContent: 'flex-start', minHeight: 44, paddingHorizontal: 8 }} icon={<ArrowLeftRight size={18} color={colors.primary} />} onPress={() => { setMore(false); setConfirmLeave('switch'); }}><DText style={{ color: colors.foreground, fontSize: 14 }}>Switch learning path</DText></Button>
-      <Button variant="ghost" style={{ justifyContent: 'flex-start', minHeight: 44, paddingHorizontal: 8 }} icon={<LogOut size={18} color={colors.primary} />} onPress={() => { setMore(false); setConfirmLeave('leave'); }}><DText style={{ color: colors.foreground, fontSize: 14 }}>Leave session</DText></Button>
-      {!objectiveReady && <DText muted>A current objective is required for Hint and Defer objective.</DText>}
-      <Button variant="ghost" onPress={() => { setMore(false); openSetup.current(); }}>Session setup</Button>
+    <BottomSheet open={more} title={t("More actions")} onClose={() => setMore(false)}><ScrollView contentContainerStyle={{ gap: 8 }}>
+      <Button variant="ghost" style={{ justifyContent: 'flex-start', minHeight: 44, paddingHorizontal: 8 }} icon={<Lightbulb size={18} color={colors.primary} />} disabled={locked || !objectiveReady} onPress={() => void startStrategy('hint')}><DText style={{ color: colors.foreground, fontSize: 14 }}>{t("Hint")}</DText></Button>
+      <Button variant="ghost" style={{ justifyContent: 'flex-start', minHeight: 44, paddingHorizontal: 8 }} icon={<Clock3 size={18} color={colors.primary} />} disabled={locked || !objectiveReady} onPress={() => void startStrategy('defer')}><DText style={{ color: colors.foreground, fontSize: 14 }}>{t("Defer objective")}</DText></Button>
+      <Button variant="ghost" style={{ justifyContent: 'flex-start', minHeight: 44, paddingHorizontal: 8 }} icon={<ArrowLeftRight size={18} color={colors.primary} />} onPress={() => { setMore(false); setConfirmLeave('switch'); }}><DText style={{ color: colors.foreground, fontSize: 14 }}>{t("Switch learning path")}</DText></Button>
+      <Button variant="ghost" style={{ justifyContent: 'flex-start', minHeight: 44, paddingHorizontal: 8 }} icon={<LogOut size={18} color={colors.primary} />} onPress={() => { setMore(false); setConfirmLeave('leave'); }}><DText style={{ color: colors.foreground, fontSize: 14 }}>{t("Leave session")}</DText></Button>
+      {!objectiveReady && <DText muted>{t("A current objective is required for Hint and Defer objective.")}</DText>}
+      <Button variant="ghost" onPress={() => { setMore(false); openSetup.current(); }}>{t("Session setup")}</Button>
     </ScrollView></BottomSheet>
-    <BottomSheet open={confirmLeave !== null} title={confirmLeave === 'switch' ? 'Switch learning path?' : 'Leave session?'} onClose={() => setConfirmLeave(null)}>
-      <DText>Your session is saved on the server. Unsent answers and selections are kept in memory until the app closes. A running response continues on the server.</DText>
-      <Button variant="secondary" onPress={() => setConfirmLeave(null)}>Stay here</Button>
-      <Button onPress={() => leave(confirmLeave ?? 'leave')}>{confirmLeave === 'switch' ? 'Switch learning path' : 'Leave session'}</Button>
+    <BottomSheet open={confirmLeave !== null} title={t(confirmLeave === 'switch' ? 'Switch learning path?' : 'Leave session?')} onClose={() => setConfirmLeave(null)}>
+      <DText>{t("Your session is saved on the server. Unsent answers and selections are kept in memory until the app closes. A running response continues on the server.")}</DText>
+      <Button variant="secondary" onPress={() => setConfirmLeave(null)}>{t("Stay here")}</Button>
+      <Button onPress={() => leave(confirmLeave ?? 'leave')}>{t(confirmLeave === 'switch' ? 'Switch learning path' : 'Leave session')}</Button>
     </BottomSheet>
     <ModelSelectionDialog fullScreen open={models} onClose={() => setModels(false)} selectedKey={chat.model ? JSON.stringify([chat.model.profile_id, chat.model.model_id]) : undefined} options={chat.models.map(model => ({ key: JSON.stringify([model.profile_id, model.model_id]), label: model.model_name, description: model.profile_name }))} onSelect={key => { const model = chat.models.find(item => JSON.stringify([item.profile_id, item.model_id]) === key); if (model) chat.setModel(model); }} />
   </SafeAreaView>;

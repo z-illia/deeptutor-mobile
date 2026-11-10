@@ -1,3 +1,4 @@
+import { useCopy } from '@/features/entry/copy';
 import { useCallback, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
@@ -39,6 +40,7 @@ export function LiveLearningScreen({ view: fixedView }: { view?: string }) {
   return <LearningContent key={`${auth.serverUrl}:${auth.session?.profile?.id}:${workspace}:${view}:${pathId}:${params.moduleId}`} view={view} workspace={workspace} pathId={pathId} moduleId={params.moduleId} />;
 }
 function LearningContent({ view, workspace, pathId, moduleId }: { view: string; workspace: string; pathId: string; moduleId?: string }) {
+  const t = useCopy();
   const [confirmation, setConfirmation] = useState<'reset' | 'delete' | null>(null);
   const [confirmText, setConfirmText] = useState('');
   const [importUrl, setImportUrl] = useState('');
@@ -76,109 +78,109 @@ function LearningContent({ view, workspace, pathId, moduleId }: { view: string; 
   const study = (prompt?: string, mode?: string, sessionId?: string) => nav('study', { ...(prompt ? { prompt } : {}), ...(!sessionId || mode ? { mode: mode ?? (topic?.map.modules.length ? 'study' : 'outline') } : {}), ...(sessionId ? { sessionId } : {}), new: commandId() });
   const titles: Record<string, string> = { overview: 'Learn', progress: 'Learning progress', paths: 'Mastery paths', new: 'New activity', create: 'Learning goal', topic: topic?.name ?? 'Mastery path', module: topic?.map.modules.find(m => m.id === moduleId)?.name ?? 'Module', review: 'Review plan', strategies: 'Review strategies', profile: 'Learning profile', goal: 'Learning goal', sessions: 'Path sessions', books: 'Books', reading: 'Immersive reading' };
   const row = (title: string, description: string, onPress: () => void) => <ListRow key={title} title={title} description={description} onPress={onPress} style={{ borderWidth: 0, padding: 16 }} />;
-  return <LearningLayout title={titles[view] ?? 'Learning'} root={view === 'overview'} loading={state.loading} error={state.error} refresh={state.refresh} onWorkspace={() => setWorkspaceOpen(true)}>
-    {!!failure && <InlineAlert tone="danger">{failure}</InlineAlert>}
-    {!!notice && <InlineAlert>{notice}</InlineAlert>}
+  return <LearningLayout title={view === 'topic' && topic ? topic.name : view === 'module' && topic ? topic.map.modules.find(module => module.id === moduleId)?.name ?? t('Module') : t(titles[view] ?? 'Learning')} root={view === 'overview'} loading={state.loading} error={state.error} refresh={state.refresh} onWorkspace={() => setWorkspaceOpen(true)}>
+    {!!failure && <InlineAlert tone="danger">{t(failure)}</InlineAlert>}
+    {!!notice && <InlineAlert>{t(notice)}</InlineAlert>}
     {view === 'overview' && <>
-      <DText muted>{workspaceState.workspaces.find(item => item.workspace_id === workspace)?.display_name ?? (workspace || 'General workspace')}</DText>
-      <Heading>Build understanding,{'\n'}one step at a time.</Heading>
+      <DText muted>{workspaceState.workspaces.find(item => item.workspace_id === workspace)?.display_name ?? (workspace || t('General workspace'))}</DText>
+      <Heading>{t('Build understanding,\none step at a time.')}</Heading>
       <LearningOverview topics={state.data?.topics ?? []} workspace={workspace} loading={state.loading} error={state.error} />
     </>}
     {view === 'progress' && <>
-      <DText muted>Your reading and learning activity</DText>
-      {state.data?.topics.map(item => row(item.name, `${item.map.counts.mastered} / ${item.map.counts.total} knowledge points mastered`, () => router.push(learningHref('topic', workspace, item.path_id))))}
-      {!state.loading && !state.error && !state.data?.topics.length && <Heading>No learning activity yet</Heading>}
-      <DText muted>Mastery values come from assessed learning progress. Conversation counts do not imply completion.</DText>
-      <Button onPress={() => nav('overview')}>Explore learning</Button>
+      <DText muted>{t("Your reading and learning activity")}</DText>
+      {state.data?.topics.map(item => row(item.name, t('{mastered} / {total} knowledge points mastered', { mastered: item.map.counts.mastered, total: item.map.counts.total }), () => router.push(learningHref('topic', workspace, item.path_id))))}
+      {!state.loading && !state.error && !state.data?.topics.length && <Heading>{t("No learning activity yet")}</Heading>}
+      <DText muted>{t("Mastery values come from assessed learning progress. Conversation counts do not imply completion.")}</DText>
+      <Button onPress={() => nav('overview')}>{t("Explore learning")}</Button>
     </>}
     {(view === 'new' || view === 'paths') && <>
-      {view === 'new' && <DText muted>Choose a method. Materials and progress stay in this workspace.</DText>}
-      {view === 'paths' && state.data?.topics.map(item => row(item.name, `${item.map.counts.mastered} / ${item.map.counts.total} mastered`, () => router.push(learningHref('topic', workspace, item.path_id))))}
-      {row('Mastery path', 'Build a route toward a learning goal', () => nav('create'))}
-      {view === 'new' && <>{row('Book', 'Browse existing AI-authored books', () => nav('books'))}{row('Practice', 'Use your question bank', () => nav('practice'))}{row('Immersive reading', 'Read with a tutor', () => nav('reading'))}</>}
+      {view === 'new' && <DText muted>{t("Choose a method. Materials and progress stay in this workspace.")}</DText>}
+      {view === 'paths' && state.data?.topics.map(item => row(item.name, t('{mastered} / {total} mastered', { mastered: item.map.counts.mastered, total: item.map.counts.total }), () => router.push(learningHref('topic', workspace, item.path_id))))}
+      {row(t('Mastery path'), t('Build a route toward a learning goal'), () => nav('create'))}
+      {view === 'new' && <>{row(t('Book'), t('Browse existing AI-authored books'), () => nav('books'))}{row(t('Practice'), t('Use your question bank'), () => nav('practice'))}{row(t('Immersive reading'), t('Read with a tutor'), () => nav('reading'))}</>}
     </>}
     {view === 'create' && <>
-      <Heading>What do you want to learn?</Heading>
-      <Field label="Name (optional)" maxLength={120} value={name} onChangeText={setName} />
-      <Field label="Learning goal" multiline value={goal} onChangeText={setGoal} maxLength={2000} style={{ minHeight: 140 }} />
-      <DText muted>Your tutor will help design the outline in your first session. You can add knowledge bases in the study composer.</DText>
+      <Heading>{t("What do you want to learn?")}</Heading>
+      <Field label={t("Name (optional)")} maxLength={120} value={name} onChangeText={setName} />
+      <Field label={t("Learning goal")} multiline value={goal} onChangeText={setGoal} maxLength={2000} style={{ minHeight: 140 }} />
+      <DText muted>{t("Your tutor will help design the outline in your first session. You can add knowledge bases in the study composer.")}</DText>
       <Button loading={busy} disabled={!goal.trim()} onPress={() => void act(async () => {
         const created = await mutate<Topic>('post', '/mastery-paths/topics', workspace, { name: name.trim(), goal: goal.trim(), sources: [], modules: [] });
         router.replace(learningHref('topic', workspace, created.path_id));
-      })}>Create learning goal</Button>
+      })}>{t("Create learning goal")}</Button>
     </>}
     {topic && view === 'topic' && <>
-      <DText muted>Mastery path</DText><Heading>{topic.name}</Heading>
-      <DText>{topic.map.counts.mastered} / {topic.map.counts.total} knowledge points mastered</DText>
-      <View style={{ gap: 12 }}><DText role="label">Pick up where you left off</DText><DText muted>{topic.next.reason || topic.metadata.description || topic.metadata.goal}</DText><Button disabled={state.loading || !!state.error} onPress={() => study(undefined, undefined, continuationSessionId(topic.next, state.data?.sessions ?? []))}>Continue current session</Button></View>
-      <DText role="label">{topic.map.modules.length} modules</DText>
-      {!topic.map.modules.length && <DText muted>Your outline will be designed with the tutor.</DText>}
-      {topic.map.modules.map((module, index) => row(`${String(index + 1).padStart(2, '0')}  ${module.name}`, `${module.mastered} / ${module.total} knowledge points`, () => nav('module', { moduleId: module.id })))}
-      {row('Review plan', `${topic.reviews.filter(r => r.due).length} due · recall target and strategies`, () => nav('review'))}
-      {row('Learning profile', 'Experience, goal, time and teaching style', () => nav('profile'))}
-      {row('Sessions', 'Reopen a session or start a fresh angle', () => nav('sessions'))}
+      <DText muted>{t("Mastery path")}</DText><Heading>{topic.name}</Heading>
+      <DText>{t('{mastered} / {total} knowledge points mastered', { mastered: topic.map.counts.mastered, total: topic.map.counts.total })}</DText>
+      <View style={{ gap: 12 }}><DText role="label">{t("Pick up where you left off")}</DText><DText muted>{topic.next.reason || topic.metadata.description || topic.metadata.goal}</DText><Button disabled={state.loading || !!state.error} onPress={() => study(undefined, undefined, continuationSessionId(topic.next, state.data?.sessions ?? []))}>{t("Continue current session")}</Button></View>
+      <DText role="label">{t('{count} modules', { count: topic.map.modules.length })}</DText>
+      {!topic.map.modules.length && <DText muted>{t("Your outline will be designed with the tutor.")}</DText>}
+      {topic.map.modules.map((module, index) => row(`${String(index + 1).padStart(2, '0')}  ${module.name}`, t('{mastered} / {total} knowledge points', { mastered: module.mastered, total: module.total }), () => nav('module', { moduleId: module.id })))}
+      {row(t('Review plan'), t('{count} due · recall target and strategies', { count: topic.reviews.filter(r => r.due).length }), () => nav('review'))}
+      {row(t('Learning profile'), t('Experience, goal, time and teaching style'), () => nav('profile'))}
+      {row(t('Sessions'), t('Reopen a session or start a fresh angle'), () => nav('sessions'))}
     </>}
     {topic && view === 'module' && topic.map.modules.filter(m => m.id === moduleId).map(module => <View key={module.id} style={{ gap: 24 }}>
-      <DText muted>{module.mastered} of {module.total} knowledge points mastered</DText><Heading>{module.objective || module.name}</Heading>
-      {module.knowledge_points.map(point => row(point.name, point.status, () => study(`Let’s study ${point.name}.`, 'study')))}
-      <Button onPress={() => study(`Help me understand the module ${module.name}.`, 'study')}>Ask about this module</Button>
+      <DText muted>{t('{mastered} of {total} knowledge points mastered', { mastered: module.mastered, total: module.total })}</DText><Heading>{module.objective || module.name}</Heading>
+      {module.knowledge_points.map(point => row(point.name, t(point.status), () => study(`Let’s study ${point.name}.`, 'study')))}
+      <Button onPress={() => study(`Help me understand the module ${module.name}.`, 'study')}>{t("Ask about this module")}</Button>
     </View>)}
     {topic && (view === 'review' || view === 'strategies') && <>
-      <DText muted>{topic.name}</DText><Heading>{topic.reviews.some(r => r.due) ? 'Time to review' : 'Nothing due today'}</Heading>
+      <DText muted>{topic.name}</DText><Heading>{t(topic.reviews.some(r => r.due) ? 'Time to review' : 'Nothing due today')}</Heading>
       {topic.reviews.filter(r => r.due).map(review => row(review.knowledge_point_name, review.reason, () => study(`Review ${review.knowledge_point_name} with me.`, 'review')))}
-      <DText role="label">Recall target</DText>
+      <DText role="label">{t("Recall target")}</DText>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>{[0.8, 0.9, 0.95].map(value => <Button key={value} variant="secondary" accessibilityState={{ selected: value === (target ?? topic.review_settings?.desired_retention) }} onPress={() => setTarget(value)}>{`${value * 100}%`}</Button>)}</View>
-      <Button loading={busy} onPress={() => void act(async () => { await mutate('put', `${topicPath(pathId)}/review-settings`, workspace, { desired_retention: target ?? topic.review_settings?.desired_retention ?? 0.9 }); setNotice('Review plan saved.'); state.refresh(); })}>Save review plan</Button>
-      <DText role="label">Review strategies</DText>
-      {state.data?.strategies?.map(strategy => <Button key={strategy.template_id} variant="secondary" loading={busy} onPress={() => void act(async () => { await mutate('put', `${topicPath(pathId)}/review-strategy`, workspace, { template_id: strategy.template_id }); state.refresh(); setNotice('Review strategy saved.'); })}>{strategy.name}{topic.review_settings?.strategy?.template_id === strategy.template_id ? ' · Current strategy' : ''}</Button>)}
-      <Button variant="secondary" onPress={() => study('Help me design a review strategy for this path.')}>Discuss a review strategy</Button>
+      <Button loading={busy} onPress={() => void act(async () => { await mutate('put', `${topicPath(pathId)}/review-settings`, workspace, { desired_retention: target ?? topic.review_settings?.desired_retention ?? 0.9 }); setNotice('Review plan saved.'); state.refresh(); })}>{t("Save review plan")}</Button>
+      <DText role="label">{t("Review strategies")}</DText>
+      {state.data?.strategies?.map(strategy => <Button key={strategy.template_id} variant="secondary" loading={busy} onPress={() => void act(async () => { await mutate('put', `${topicPath(pathId)}/review-strategy`, workspace, { template_id: strategy.template_id }); state.refresh(); setNotice('Review strategy saved.'); })}>{strategy.name}{topic.review_settings?.strategy?.template_id === strategy.template_id ? ` · ${t('Current strategy')}` : ''}</Button>)}
+      <Button variant="secondary" onPress={() => study('Help me design a review strategy for this path.')}>{t("Discuss a review strategy")}</Button>
     </>}
     {topic && view === 'profile' && <>
       <DText muted>{topic.name}</DText>
-      {topic.learner_profile ? [['Already knows', topic.learner_profile.prior_knowledge], ['Wants to reach', topic.learner_profile.target_level], ['Time available', topic.learner_profile.time_budget], ['Teaching approach', topic.learner_profile.preferences]].map(([label, value]) => <View key={label} style={{ gap: 12 }}><DText role="label">{label}</DText><DText>{value || 'Not recorded yet'}</DText></View>) : <DText muted>Your tutor has not recorded a learning profile yet.</DText>}
-      <Button onPress={() => study('Help me update my learning profile.')}>Discuss my profile</Button>
-      {row('Full learning goal', 'View original goal and requirements', () => nav('goal'))}
+      {topic.learner_profile ? [['Already knows', topic.learner_profile.prior_knowledge], ['Wants to reach', topic.learner_profile.target_level], ['Time available', topic.learner_profile.time_budget], ['Teaching approach', topic.learner_profile.preferences]].map(([label, value]) => <View key={label} style={{ gap: 12 }}><DText role="label">{t(label)}</DText><DText>{value || t('Not recorded yet')}</DText></View>) : <DText muted>{t("Your tutor has not recorded a learning profile yet.")}</DText>}
+      <Button onPress={() => study('Help me update my learning profile.')}>{t("Discuss my profile")}</Button>
+      {row(t('Full learning goal'), t('View original goal and requirements'), () => nav('goal'))}
     </>}
-    {topic && view === 'goal' && <><DText muted>{topic.name}</DText><DText selectable>{topic.metadata.goal}</DText><Button onPress={() => study('I would like to discuss or revise my learning goal.', 'outline')}>Discuss or revise this goal</Button></>}
+    {topic && view === 'goal' && <><DText muted>{topic.name}</DText><DText selectable>{topic.metadata.goal}</DText><Button onPress={() => study('I would like to discuss or revise my learning goal.', 'outline')}>{t("Discuss or revise this goal")}</Button></>}
     {topic && view === 'sessions' && <>
       <DText muted>{topic.name}</DText>
-      {state.data?.sessions.map(session => row(session.title || 'Study session', `${session.message_count} messages · ${session.status}`, () => study(undefined, undefined, session.session_id)))}
-      {!state.data?.sessions.length && <DText muted>No sessions yet.</DText>}
-      <Button onPress={() => study()}>Start from a fresh angle</Button>
-      <Button variant="secondary" onPress={() => { setConfirmText(''); setConfirmation('reset'); }}>Reset progress</Button>
-      <Button variant="danger" onPress={() => { setConfirmText(''); setConfirmation('delete'); }}>Delete topic</Button>
+      {state.data?.sessions.map(session => row(session.title || t('Study session'), `${t('{count} messages', { count: session.message_count })} · ${t(session.status)}`, () => study(undefined, undefined, session.session_id)))}
+      {!state.data?.sessions.length && <DText muted>{t("No sessions yet.")}</DText>}
+      <Button onPress={() => study()}>{t("Start from a fresh angle")}</Button>
+      <Button variant="secondary" onPress={() => { setConfirmText(''); setConfirmation('reset'); }}>{t("Reset progress")}</Button>
+      <Button variant="danger" onPress={() => { setConfirmText(''); setConfirmation('delete'); }}>{t("Delete topic")}</Button>
     </>}
     {view === 'books' && <>
-      <Heading>{state.data?.books.length ? 'Your books' : 'Your next book starts here.'}</Heading>
-      {state.data?.books.map(book => row(book.title, `${book.status} · ${book.chapter_count} chapters`, () => nav('book', { id: book.id })))}
-      {!state.loading && !state.error && !state.data?.books.length && <DText muted>No books yet. Describe a goal to generate your first book.</DText>}
+      <Heading>{t(state.data?.books.length ? 'Your books' : 'Your next book starts here.')}</Heading>
+      {state.data?.books.map(book => row(book.title, `${t(book.status)} · ${t('{count} chapters', { count: book.chapter_count })}`, () => nav('book', { id: book.id })))}
+      {!state.loading && !state.error && !state.data?.books.length && <DText muted>{t("No books yet. Describe a goal to generate your first book.")}</DText>}
     </>}
     {view === 'books' && <BookTools canCreate={state.data?.canCreate === true} workspace={workspace} onCreated={book => nav('book', { id: book.id })} />}
     {view === 'reading' && <>
-      <Heading>Bring a source.{'\n'}Read with a tutor.</Heading>
-      {state.data?.materials.map(material => row(material.title || material.filename, `${material.status}${material.error_detail ? ` · ${material.error_detail}` : ''}${typeof material.progress === 'number' ? ` · ${Math.round(material.progress * 100)}% read` : ''}`, () => nav('reader', { id: material.material_id })))}
-      {!state.loading && !state.error && !state.data?.materials.length && <DText muted>No reading materials yet. Import a source to begin.</DText>}
-      <Field label="Source URL" value={importUrl} onChangeText={setImportUrl} autoCapitalize="none" keyboardType="url" placeholder="https://…" />
+      <Heading>{t('Bring a source.\nRead with a tutor.')}</Heading>
+      {state.data?.materials.map(material => row(material.title || material.filename, `${t(material.status)}${material.error_detail ? ` · ${material.error_detail}` : ''}${typeof material.progress === 'number' ? ` · ${t('{percent}% read', { percent: Math.round(material.progress * 100) })}` : ''}`, () => nav('reader', { id: material.material_id })))}
+      {!state.loading && !state.error && !state.data?.materials.length && <DText muted>{t("No reading materials yet. Import a source to begin.")}</DText>}
+      <Field label={t("Source URL")} value={importUrl} onChangeText={setImportUrl} autoCapitalize="none" keyboardType="url" placeholder="https://…" />
       <Button loading={busy} disabled={!importUrl.trim()} onPress={() => void act(async () => {
         const url = new URL(importUrl.trim());
         if (!['https:', 'http:'].includes(url.protocol)) throw new Error('Enter a valid HTTP or HTTPS source URL.');
         await mutate('post', '/reading/library/import-urls', workspace, { urls: [url.toString()] });
         setImportUrl(''); setNotice('Source queued for import. Refresh to check its status.'); state.refresh();
-      })}>Import reading source</Button>
-      <Button variant="secondary" onPress={state.refresh}>Refresh materials</Button>
+      })}>{t("Import reading source")}</Button>
+      <Button variant="secondary" onPress={state.refresh}>{t("Refresh materials")}</Button>
     </>}
-    <FullScreenModal open={confirmation !== null} title={confirmation === 'delete' ? 'Delete topic' : 'Reset progress'} onClose={() => { if (!busy) setConfirmation(null); }}>
+    <FullScreenModal open={confirmation !== null} title={t(confirmation === 'delete' ? 'Delete topic' : 'Reset progress')} onClose={() => { if (!busy) setConfirmation(null); }}>
       <View style={{ padding: 20, gap: 16 }}>
-        <InlineAlert tone="warning">{confirmation === 'delete' ? 'The map, evidence, review schedule, and linked records will be deleted. This cannot be undone.' : 'This clears earned mastery and review evidence while keeping the learning outline.'}</InlineAlert>
-        <Field label="Type the topic name to confirm" value={confirmText} onChangeText={setConfirmText} />
-        {!!failure && <InlineAlert tone="danger">{failure}</InlineAlert>}
+        <InlineAlert tone="warning">{t(confirmation === 'delete' ? 'The map, evidence, review schedule, and linked records will be deleted. This cannot be undone.' : 'This clears earned mastery and review evidence while keeping the learning outline.')}</InlineAlert>
+        <Field label={t("Type the topic name to confirm")} value={confirmText} onChangeText={setConfirmText} />
+        {!!failure && <InlineAlert tone="danger">{t(failure)}</InlineAlert>}
         <Button variant="danger" loading={busy} disabled={confirmText !== topic?.name} onPress={() => void act(async () => {
           if (confirmation === 'delete') { await mutate('delete', progressPath(pathId), workspace); router.replace(learningHref('overview', workspace)); }
           else { await mutate('post', `${progressPath(pathId)}/redo`, workspace); setConfirmation(null); state.refresh(); }
-        })}>{confirmation === 'delete' ? 'Delete permanently' : 'Reset progress'}</Button>
+        })}>{t(confirmation === 'delete' ? 'Delete permanently' : 'Reset progress')}</Button>
       </View>
     </FullScreenModal>
-    <FullScreenModal open={workspaceOpen} title="Switch workspace" onClose={() => setWorkspaceOpen(false)}>
+    <FullScreenModal open={workspaceOpen} title={t("Switch workspace")} onClose={() => setWorkspaceOpen(false)}>
       <View style={{ padding: 20, gap: 12 }}>
         <WorkspaceList open={workspaceOpen} currentId={workspace} onSelected={id => { setWorkspaceOpen(false); router.replace(learningHref('overview', id)); }} />
       </View>

@@ -4,25 +4,149 @@
   "routes": [
     "src/app/(app)/[...destination].tsx",
     "src/app/(app)/_layout.tsx",
+    "src/app/(app)/account.tsx",
+    "src/app/(app)/admin/users/import.tsx",
+    "src/app/(app)/admin/users/new.tsx",
+    "src/app/(app)/admin/users.tsx",
+    "src/app/(app)/agents.tsx",
+    "src/app/(app)/calendar/day.tsx",
+    "src/app/(app)/calendar/week.tsx",
+    "src/app/(app)/calendar.tsx",
     "src/app/(app)/chat/[sessionId].tsx",
     "src/app/(app)/chat/index.tsx",
+    "src/app/(app)/chat/options/attachments.tsx",
+    "src/app/(app)/chat/options/mode.tsx",
+    "src/app/(app)/chat/options/models.tsx",
+    "src/app/(app)/chat/options/partners.tsx",
+    "src/app/(app)/chat/options/preferences.tsx",
+    "src/app/(app)/chat/options/research.tsx",
+    "src/app/(app)/chat/options/skills.tsx",
+    "src/app/(app)/chat/options/tools.tsx",
+    "src/app/(app)/chat/options/voice.tsx",
+    "src/app/(app)/connection-unavailable.tsx",
+    "src/app/(app)/favorites/new.tsx",
+    "src/app/(app)/favorites.tsx",
+    "src/app/(app)/kanban.tsx",
+    "src/app/(app)/knowledge-bases/assets.tsx",
+    "src/app/(app)/knowledge-bases/chunks.tsx",
+    "src/app/(app)/knowledge-bases/delete.tsx",
+    "src/app/(app)/knowledge-bases/detail.tsx",
+    "src/app/(app)/knowledge-bases/documents/add.tsx",
+    "src/app/(app)/knowledge-bases/engines/edit.tsx",
+    "src/app/(app)/knowledge-bases/engines.tsx",
+    "src/app/(app)/knowledge-bases/files.tsx",
+    "src/app/(app)/knowledge-bases/index-recovery.tsx",
+    "src/app/(app)/knowledge-bases/jobs.tsx",
+    "src/app/(app)/knowledge-bases/move.tsx",
+    "src/app/(app)/knowledge-bases/new.tsx",
+    "src/app/(app)/knowledge-bases/preview.tsx",
+    "src/app/(app)/knowledge-bases/retrieval.tsx",
+    "src/app/(app)/knowledge-bases/settings.tsx",
+    "src/app/(app)/knowledge-bases/sources/add.tsx",
+    "src/app/(app)/knowledge-bases/sources/folder.tsx",
+    "src/app/(app)/knowledge-bases/sources/github.tsx",
+    "src/app/(app)/knowledge-bases/sources/web/edit.tsx",
+    "src/app/(app)/knowledge-bases/sources/web.tsx",
+    "src/app/(app)/knowledge-bases/sources.tsx",
+    "src/app/(app)/knowledge-bases.tsx",
+    "src/app/(app)/learning/books.tsx",
     "src/app/(app)/learning/index.tsx",
+    "src/app/(app)/learning/live.tsx",
     "src/app/(app)/learning/mastery/[pathId]/index.tsx",
     "src/app/(app)/learning/mastery/[pathId]/sessions/[sessionId].tsx",
     "src/app/(app)/learning/mastery/[pathId]/sessions/index.tsx",
     "src/app/(app)/learning/mastery/index.tsx",
     "src/app/(app)/learning/new.tsx",
+    "src/app/(app)/learning/practice.tsx",
+    "src/app/(app)/learning/reading.tsx",
+    "src/app/(app)/library.tsx",
+    "src/app/(app)/memory/evidence.tsx",
+    "src/app/(app)/memory/import.tsx",
+    "src/app/(app)/memory/workbench.tsx",
+    "src/app/(app)/memory.tsx",
     "src/app/(app)/notebooks/[notebookId].tsx",
     "src/app/(app)/notebooks/index.tsx",
+    "src/app/(app)/notes/edit.tsx",
+    "src/app/(app)/notes/from-conversation.tsx",
+    "src/app/(app)/notes/review.tsx",
+    "src/app/(app)/notes.tsx",
+    "src/app/(app)/partners/[partnerId].tsx",
+    "src/app/(app)/partners/edit.tsx",
+    "src/app/(app)/partners/groups/[groupId].tsx",
+    "src/app/(app)/partners/groups.tsx",
+    "src/app/(app)/partners/library.tsx",
+    "src/app/(app)/partners/model-tools.tsx",
+    "src/app/(app)/partners/personality.tsx",
+    "src/app/(app)/partners/review.tsx",
+    "src/app/(app)/partners.tsx",
     "src/app/(app)/personalization.tsx",
+    "src/app/(app)/plan/appearance.tsx",
+    "src/app/(app)/plan/tasks/edit.tsx",
+    "src/app/(app)/plan.tsx",
+    "src/app/(app)/profile/avatar.tsx",
+    "src/app/(app)/profile/password.tsx",
     "src/app/(app)/profile.tsx",
+    "src/app/(app)/search/empty.tsx",
+    "src/app/(app)/session-handoff.tsx",
+    "src/app/(app)/settings/about.tsx",
+    "src/app/(app)/settings/administration.tsx",
+    "src/app/(app)/settings/advanced.tsx",
+    "src/app/(app)/settings/agents.tsx",
     "src/app/(app)/settings/appearance.tsx",
     "src/app/(app)/settings/archive.tsx",
+    "src/app/(app)/settings/attachments.tsx",
+    "src/app/(app)/settings/capabilities.tsx",
+    "src/app/(app)/settings/connections/edit.tsx",
+    "src/app/(app)/settings/connections.tsx",
+    "src/app/(app)/settings/conversation.tsx",
+    "src/app/(app)/settings/data.tsx",
+    "src/app/(app)/settings/document-parsing.tsx",
+    "src/app/(app)/settings/empty.tsx",
     "src/app/(app)/settings/general.tsx",
     "src/app/(app)/settings/index.tsx",
+    "src/app/(app)/settings/learning-tools.tsx",
+    "src/app/(app)/settings/llm/edit.tsx",
+    "src/app/(app)/settings/llm.tsx",
+    "src/app/(app)/settings/media.tsx",
+    "src/app/(app)/settings/memory.tsx",
+    "src/app/(app)/settings/migration/bundles.tsx",
+    "src/app/(app)/settings/migration/review.tsx",
+    "src/app/(app)/settings/migration.tsx",
+    "src/app/(app)/settings/modules.tsx",
+    "src/app/(app)/settings/network.tsx",
     "src/app/(app)/settings/overview.tsx",
+    "src/app/(app)/settings/preferences.tsx",
+    "src/app/(app)/settings/search.tsx",
+    "src/app/(app)/settings/services.tsx",
+    "src/app/(app)/settings/status.tsx",
+    "src/app/(app)/settings/task-models.tsx",
+    "src/app/(app)/settings/task-overrides.tsx",
+    "src/app/(app)/settings/tools/detail.tsx",
+    "src/app/(app)/settings/tools/directory.tsx",
+    "src/app/(app)/settings/tools.tsx",
+    "src/app/(app)/settings/usage.tsx",
+    "src/app/(app)/settings/video-learning.tsx",
+    "src/app/(app)/settings/voice.tsx",
+    "src/app/(app)/settings/workspace/edit.tsx",
+    "src/app/(app)/settings/workspace.tsx",
+    "src/app/(app)/space/chat-history/actions.tsx",
+    "src/app/(app)/space/chat-history/organize.tsx",
     "src/app/(app)/space/chat-history.tsx",
-    "src/app/(app)/space.tsx",
+    "src/app/(app)/space/extensions/detail.tsx",
+    "src/app/(app)/space/extensions.tsx",
+    "src/app/(app)/space/journal.tsx",
+    "src/app/(app)/space/mcp.tsx",
+    "src/app/(app)/space/personas.tsx",
+    "src/app/(app)/space/playbooks/edit.tsx",
+    "src/app/(app)/space/questions/import/result.tsx",
+    "src/app/(app)/space/questions/import/review.tsx",
+    "src/app/(app)/space/questions/import.tsx",
+    "src/app/(app)/space/questions/mistakes.tsx",
+    "src/app/(app)/space/questions/practice/review.tsx",
+    "src/app/(app)/space/questions/practice.tsx",
+    "src/app/(app)/space/questions/tags.tsx",
+    "src/app/(app)/space/questions.tsx",
+    "src/app/(app)/workspaces/switch.tsx",
     "src/app/(auth)/login.tsx",
     "src/app/(auth)/register.tsx",
     "src/app/_layout.tsx",
@@ -30,315 +154,154 @@
     "src/app/explore.tsx",
     "src/app/index.tsx",
     "src/app/mobile/[screen].tsx",
-    "src/app/ui/file-preview.tsx",
-    "src/app/ui/search.tsx",
-    "src/app/ui/session-viewer.tsx"
+    "src/app/search.tsx",
+    "src/app/ui/search.tsx"
   ],
   "dynamicLookups": [
     {
-      "file": "src/features/chat/AskUserQuestionCard.tsx",
-      "line": 322,
-      "expression": "card.errorMessage"
+      "file": "src/features/chat/MobileConversationLibrary.tsx",
+      "line": 166,
+      "expression": "error"
     },
     {
-      "file": "src/features/chat/CapabilityConfigCard.tsx",
-      "line": 108,
-      "expression": "QUIZ_DIFFICULTIES.find(item => item.id === quizConfig.difficulty)?.label ?? 'Auto'"
+      "file": "src/features/chat/MobileConversationLibrary.tsx",
+      "line": 213,
+      "expression": "error"
     },
     {
-      "file": "src/features/chat/CapabilityConfigCard.tsx",
-      "line": 109,
-      "expression": "RESEARCH_MODES.find(item => item.id === researchConfig.mode)?.label ?? 'Report'"
-    },
-    {
-      "file": "src/features/chat/CapabilityConfigCard.tsx",
-      "line": 109,
-      "expression": "RESEARCH_DEPTHS.find(item => item.id === researchConfig.depth)?.label ?? 'Standard'"
-    },
-    {
-      "file": "src/features/chat/CapabilityConfigCard.tsx",
+      "file": "src/features/chat/SessionActionsSheet.tsx",
       "line": 113,
-      "expression": "message"
+      "expression": "res.error || 'Rename failed'"
     },
     {
-      "file": "src/features/chat/CapabilityConfigCard.tsx",
-      "line": 369,
-      "expression": "diff.label"
+      "file": "src/features/chat/SessionActionsSheet.tsx",
+      "line": 114,
+      "expression": "res.error || 'Rename failed'"
     },
     {
-      "file": "src/features/chat/CapabilityConfigCard.tsx",
-      "line": 395,
-      "expression": "diff.label"
-    },
-    {
-      "file": "src/features/chat/CapabilityConfigCard.tsx",
-      "line": 420,
-      "expression": "qt.label"
-    },
-    {
-      "file": "src/features/chat/CapabilityConfigCard.tsx",
-      "line": 469,
-      "expression": "rm.label"
-    },
-    {
-      "file": "src/features/chat/CapabilityConfigCard.tsx",
-      "line": 493,
-      "expression": "rm.label"
-    },
-    {
-      "file": "src/features/chat/CapabilityConfigCard.tsx",
-      "line": 516,
-      "expression": "rd.label"
-    },
-    {
-      "file": "src/features/chat/CapabilityConfigCard.tsx",
-      "line": 540,
-      "expression": "rd.label"
-    },
-    {
-      "file": "src/features/chat/ChatComposer.tsx",
-      "line": 105,
-      "expression": "res.error || 'Unsupported attachment type'"
-    },
-    {
-      "file": "src/features/chat/ChatComposer.tsx",
-      "line": 202,
-      "expression": "attachmentError"
-    },
-    {
-      "file": "src/features/chat/ChatComposer.tsx",
-      "line": 334,
-      "expression": "activeCapOption.labelKey"
-    },
-    {
-      "file": "src/features/chat/ChatComposer.tsx",
-      "line": 467,
-      "expression": "candidate.errorReason ||\n                              'Unsupported attachment type'"
-    },
-    {
-      "file": "src/features/chat/ChatComposer.tsx",
-      "line": 503,
-      "expression": "ctxItem.label"
-    },
-    {
-      "file": "src/features/chat/ChatComposer.tsx",
-      "line": 520,
-      "expression": "ctxItem.label"
-    },
-    {
-      "file": "src/features/chat/ChatComposer.tsx",
-      "line": 549,
-      "expression": "cap.labelKey"
-    },
-    {
-      "file": "src/features/chat/ChatComposer.tsx",
-      "line": 555,
-      "expression": "cap.labelKey"
-    },
-    {
-      "file": "src/features/chat/ChatComposer.tsx",
-      "line": 584,
-      "expression": "cap.labelKey"
-    },
-    {
-      "file": "src/features/chat/ChatComposer.tsx",
-      "line": 593,
-      "expression": "cap.descriptionKey"
-    },
-    {
-      "file": "src/features/chat/ChatHistoryScreen.tsx",
-      "line": 112,
-      "expression": "res.error || 'Failed to save'"
-    },
-    {
-      "file": "src/features/chat/ChatHistoryScreen.tsx",
-      "line": 122,
-      "expression": "res.error || 'Failed to save'"
-    },
-    {
-      "file": "src/features/chat/ChatHistoryScreen.tsx",
-      "line": 132,
-      "expression": "res.error || 'Failed to save'"
-    },
-    {
-      "file": "src/features/chat/ChatMessageList.tsx",
-      "line": 255,
-      "expression": "editError"
-    },
-    {
-      "file": "src/features/chat/ChatMessageList.tsx",
-      "line": 286,
-      "expression": "res.error || 'Failed to save'"
-    },
-    {
-      "file": "src/features/chat/ChatMessageList.tsx",
-      "line": 390,
-      "expression": "msg.error"
-    },
-    {
-      "file": "src/features/chat/ChatMessageList.tsx",
-      "line": 740,
-      "expression": "msg.error"
-    },
-    {
-      "file": "src/features/chat/ChatWorkspace.tsx",
+      "file": "src/features/chat/SessionActionsSheet.tsx",
       "line": 131,
-      "expression": "result.error"
-    },
-    {
-      "file": "src/features/chat/ChatWorkspace.tsx",
-      "line": 133,
-      "expression": "result.error"
-    },
-    {
-      "file": "src/features/chat/ChatWorkspace.tsx",
-      "line": 144,
-      "expression": "res.error || 'Rename failed'"
-    },
-    {
-      "file": "src/features/chat/ChatWorkspace.tsx",
-      "line": 157,
-      "expression": "res.error || 'Failed to save'"
-    },
-    {
-      "file": "src/features/chat/ChatWorkspace.tsx",
-      "line": 562,
-      "expression": "sendError"
-    },
-    {
-      "file": "src/features/chat/ChatWorkspace.tsx",
-      "line": 656,
-      "expression": "sendError"
-    },
-    {
-      "file": "src/features/chat/ComposerResourcesSheet.tsx",
-      "line": 253,
-      "expression": "tab.label"
-    },
-    {
-      "file": "src/features/chat/ComposerResourcesSheet.tsx",
-      "line": 283,
-      "expression": "validationError"
-    },
-    {
-      "file": "src/features/chat/ContextReferenceTree.tsx",
-      "line": 78,
-      "expression": "KIND_BADGE_MAP[item.kind]"
-    },
-    {
-      "file": "src/features/chat/FilePreviewScreen.tsx",
-      "line": 334,
-      "expression": "actionNotice"
-    },
-    {
-      "file": "src/features/chat/ResearchOutlineCard.tsx",
-      "line": 288,
-      "expression": "validationError"
-    },
-    {
-      "file": "src/features/chat/ResearchOutlineCard.tsx",
-      "line": 305,
-      "expression": "research.errorMessage"
-    },
-    {
-      "file": "src/features/chat/SessionActionsSheet.tsx",
-      "line": 104,
-      "expression": "res.error || 'Rename failed'"
-    },
-    {
-      "file": "src/features/chat/SessionActionsSheet.tsx",
-      "line": 105,
-      "expression": "res.error || 'Rename failed'"
-    },
-    {
-      "file": "src/features/chat/SessionActionsSheet.tsx",
-      "line": 116,
       "expression": "res.error || 'Failed to save'"
     },
     {
       "file": "src/features/chat/SessionActionsSheet.tsx",
-      "line": 126,
+      "line": 147,
       "expression": "res.error || 'Failed to save'"
     },
     {
       "file": "src/features/chat/SessionActionsSheet.tsx",
-      "line": 145,
+      "line": 171,
       "expression": "res.error || 'Failed to save'"
     },
     {
       "file": "src/features/chat/SessionActionsSheet.tsx",
-      "line": 188,
+      "line": 220,
       "expression": "res.error || 'Failed to save'"
     },
     {
       "file": "src/features/chat/SessionActionsSheet.tsx",
-      "line": 189,
+      "line": 221,
       "expression": "res.error || 'Failed to save'"
     },
     {
       "file": "src/features/chat/SessionActionsSheet.tsx",
-      "line": 302,
+      "line": 341,
       "expression": "ws.name"
     },
     {
       "file": "src/features/chat/SessionActionsSheet.tsx",
-      "line": 399,
+      "line": 439,
       "expression": "deleteError"
     },
     {
-      "file": "src/features/chat/SessionViewerScreen.tsx",
-      "line": 191,
-      "expression": "item.label"
+      "file": "src/features/chat/live/LiveChatScreen.tsx",
+      "line": 92,
+      "expression": "actionError"
     },
     {
-      "file": "src/features/chat/SessionViewerScreen.tsx",
-      "line": 212,
-      "expression": "item.label"
+      "file": "src/features/chat/live/LiveChatScreen.tsx",
+      "line": 93,
+      "expression": "chat.error"
     },
     {
-      "file": "src/features/chat/SessionViewerScreen.tsx",
-      "line": 250,
-      "expression": "tab.title"
-    },
-    {
-      "file": "src/features/chat/SessionViewerScreen.tsx",
-      "line": 260,
-      "expression": "tab.title"
-    },
-    {
-      "file": "src/features/chat/SessionViewerScreen.tsx",
-      "line": 266,
-      "expression": "tab.title"
-    },
-    {
-      "file": "src/features/chat/StarterSuggestions.tsx",
-      "line": 74,
-      "expression": "group.labelKey"
-    },
-    {
-      "file": "src/features/chat/StarterSuggestions.tsx",
-      "line": 98,
-      "expression": "group.labelKey"
-    },
-    {
-      "file": "src/features/chat/StarterSuggestions.tsx",
-      "line": 131,
-      "expression": "activeGroup.labelKey"
-    },
-    {
-      "file": "src/features/chat/StarterSuggestions.tsx",
+      "file": "src/features/chat/live/LiveChatScreen.tsx",
       "line": 145,
-      "expression": "item.labelKey"
+      "expression": "chat.historyError"
     },
     {
-      "file": "src/features/chat/StarterSuggestions.tsx",
-      "line": 147,
-      "expression": "item.promptKey"
+      "file": "src/features/chat/live/TutorComposer.tsx",
+      "line": 101,
+      "expression": "name"
     },
     {
-      "file": "src/features/chat/StarterSuggestions.tsx",
-      "line": 158,
-      "expression": "item.labelKey"
+      "file": "src/features/chat/live/TutorComposer.tsx",
+      "line": 108,
+      "expression": "label"
+    },
+    {
+      "file": "src/features/chat/live/TutorComposer.tsx",
+      "line": 108,
+      "expression": "label"
+    },
+    {
+      "file": "src/features/chat/live/TutorComposer.tsx",
+      "line": 110,
+      "expression": "actions.find(([id]) => id === panel)![1]"
+    },
+    {
+      "file": "src/features/chat/live/TutorComposer.tsx",
+      "line": 110,
+      "expression": "panel ?? ''"
+    },
+    {
+      "file": "src/features/chat/live/TutorComposer.tsx",
+      "line": 113,
+      "expression": "failure"
+    },
+    {
+      "file": "src/features/chat/live/TutorComposer.tsx",
+      "line": 116,
+      "expression": "name"
+    },
+    {
+      "file": "src/features/chat/live/TutorComposer.tsx",
+      "line": 117,
+      "expression": "action.label"
+    },
+    {
+      "file": "src/features/chat/live/TutorComposer.tsx",
+      "line": 118,
+      "expression": "label"
+    },
+    {
+      "file": "src/features/chat/live/TutorComposer.tsx",
+      "line": 120,
+      "expression": "name"
+    },
+    {
+      "file": "src/features/chat/live/TutorComposer.tsx",
+      "line": 122,
+      "expression": "label"
+    },
+    {
+      "file": "src/features/chat/live/TutorComposer.tsx",
+      "line": 125,
+      "expression": "item.label"
+    },
+    {
+      "file": "src/features/chat/live/TutorComposer.tsx",
+      "line": 125,
+      "expression": "item.prompt"
+    },
+    {
+      "file": "src/features/chat/live/TutorComposer.tsx",
+      "line": 125,
+      "expression": "item.prompt"
+    },
+    {
+      "file": "src/features/chat/live/TutorComposer.tsx",
+      "line": 125,
+      "expression": "item.prompt"
     },
     {
       "file": "src/features/entry/AuthScreen.tsx",
@@ -357,427 +320,712 @@
     },
     {
       "file": "src/features/entry/Boundary.tsx",
-      "line": 14,
+      "line": 20,
       "expression": "auth.error"
     },
     {
       "file": "src/features/entry/ProfileScreen.tsx",
-      "line": 31,
-      "expression": "invalid"
+      "line": 40,
+      "expression": "label"
     },
     {
       "file": "src/features/entry/ProfileScreen.tsx",
-      "line": 33,
-      "expression": "invalid"
+      "line": 41,
+      "expression": "label"
     },
     {
       "file": "src/features/entry/ProfileScreen.tsx",
       "line": 42,
-      "expression": "error"
+      "expression": "label"
     },
     {
       "file": "src/features/entry/ProfileScreen.tsx",
-      "line": 53,
+      "line": 42,
+      "expression": "description"
+    },
+    {
+      "file": "src/features/entry/ProfileScreen.tsx",
+      "line": 54,
+      "expression": "title"
+    },
+    {
+      "file": "src/features/entry/ProfileScreen.tsx",
+      "line": 57,
+      "expression": "actions.error"
+    },
+    {
+      "file": "src/features/entry/ProfileScreen.tsx",
+      "line": 70,
+      "expression": "field.label"
+    },
+    {
+      "file": "src/features/entry/ProfileScreen.tsx",
+      "line": 71,
+      "expression": "actions.notice"
+    },
+    {
+      "file": "src/features/favorites/MobileFavoritesScreen.tsx",
+      "line": 51,
+      "expression": "label"
+    },
+    {
+      "file": "src/features/favorites/MobileFavoritesScreen.tsx",
+      "line": 51,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/favorites/MobileFavoritesScreen.tsx",
+      "line": 56,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/favorites/MobileFavoritesScreen.tsx",
+      "line": 57,
       "expression": "notice"
     },
     {
-      "file": "src/features/entry/ProfileScreen.tsx",
+      "file": "src/features/favorites/MobileFavoritesScreen.tsx",
       "line": 59,
-      "expression": "error"
+      "expression": "library.error"
     },
     {
-      "file": "src/features/entry/WorkspaceSheet.tsx",
-      "line": 18,
-      "expression": "error"
-    },
-    {
-      "file": "src/features/entry/WorkspaceSheet.tsx",
-      "line": 22,
-      "expression": "row.name"
-    },
-    {
-      "file": "src/features/favorites/FavoritesScreen.tsx",
-      "line": 480,
-      "expression": "statusNotice"
-    },
-    {
-      "file": "src/features/favorites/FavoritesScreen.tsx",
-      "line": 637,
-      "expression": "kf.label"
-    },
-    {
-      "file": "src/features/favorites/FavoritesScreen.tsx",
-      "line": 1098,
-      "expression": "metaError"
-    },
-    {
-      "file": "src/features/favorites/FavoritesScreen.tsx",
-      "line": 1227,
-      "expression": "recordEditError"
-    },
-    {
-      "file": "src/features/favorites/FavoritesScreen.tsx",
-      "line": 1700,
-      "expression": "statusNotice"
-    },
-    {
-      "file": "src/features/favorites/SaveToNotebookModal.tsx",
-      "line": 636,
-      "expression": "errorMessage"
-    },
-    {
-      "file": "src/features/learning/CreateTopicWizard.tsx",
-      "line": 246,
-      "expression": "error"
-    },
-    {
-      "file": "src/features/learning/CreateTopicWizard.tsx",
-      "line": 314,
-      "expression": "meta.label"
-    },
-    {
-      "file": "src/features/learning/CreateTopicWizard.tsx",
-      "line": 442,
-      "expression": "cat.label"
-    },
-    {
-      "file": "src/features/learning/CreateTopicWizard.tsx",
-      "line": 472,
-      "expression": "cat.label"
-    },
-    {
-      "file": "src/features/learning/CreateTopicWizard.tsx",
-      "line": 497,
-      "expression": "SOURCE_CATEGORIES.find(\n                        (c) => c.type === wizardDraft.activeCategory,\n                      )?.emptyLabel ?? 'No sources found'"
-    },
-    {
-      "file": "src/features/learning/EditTopicRouteDialog.tsx",
-      "line": 203,
-      "expression": "error"
-    },
-    {
-      "file": "src/features/learning/EditTopicRouteDialog.tsx",
-      "line": 430,
-      "expression": "KNOWLEDGE_TYPE_LABELS[pt.type]"
-    },
-    {
-      "file": "src/features/learning/LearningDashboardScreen.tsx",
-      "line": 258,
-      "expression": "deferredNotice"
-    },
-    {
-      "file": "src/features/learning/LearningDashboardScreen.tsx",
-      "line": 429,
-      "expression": "surface.title"
-    },
-    {
-      "file": "src/features/learning/LearningDashboardScreen.tsx",
-      "line": 442,
-      "expression": "surface.description"
-    },
-    {
-      "file": "src/features/learning/LearningDashboardScreen.tsx",
-      "line": 678,
-      "expression": "surface.title"
-    },
-    {
-      "file": "src/features/learning/LearningDashboardScreen.tsx",
-      "line": 698,
-      "expression": "surface.title"
-    },
-    {
-      "file": "src/features/learning/MasteryDetailScreen.tsx",
-      "line": 806,
-      "expression": "actionError"
-    },
-    {
-      "file": "src/features/learning/MasteryDetailScreen.tsx",
-      "line": 1816,
-      "expression": "strategyFormError"
-    },
-    {
-      "file": "src/features/learning/MasteryStudyScreen.tsx",
-      "line": 117,
-      "expression": "MASTERY_MODE_LABELS[candidate]"
-    },
-    {
-      "file": "src/features/learning/MasteryStudyScreen.tsx",
-      "line": 153,
-      "expression": "MASTERY_MODE_LABELS[candidate]"
-    },
-    {
-      "file": "src/features/learning/MasteryStudyScreen.tsx",
-      "line": 592,
-      "expression": "answerError"
-    },
-    {
-      "file": "src/features/learning/MasteryStudyScreen.tsx",
-      "line": 1039,
-      "expression": "presentation.title"
-    },
-    {
-      "file": "src/features/learning/MasteryStudyScreen.tsx",
-      "line": 1053,
-      "expression": "presentation.subtitle"
-    },
-    {
-      "file": "src/features/learning/MasteryStudyScreen.tsx",
-      "line": 1085,
-      "expression": "promptText"
-    },
-    {
-      "file": "src/features/learning/MasteryStudyScreen.tsx",
-      "line": 1127,
-      "expression": "MASTERY_MODE_LABELS[msg.mode]"
-    },
-    {
-      "file": "src/features/learning/MasteryStudyScreen.tsx",
-      "line": 1184,
-      "expression": "sendError"
-    },
-    {
-      "file": "src/features/learning/NewLearningScreen.tsx",
-      "line": 141,
-      "expression": "deferredNotice"
-    },
-    {
-      "file": "src/features/learning/NewLearningScreen.tsx",
-      "line": 182,
-      "expression": "item.title"
-    },
-    {
-      "file": "src/features/learning/NewLearningScreen.tsx",
-      "line": 231,
-      "expression": "item.title"
-    },
-    {
-      "file": "src/features/learning/NewLearningScreen.tsx",
-      "line": 259,
-      "expression": "item.intro"
-    },
-    {
-      "file": "src/features/learning/NewLearningScreen.tsx",
-      "line": 294,
-      "expression": "bullet"
-    },
-    {
-      "file": "src/features/learning/PageCustomizeDialog.tsx",
-      "line": 151,
-      "expression": "error"
-    },
-    {
-      "file": "src/features/learning/PageCustomizeDialog.tsx",
-      "line": 178,
-      "expression": "item.label"
-    },
-    {
-      "file": "src/features/learning/PageCustomizeDialog.tsx",
-      "line": 210,
-      "expression": "item.label"
-    },
-    {
-      "file": "src/features/mobile/MobileScreen.tsx",
-      "line": 26,
-      "expression": "title"
-    },
-    {
-      "file": "src/features/mobile/MobileScreen.tsx",
-      "line": 74,
-      "expression": "labelOf(node)"
-    },
-    {
-      "file": "src/features/mobile/MobileScreen.tsx",
-      "line": 75,
-      "expression": "labelOf(node)"
-    },
-    {
-      "file": "src/features/mobile/MobileScreen.tsx",
-      "line": 204,
-      "expression": "label"
-    },
-    {
-      "file": "src/features/mobile/MobileScreen.tsx",
-      "line": 214,
-      "expression": "textOf(node).split('\\n').slice(1).join('\\n') || 'This action requires a connected service.'"
-    },
-    {
-      "file": "src/features/mobile/MobileScreen.tsx",
-      "line": 237,
-      "expression": "task.status"
-    },
-    {
-      "file": "src/features/mobile/MobileScreen.tsx",
-      "line": 243,
-      "expression": "title"
-    },
-    {
-      "file": "src/features/mobile/MobileScreen.tsx",
-      "line": 247,
-      "expression": "error"
-    },
-    {
-      "file": "src/features/mobile/MobileScreen.tsx",
-      "line": 249,
-      "expression": "state.workspace"
-    },
-    {
-      "file": "src/features/mobile/MobileScreen.tsx",
-      "line": 250,
-      "expression": "message.error"
-    },
-    {
-      "file": "src/features/mobile/MobileScreen.tsx",
-      "line": 256,
-      "expression": "text"
-    },
-    {
-      "file": "src/features/mobile/MobileScreen.tsx",
-      "line": 258,
-      "expression": "label"
-    },
-    {
-      "file": "src/features/mobile/MobileScreen.tsx",
-      "line": 258,
-      "expression": "label"
-    },
-    {
-      "file": "src/features/mobile/MobileScreen.tsx",
-      "line": 262,
-      "expression": "dialog?.title ?? ''"
-    },
-    {
-      "file": "src/features/mobile/MobileScreen.tsx",
-      "line": 264,
-      "expression": "dialog.message"
-    },
-    {
-      "file": "src/features/mobile/MobileScreen.tsx",
-      "line": 265,
-      "expression": "dialog.title"
-    },
-    {
-      "file": "src/features/mobile/NativeLayers.tsx",
+      "file": "src/features/favorites/MobileFavoritesScreen.tsx",
       "line": 70,
       "expression": "label"
     },
     {
-      "file": "src/features/mobile/NativeLayers.tsx",
-      "line": 71,
-      "expression": "label"
-    },
-    {
-      "file": "src/features/mobile/NativeLayers.tsx",
-      "line": 71,
-      "expression": "value || source"
-    },
-    {
-      "file": "src/features/mobile/NativeLayers.tsx",
+      "file": "src/features/favorites/MobileFavoritesScreen.tsx",
       "line": 72,
-      "expression": "label"
+      "expression": "FAVORITE_KIND_LABELS[favoriteKind(item.type, item.metadata)]"
     },
     {
-      "file": "src/features/mobile/NativeLayers.tsx",
-      "line": 72,
-      "expression": "source"
-    },
-    {
-      "file": "src/features/mobile/NativeLayers.tsx",
-      "line": 82,
-      "expression": "node.content ?? ''"
-    },
-    {
-      "file": "src/features/mobile/NativeLayers.tsx",
-      "line": 94,
-      "expression": "label"
-    },
-    {
-      "file": "src/features/mobile/NativeLayers.tsx",
-      "line": 94,
-      "expression": "label"
-    },
-    {
-      "file": "src/features/mobile/NativeLayers.tsx",
-      "line": 101,
-      "expression": "text"
-    },
-    {
-      "file": "src/features/mobile/NativeLayers.tsx",
-      "line": 106,
-      "expression": "labelOf(node)"
-    },
-    {
-      "file": "src/features/resources/OverviewScreen.tsx",
-      "line": 25,
-      "expression": "tile.title"
-    },
-    {
-      "file": "src/features/resources/OverviewScreen.tsx",
-      "line": 26,
-      "expression": "tile.title"
-    },
-    {
-      "file": "src/features/resources/OverviewScreen.tsx",
-      "line": 27,
-      "expression": "tile.unit!"
-    },
-    {
-      "file": "src/features/resources/OverviewScreen.tsx",
-      "line": 29,
-      "expression": "tile.blurb"
-    },
-    {
-      "file": "src/features/search/SearchScreen.tsx",
-      "line": 59,
-      "expression": "record.label"
-    },
-    {
-      "file": "src/features/search/SearchScreen.tsx",
-      "line": 59,
-      "expression": "({ page: 'navigation.jumpTo', session: 'Conversations', learning: 'navigation.learning', partner: 'navigation.partners', group: 'Groups' })[record.kind]"
-    },
-    {
-      "file": "src/features/settings/SettingsScreen.tsx",
-      "line": 35,
+      "file": "src/features/favorites/MobileFavoritesScreen.tsx",
+      "line": 121,
       "expression": "error"
     },
     {
-      "file": "src/features/settings/SettingsScreen.tsx",
-      "line": 38,
-      "expression": "['System', 'Default', 'Cream', 'Dark', 'Glass'][i]"
+      "file": "src/features/favorites/MobileSaveFavorite.tsx",
+      "line": 187,
+      "expression": "kindLabel"
     },
     {
-      "file": "src/features/settings/SettingsScreen.tsx",
-      "line": 54,
-      "expression": "label"
+      "file": "src/features/favorites/MobileSaveFavorite.tsx",
+      "line": 189,
+      "expression": "error"
     },
     {
-      "file": "src/features/settings/SettingsScreen.tsx",
-      "line": 54,
+      "file": "src/features/favorites/MobileSaveFavorite.tsx",
+      "line": 190,
+      "expression": "errorMessage"
+    },
+    {
+      "file": "src/features/learning/live/BookTools.tsx",
+      "line": 37,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/learning/live/LearningLayout.tsx",
+      "line": 20,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/learning/live/LearningOverview.tsx",
+      "line": 43,
+      "expression": "title"
+    },
+    {
+      "file": "src/features/learning/live/LearningOverview.tsx",
+      "line": 45,
+      "expression": "title"
+    },
+    {
+      "file": "src/features/learning/live/LearningOverview.tsx",
+      "line": 46,
       "expression": "description"
     },
     {
-      "file": "src/features/shell/AppShell.tsx",
+      "file": "src/features/learning/live/LiveLearningScreen.tsx",
+      "line": 81,
+      "expression": "titles[view] ?? 'Learning'"
+    },
+    {
+      "file": "src/features/learning/live/LiveLearningScreen.tsx",
+      "line": 82,
+      "expression": "failure"
+    },
+    {
+      "file": "src/features/learning/live/LiveLearningScreen.tsx",
+      "line": 83,
+      "expression": "notice"
+    },
+    {
+      "file": "src/features/learning/live/LiveLearningScreen.tsx",
+      "line": 125,
+      "expression": "point.status"
+    },
+    {
+      "file": "src/features/learning/live/LiveLearningScreen.tsx",
+      "line": 140,
+      "expression": "label"
+    },
+    {
+      "file": "src/features/learning/live/LiveLearningScreen.tsx",
+      "line": 147,
+      "expression": "session.status"
+    },
+    {
+      "file": "src/features/learning/live/LiveLearningScreen.tsx",
+      "line": 155,
+      "expression": "book.status"
+    },
+    {
+      "file": "src/features/learning/live/LiveLearningScreen.tsx",
+      "line": 161,
+      "expression": "material.status"
+    },
+    {
+      "file": "src/features/learning/live/LiveLearningScreen.tsx",
+      "line": 176,
+      "expression": "failure"
+    },
+    {
+      "file": "src/features/learning/live/LiveStudyScreen.tsx",
+      "line": 106,
+      "expression": "chat.error || topic.error || failure"
+    },
+    {
+      "file": "src/features/learning/live/LiveStudyScreen.tsx",
+      "line": 127,
+      "expression": "({ outline: 'Outline', study: 'Study', review: 'Review' } as Record<string, string>)[next]"
+    },
+    {
+      "file": "src/features/learning/live/PracticeScreen.tsx",
+      "line": 38,
+      "expression": "failure"
+    },
+    {
+      "file": "src/features/learning/live/PracticeScreen.tsx",
+      "line": 43,
+      "expression": "result"
+    },
+    {
+      "file": "src/features/learning/live/PracticeScreen.tsx",
+      "line": 43,
+      "expression": "({ again: 'Again', hard: 'Hard', good: 'Good', easy: 'Easy' } as Record<string, string>)[rating]"
+    },
+    {
+      "file": "src/features/learning/live/ReaderScreen.tsx",
+      "line": 62,
+      "expression": "failure"
+    },
+    {
+      "file": "src/features/learning/live/ReaderScreen.tsx",
       "line": 64,
-      "expression": "currentWorkspace.name"
+      "expression": "state.data.book.book.status"
+    },
+    {
+      "file": "src/features/learning/live/ReaderScreen.tsx",
+      "line": 74,
+      "expression": "page.status"
+    },
+    {
+      "file": "src/features/learning/live/ReaderScreen.tsx",
+      "line": 88,
+      "expression": "action"
+    },
+    {
+      "file": "src/features/learning/live/StudyActionRow.tsx",
+      "line": 15,
+      "expression": "action.title"
+    },
+    {
+      "file": "src/features/learning/live/StudyActionRow.tsx",
+      "line": 15,
+      "expression": "action.subtitle"
+    },
+    {
+      "file": "src/features/learning/live/StudyActionRow.tsx",
+      "line": 16,
+      "expression": "action.title"
+    },
+    {
+      "file": "src/features/learning/live/StudyResourcesSheet.tsx",
+      "line": 70,
+      "expression": "failure"
+    },
+    {
+      "file": "src/features/learning/live/StudyResourcesSheet.tsx",
+      "line": 78,
+      "expression": "kind.label"
+    },
+    {
+      "file": "src/features/learning/live/StudyResourcesSheet.tsx",
+      "line": 78,
+      "expression": "kind.label"
+    },
+    {
+      "file": "src/features/learning/live/StudyResourcesSheet.tsx",
+      "line": 78,
+      "expression": "kind.label"
+    },
+    {
+      "file": "src/features/learning/live/StudyResourcesSheet.tsx",
+      "line": 84,
+      "expression": "policy.error"
+    },
+    {
+      "file": "src/features/learning/live/StudyResourcesSheet.tsx",
+      "line": 89,
+      "expression": "options.error"
+    },
+    {
+      "file": "src/features/learning/live/StudyResourcesSheet.tsx",
+      "line": 90,
+      "expression": "item.detail"
+    },
+    {
+      "file": "src/features/memory/MobileMemoryScreens.tsx",
+      "line": 206,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/memory/MobileMemoryScreens.tsx",
+      "line": 524,
+      "expression": "SURFACE_TITLES[selectedKey as MemorySurface] ?? 'Chat'"
+    },
+    {
+      "file": "src/features/memory/MobileMemoryScreens.tsx",
+      "line": 525,
+      "expression": "SURFACE_TITLES[selectedKey as MemorySurface] ?? SLOT_TITLES[selectedKey as MemoryL3Slot] ?? 'Chat'"
+    },
+    {
+      "file": "src/features/memory/MobileMemoryScreens.tsx",
+      "line": 530,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/memory/MobileMemoryScreens.tsx",
+      "line": 535,
+      "expression": "SURFACE_TITLES[selectedKey as MemorySurface] ?? SLOT_TITLES[selectedKey as MemoryL3Slot] ?? 'L1 / L2 / L3 · select surface or slot'"
+    },
+    {
+      "file": "src/features/memory/MobileMemoryScreens.tsx",
+      "line": 768,
+      "expression": "SURFACE_TITLES[surface]"
+    },
+    {
+      "file": "src/features/memory/MobileMemoryScreens.tsx",
+      "line": 777,
+      "expression": "SURFACE_TITLES[surface]"
+    },
+    {
+      "file": "src/features/memory/MobileMemoryScreens.tsx",
+      "line": 786,
+      "expression": "SLOT_TITLES[slot]"
+    },
+    {
+      "file": "src/features/memory/MobileMemoryScreens.tsx",
+      "line": 910,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/memory/MobileMemoryScreens.tsx",
+      "line": 1189,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/mobile/BottomNavigation.tsx",
+      "line": 28,
+      "expression": "label"
+    },
+    {
+      "file": "src/features/mobile/BottomNavigation.tsx",
+      "line": 34,
+      "expression": "label"
+    },
+    {
+      "file": "src/features/notes/MobileNotebookScreens.tsx",
+      "line": 91,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/notes/MobileNotebookScreens.tsx",
+      "line": 248,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/notes/MobileNotebookScreens.tsx",
+      "line": 312,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/notes/MobileNotebookScreens.tsx",
+      "line": 373,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/plan/MobilePlanScreens.tsx",
+      "line": 109,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/plan/MobilePlanScreens.tsx",
+      "line": 251,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/plan/MobilePlanScreens.tsx",
+      "line": 274,
+      "expression": "h"
+    },
+    {
+      "file": "src/features/plan/MobilePlanScreens.tsx",
+      "line": 351,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/plan/MobilePlanScreens.tsx",
+      "line": 410,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/plan/MobilePlanScreens.tsx",
+      "line": 506,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/plan/MobilePlanScreens.tsx",
+      "line": 678,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/plan/MobilePlanScreens.tsx",
+      "line": 822,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/questions/MobileLibraryScreens.tsx",
+      "line": 134,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/questions/MobileLibraryScreens.tsx",
+      "line": 135,
+      "expression": "notice"
+    },
+    {
+      "file": "src/features/questions/MobileLibraryScreens.tsx",
+      "line": 184,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/questions/MobileLibraryScreens.tsx",
+      "line": 242,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/questions/MobileLibraryScreens.tsx",
+      "line": 243,
+      "expression": "notice"
+    },
+    {
+      "file": "src/features/questions/MobileLibraryScreens.tsx",
+      "line": 262,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/questions/MobileLibraryScreens.tsx",
+      "line": 275,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/questions/MobileLibraryScreens.tsx",
+      "line": 301,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/questions/MobileLibraryScreens.tsx",
+      "line": 331,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/questions/MobileLibraryScreens.tsx",
+      "line": 332,
+      "expression": "notice"
+    },
+    {
+      "file": "src/features/questions/MobileLibraryScreens.tsx",
+      "line": 403,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/questions/MobileLibraryScreens.tsx",
+      "line": 404,
+      "expression": "notice"
+    },
+    {
+      "file": "src/features/questions/MobileLibraryScreens.tsx",
+      "line": 452,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/questions/MobileLibraryScreens.tsx",
+      "line": 506,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/resources/PartnerScreens.tsx",
+      "line": 15,
+      "expression": "remote.error"
+    },
+    {
+      "file": "src/features/resources/PartnerScreens.tsx",
+      "line": 28,
+      "expression": "title"
+    },
+    {
+      "file": "src/features/resources/PartnerScreens.tsx",
+      "line": 29,
+      "expression": "remote.error"
+    },
+    {
+      "file": "src/features/resources/PartnerScreens.tsx",
+      "line": 40,
+      "expression": "({ 67: 'Identity', 68: 'Personality', 69: 'Model & tools', 70: 'Library', 71: 'Review partner' } as Record<number, string>)[item]"
+    },
+    {
+      "file": "src/features/resources/PartnerScreens.tsx",
+      "line": 56,
+      "expression": "remote.error"
+    },
+    {
+      "file": "src/features/resources/PartnerScreens.tsx",
+      "line": 66,
+      "expression": "remote.error"
+    },
+    {
+      "file": "src/features/resources/PartnerScreens.tsx",
+      "line": 68,
+      "expression": "partners.error"
+    },
+    {
+      "file": "src/features/resources/PartnerScreens.tsx",
+      "line": 86,
+      "expression": "remote.error"
+    },
+    {
+      "file": "src/features/resources/PartnerScreens.tsx",
+      "line": 95,
+      "expression": "tools.error"
+    },
+    {
+      "file": "src/features/resources/PersonalizationScreens.tsx",
+      "line": 13,
+      "expression": "title"
+    },
+    {
+      "file": "src/features/resources/PersonalizationScreens.tsx",
+      "line": 14,
+      "expression": "remote.error"
+    },
+    {
+      "file": "src/features/resources/PersonalizationScreens.tsx",
+      "line": 42,
+      "expression": "remote.error"
+    },
+    {
+      "file": "src/features/resources/PersonalizationScreens.tsx",
+      "line": 56,
+      "expression": "remote.error"
+    },
+    {
+      "file": "src/features/resources/PersonalizationScreens.tsx",
+      "line": 67,
+      "expression": "remote.error"
+    },
+    {
+      "file": "src/features/resources/PersonalizationScreens.tsx",
+      "line": 91,
+      "expression": "backends.error"
+    },
+    {
+      "file": "src/features/resources/ResourceHubScreen.tsx",
+      "line": 40,
+      "expression": "item.title"
+    },
+    {
+      "file": "src/features/resources/ResourceHubScreen.tsx",
+      "line": 40,
+      "expression": "item.description"
+    },
+    {
+      "file": "src/features/resources/ResourceHubScreen.tsx",
+      "line": 43,
+      "expression": "count.error"
+    },
+    {
+      "file": "src/features/search/SearchScreen.tsx",
+      "line": 35,
+      "expression": "labels[kind as 'session' | 'learning' | 'partner']"
+    },
+    {
+      "file": "src/features/search/SearchScreen.tsx",
+      "line": 35,
+      "expression": "error!"
+    },
+    {
+      "file": "src/features/search/SearchScreen.tsx",
+      "line": 40,
+      "expression": "labels[kind]"
+    },
+    {
+      "file": "src/features/search/SearchScreen.tsx",
+      "line": 40,
+      "expression": "row.label"
+    },
+    {
+      "file": "src/features/settings/AccountAdminScreens.tsx",
+      "line": 18,
+      "expression": "remote.error"
+    },
+    {
+      "file": "src/features/settings/AccountAdminScreens.tsx",
+      "line": 33,
+      "expression": "item"
+    },
+    {
+      "file": "src/features/settings/AccountAdminScreens.tsx",
+      "line": 57,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/settings/AccountAdminScreens.tsx",
+      "line": 78,
+      "expression": "auth.error || 'Check the connection and retry.'"
+    },
+    {
+      "file": "src/features/settings/ConfigurationScreen.tsx",
+      "line": 15,
+      "expression": "spec.title"
+    },
+    {
+      "file": "src/features/settings/ConfigurationScreen.tsx",
+      "line": 17,
+      "expression": "remote.error"
+    },
+    {
+      "file": "src/features/settings/MigrationScreen.tsx",
+      "line": 31,
+      "expression": "remote.error || error"
+    },
+    {
+      "file": "src/features/settings/MobileSettingsScreen.tsx",
+      "line": 26,
+      "expression": "settings.error || 'Failed to load settings'"
+    },
+    {
+      "file": "src/features/settings/MobileSettingsScreen.tsx",
+      "line": 36,
+      "expression": "settings.error"
+    },
+    {
+      "file": "src/features/settings/MobileSettingsScreen.tsx",
+      "line": 41,
+      "expression": "['System', 'Default', 'Cream', 'Dark', 'Glass'][i]"
+    },
+    {
+      "file": "src/features/settings/MobileSettingsScreen.tsx",
+      "line": 56,
+      "expression": "label"
+    },
+    {
+      "file": "src/features/settings/MobileSettingsScreen.tsx",
+      "line": 56,
+      "expression": "description"
+    },
+    {
+      "file": "src/features/settings/RemoteSettingsScreen.tsx",
+      "line": 95,
+      "expression": "spec.title"
+    },
+    {
+      "file": "src/features/settings/RemoteSettingsScreen.tsx",
+      "line": 97,
+      "expression": "error || remote.error"
+    },
+    {
+      "file": "src/features/settings/RemoteSettingsScreen.tsx",
+      "line": 100,
+      "expression": "field.label"
+    },
+    {
+      "file": "src/features/settings/RemoteSettingsScreen.tsx",
+      "line": 101,
+      "expression": "field.label"
+    },
+    {
+      "file": "src/features/settings/ServerForm.tsx",
+      "line": 24,
+      "expression": "humanize(key)"
+    },
+    {
+      "file": "src/features/settings/ServerForm.tsx",
+      "line": 56,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/settings/ServerForm.tsx",
+      "line": 58,
+      "expression": "submitLabel"
+    },
+    {
+      "file": "src/features/settings/ServicesScreen.tsx",
+      "line": 26,
+      "expression": "titles[number]"
+    },
+    {
+      "file": "src/features/settings/ServicesScreen.tsx",
+      "line": 27,
+      "expression": "remote.error"
+    },
+    {
+      "file": "src/features/settings/ServicesScreen.tsx",
+      "line": 63,
+      "expression": "({ id: 'Unique ID', name: 'Name', provider: 'Provider', base_url: 'API URL', api_format: 'API format' } as Record<string, string>)[key]"
+    },
+    {
+      "file": "src/features/settings/ServicesScreen.tsx",
+      "line": 88,
+      "expression": "models.error"
+    },
+    {
+      "file": "src/features/settings/SettingsHubScreen.tsx",
+      "line": 80,
+      "expression": "title"
+    },
+    {
+      "file": "src/features/settings/SettingsHubScreen.tsx",
+      "line": 82,
+      "expression": "titles[route] ?? groups[route]?.[0] ?? ({ 63: 'My profile', 62: 'Switch workspace', 65: 'Personalization', 88: 'Usage statistics', 139: 'Device sign-in' } as Record<number, string>)[route]"
+    },
+    {
+      "file": "src/features/settings/SettingsHubScreen.tsx",
+      "line": 83,
+      "expression": "error"
+    },
+    {
+      "file": "src/features/settings/ToolsScreen.tsx",
+      "line": 24,
+      "expression": "remote.error || error"
     },
     {
       "file": "src/features/shell/AppShell.tsx",
-      "line": 69,
+      "line": 71,
       "expression": "entry.label"
     },
     {
       "file": "src/features/shell/AppShell.tsx",
-      "line": 73,
-      "expression": "item.label"
-    },
-    {
-      "file": "src/features/shell/AppShell.tsx",
-      "line": 73,
-      "expression": "item.label"
-    },
-    {
-      "file": "src/features/shell/AppShell.tsx",
-      "line": 74,
+      "line": 75,
       "expression": "item.label"
     },
     {
@@ -787,12 +1035,47 @@
     },
     {
       "file": "src/features/shell/AppShell.tsx",
-      "line": 125,
+      "line": 76,
+      "expression": "item.label"
+    },
+    {
+      "file": "src/features/shell/AppShell.tsx",
+      "line": 77,
+      "expression": "item.label"
+    },
+    {
+      "file": "src/features/shell/AppShell.tsx",
+      "line": 127,
       "expression": "page.label"
     },
     {
+      "file": "src/features/workspaces/ManageWorkspacesScreen.tsx",
+      "line": 16,
+      "expression": "remote.error"
+    },
+    {
+      "file": "src/features/workspaces/MobileWorkspaceScreen.tsx",
+      "line": 18,
+      "expression": "state.error"
+    },
+    {
+      "file": "src/features/workspaces/MobileWorkspaceScreen.tsx",
+      "line": 19,
+      "expression": "state.storageError"
+    },
+    {
+      "file": "src/features/workspaces/WorkspaceList.tsx",
+      "line": 17,
+      "expression": "state.error"
+    },
+    {
+      "file": "src/features/workspaces/WorkspaceList.tsx",
+      "line": 18,
+      "expression": "state.storageError"
+    },
+    {
       "file": "src/shared/ui/Controls.tsx",
-      "line": 35,
+      "line": 38,
       "expression": "error"
     },
     {
@@ -801,77 +1084,30 @@
       "expression": "notice.message"
     }
   ],
-  "unwrapped": [
-    {
-      "file": "src/components/app-tabs.tsx",
-      "line": 16,
-      "key": "Home",
-      "kind": "unwrapped"
-    },
-    {
-      "file": "src/components/app-tabs.tsx",
-      "line": 24,
-      "key": "Explore",
-      "kind": "unwrapped"
-    },
+  "unwrapped": [],
+  "intentionalLiterals": [
     {
       "file": "src/components/app-tabs.web.tsx",
-      "line": 26,
-      "key": "Home",
-      "kind": "unwrapped"
-    },
-    {
-      "file": "src/components/app-tabs.web.tsx",
-      "line": 29,
-      "key": "Explore",
-      "kind": "unwrapped"
-    },
-    {
-      "file": "src/components/app-tabs.web.tsx",
-      "line": 63,
+      "line": 66,
       "key": "Expo Starter",
       "kind": "unwrapped"
     },
     {
-      "file": "src/components/app-tabs.web.tsx",
-      "line": 70,
-      "key": "Docs",
+      "file": "src/features/learning/live/ReaderScreen.tsx",
+      "line": 82,
+      "key": "Aa",
       "kind": "unwrapped"
     },
     {
-      "file": "src/features/chat/ChatComposer.tsx",
-      "line": 493,
-      "key": "(@mention)",
+      "file": "src/features/questions/MobileLibraryScreens.tsx",
+      "line": 330,
+      "key": "XLSX · CSV · TSV · JSON",
       "kind": "unwrapped"
     },
     {
-      "file": "src/features/chat/ChatComposer.tsx",
-      "line": 521,
-      "key": "@mention",
-      "kind": "unwrapped"
-    },
-    {
-      "file": "src/features/entry/ProfileScreen.tsx",
-      "line": 57,
-      "key": "color-logo.png · 18 KB",
-      "kind": "unwrapped"
-    },
-    {
-      "file": "src/features/entry/ProfileScreen.tsx",
-      "line": 58,
-      "key": "Development sample · 21 MB",
-      "kind": "unwrapped"
-    },
-    {
-      "file": "src/features/entry/ProfileScreen.tsx",
-      "line": 58,
-      "key": "Development sample · corrupt.png",
-      "kind": "unwrapped"
-    },
-    {
-      "file": "src/features/resources/OverviewScreen.tsx",
-      "line": 29,
-      "key": "alanguan73",
+      "file": "src/features/settings/AccountAdminScreens.tsx",
+      "line": 56,
+      "key": ": username,password,preset",
       "kind": "unwrapped"
     }
   ],
@@ -889,32 +1125,122 @@
       "kind": "literal-prop"
     },
     {
+      "file": "src/features/knowledge/MobileKnowledgeScreens.tsx",
+      "line": 802,
+      "key": "docs",
+      "kind": "literal-prop"
+    },
+    {
+      "file": "src/features/knowledge/MobileKnowledgeScreens.tsx",
+      "line": 1067,
+      "key": "main",
+      "kind": "literal-prop"
+    },
+    {
+      "file": "src/features/knowledge/MobileKnowledgeScreens.tsx",
+      "line": 1073,
+      "key": "docs",
+      "kind": "literal-prop"
+    },
+    {
+      "file": "src/features/knowledge/MobileKnowledgeScreens.tsx",
+      "line": 1079,
+      "key": "**/*.md",
+      "kind": "literal-prop"
+    },
+    {
+      "file": "src/features/knowledge/MobileKnowledgeScreens.tsx",
+      "line": 1152,
+      "key": "https://www.postgresql.org/docs/current/mvcc.html",
+      "kind": "literal-prop"
+    },
+    {
+      "file": "src/features/knowledge/MobileKnowledgeScreens.tsx",
+      "line": 1898,
+      "key": "GraphRAG",
+      "kind": "literal-prop"
+    },
+    {
+      "file": "src/features/knowledge/MobileKnowledgeScreens.tsx",
+      "line": 1903,
+      "key": "LightRAG",
+      "kind": "literal-prop"
+    },
+    {
+      "file": "src/features/knowledge/MobileKnowledgeScreens.tsx",
+      "line": 1929,
+      "key": "WeKnora",
+      "kind": "literal-prop"
+    },
+    {
+      "file": "src/features/knowledge/MobileKnowledgeScreens.tsx",
+      "line": 2111,
+      "key": "https://lightrag.example.com",
+      "kind": "literal-prop"
+    },
+    {
+      "file": "src/features/learning/live/LiveLearningScreen.tsx",
+      "line": 163,
+      "key": "https://…",
+      "kind": "literal-prop"
+    },
+    {
+      "file": "src/features/memory/MobileMemoryScreens.tsx",
+      "line": 1300,
+      "key": "/home/user/project",
+      "kind": "literal-prop"
+    },
+    {
+      "file": "src/features/questions/MobileLibraryScreens.tsx",
+      "line": 343,
+      "key": "CSV",
+      "kind": "literal-prop"
+    },
+    {
+      "file": "src/features/resources/PersonalizationScreens.tsx",
+      "line": 23,
+      "key": "Personas",
+      "kind": "literal-prop"
+    },
+    {
+      "file": "src/features/resources/PersonalizationScreens.tsx",
+      "line": 24,
+      "key": "Skills",
+      "kind": "literal-prop"
+    },
+    {
+      "file": "src/features/resources/PersonalizationScreens.tsx",
+      "line": 90,
+      "key": "Connected agents",
+      "kind": "literal-prop"
+    },
+    {
       "file": "src/features/shell/AppShell.tsx",
-      "line": 64,
+      "line": 66,
       "key": "DeepTutor",
       "kind": "literal-prop"
     },
     {
       "file": "src/features/shell/AppShell.tsx",
-      "line": 68,
+      "line": 70,
       "key": "DeepTutor",
       "kind": "literal-prop"
     },
     {
       "file": "src/features/shell/AppShell.tsx",
-      "line": 124,
+      "line": 126,
       "key": "DeepTutor",
       "kind": "literal-prop"
     },
     {
       "file": "src/features/shell/AppShell.tsx",
-      "line": 125,
+      "line": 127,
       "key": "DeepTutor",
       "kind": "literal-prop"
     },
     {
       "file": "src/features/shell/AppShell.tsx",
-      "line": 128,
+      "line": 130,
       "key": "Component preview",
       "kind": "literal-prop"
     }
@@ -7904,5 +8230,6 @@
         }
       ]
     }
-  }
+  },
+  "englishPlaceholders": []
 }

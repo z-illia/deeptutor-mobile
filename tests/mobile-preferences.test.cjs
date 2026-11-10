@@ -5,6 +5,13 @@ const vm = require('node:vm');
 const test = require('node:test');
 const ts = require('typescript');
 
+test('UI localization audit rejects unwrapped prose, missing translations and English placeholders', () => {
+  const report = require('../scripts/audit-locales.cjs');
+  assert.deepEqual(report.unwrapped, []);
+  assert.deepEqual(report.englishPlaceholders, []);
+  for (const locale of Object.values(report.locales)) assert.deepEqual(locale.missingLocalizedCalls, []);
+});
+
 function load(relative, mocks = {}) {
   let file = path.resolve(__dirname, '..', relative);
   if (!path.extname(file)) file += '.ts';

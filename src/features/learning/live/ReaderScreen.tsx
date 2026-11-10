@@ -1,3 +1,4 @@
+import { useCopy } from '@/features/entry/copy';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -13,6 +14,7 @@ import { learningHref } from './routes';
 import { LiveStudyScreen } from './LiveStudyScreen';
 
 export function ReaderScreen({ workspace, id, book }: { workspace: string; id: string; book: boolean }) {
+  const t = useCopy();
   const params = useLocalSearchParams<{ sessionId?: string; readerChat?: string }>();
   const operation = useRef<AbortController | null>(null);
   const [busy, setBusy] = useState(false);
@@ -56,36 +58,36 @@ export function ReaderScreen({ workspace, id, book }: { workspace: string; id: s
     if (!selection.trim()) { setFailure('Select or paste a passage first.'); return; }
     setPrompt(`${action}:\n\n${selection.trim()}`); router.setParams({ readerChat: '1' });
   };
-  return <LearningLayout title={book ? state.data?.book?.book.title ?? 'Book' : 'Read & understand'} loading={state.loading} error={state.error} refresh={state.refresh}>
-    {!!failure && <InlineAlert tone="danger">{failure}</InlineAlert>}
+  return <LearningLayout title={book ? state.data?.book?.book.title ?? t('Book') : t('Read & understand')} loading={state.loading} error={state.error} refresh={state.refresh}>
+    {!!failure && <InlineAlert tone="danger">{t(failure)}</InlineAlert>}
     {book && state.data?.book && <>
-      <Heading>{state.data.book.book.title}</Heading><DText muted>{state.data.book.book.status}</DText>
-      {state.data.book.book.proposal && <View style={{ gap: 12 }}><DText role="label">Book proposal</DText><DText>{state.data.book.book.proposal.description}</DText></View>}
+      <Heading>{state.data.book.book.title}</Heading><DText muted>{t(state.data.book.book.status)}</DText>
+      {state.data.book.book.proposal && <View style={{ gap: 12 }}><DText role="label">{t("Book proposal")}</DText><DText>{state.data.book.book.proposal.description}</DText></View>}
       {state.data.book.spine?.chapters.map((chapter, index) => <DText key={index}>{`${index + 1}. ${chapter.title}`}</DText>)}
       {state.data.book.book.can_edit !== false && <>
-        {state.data.book.book.status === 'draft' && <Button loading={busy} onPress={() => void bookAction('confirm_proposal')}>Approve proposal and design chapters</Button>}
-        {state.data.book.book.status === 'spine_ready' && <Button loading={busy} onPress={() => void bookAction('confirm_spine')}>Compile book</Button>}
-        {state.data.book.book.status === 'paused' && <Button loading={busy} onPress={() => void bookAction('resume')}>Resume compilation</Button>}
-        {state.data.book.book.status === 'compiling' && <Button loading={busy} onPress={() => void bookAction('pause')}>Pause compilation</Button>}
+        {state.data.book.book.status === 'draft' && <Button loading={busy} onPress={() => void bookAction('confirm_proposal')}>{t("Approve proposal and design chapters")}</Button>}
+        {state.data.book.book.status === 'spine_ready' && <Button loading={busy} onPress={() => void bookAction('confirm_spine')}>{t("Compile book")}</Button>}
+        {state.data.book.book.status === 'paused' && <Button loading={busy} onPress={() => void bookAction('resume')}>{t("Resume compilation")}</Button>}
+        {state.data.book.book.status === 'compiling' && <Button loading={busy} onPress={() => void bookAction('pause')}>{t("Pause compilation")}</Button>}
       </>}
-      <Button variant="secondary" onPress={state.refresh}>Refresh book status</Button>
-      {[...state.data.book.pages].sort((a, b) => a.order - b.order).map(page => <ListRow key={page.id} title={page.title} description={page.status} selected={page.id === pageId} onPress={() => { setSaved(false); setPageId(page.id); }} />)}
-      {state.data.page && <View style={{ gap: 24 }}><Heading>{state.data.page.title}</Heading>{state.data.page.blocks.map(block => <View key={block.id} style={{ gap: 8 }}><DText role="label">{block.title}</DText>{bookBlockContent(block.payload) ? <ChatMarkdown learning content={bookBlockContent(block.payload)} /> : <DText muted>{block.error || `${block.type} · ${block.status}. Open this block in DeepTutor web.`}</DText>}</View>)}</View>}
-      {state.data.page && <Button variant="secondary" disabled={saved} onPress={() => { void mutate('post', '/books/progress/visit', workspace, { book_id: id, page_id: state.data!.page!.id }).then(() => setSaved(true)).catch(cause => setFailure(chatError(cause))); }}>{saved ? 'Position saved' : 'Save reading position'}</Button>}
-      <DText muted>Interactive visual blocks are available in DeepTutor web.</DText>
+      <Button variant="secondary" onPress={state.refresh}>{t("Refresh book status")}</Button>
+      {[...state.data.book.pages].sort((a, b) => a.order - b.order).map(page => <ListRow key={page.id} title={page.title} description={t(page.status)} selected={page.id === pageId} onPress={() => { setSaved(false); setPageId(page.id); }} />)}
+      {state.data.page && <View style={{ gap: 24 }}><Heading>{state.data.page.title}</Heading>{state.data.page.blocks.map(block => <View key={block.id} style={{ gap: 8 }}><DText role="label">{block.title}</DText>{bookBlockContent(block.payload) ? <ChatMarkdown learning content={bookBlockContent(block.payload)} /> : <DText muted>{block.error || t('{type} · {status}. Open this block in DeepTutor web.', { type: block.type, status: block.status })}</DText>}</View>)}</View>}
+      {state.data.page && <Button variant="secondary" disabled={saved} onPress={() => { void mutate('post', '/books/progress/visit', workspace, { book_id: id, page_id: state.data!.page!.id }).then(() => setSaved(true)).catch(cause => setFailure(chatError(cause))); }}>{t(saved ? 'Position saved' : 'Save reading position')}</Button>}
+      <DText muted>{t("Interactive visual blocks are available in DeepTutor web.")}</DText>
     </>}
     {material && <>
-      <DText muted>{material.title} · Section {current} of {material.unit_count}</DText>
-      <ScrollView horizontal contentContainerStyle={{ gap: 8 }}>{material.outline.map(unit => <Button key={unit.locator} variant="secondary" disabled={state.loading} onPress={() => { setSaved(false); setLocator(unit.locator); }}>{unit.title || `Section ${unit.locator}`}</Button>)}</ScrollView>
-      <View style={{ flexDirection: 'row', gap: 8 }}><Button variant="secondary" disabled={current <= 1 || state.loading} onPress={() => { setSaved(false); setLocator(current - 1); }}>Previous</Button><Button variant="secondary" disabled={current >= material.unit_count || state.loading} onPress={() => { setSaved(false); setLocator(current + 1); }}>Next</Button><Button variant="ghost" accessibilityLabel="Change reading text size" onPress={() => setFontSize(value => value === 18 ? 22 : 18)}>Aa</Button></View>
-      <DText selectable style={{ fontSize, lineHeight: fontSize * 1.6 }}>{state.data?.unit?.text || 'Text is unavailable for this section. Open the original material in DeepTutor web.'}</DText>
+      <DText muted>{t('{title} · Section {current} of {total}', { title: material.title, current, total: material.unit_count })}</DText>
+      <ScrollView horizontal contentContainerStyle={{ gap: 8 }}>{material.outline.map(unit => <Button key={unit.locator} variant="secondary" disabled={state.loading} onPress={() => { setSaved(false); setLocator(unit.locator); }}>{unit.title || t('Section {number}', { number: unit.locator })}</Button>)}</ScrollView>
+      <View style={{ flexDirection: 'row', gap: 8 }}><Button variant="secondary" disabled={current <= 1 || state.loading} onPress={() => { setSaved(false); setLocator(current - 1); }}>{t("Previous")}</Button><Button variant="secondary" disabled={current >= material.unit_count || state.loading} onPress={() => { setSaved(false); setLocator(current + 1); }}>{t("Next")}</Button><Button variant="ghost" accessibilityLabel={t("Change reading text size")} onPress={() => setFontSize(value => value === 18 ? 22 : 18)}>Aa</Button></View>
+      <DText selectable style={{ fontSize, lineHeight: fontSize * 1.6 }}>{state.data?.unit?.text || t('Text is unavailable for this section. Open the original material in DeepTutor web.')}</DText>
       <Button variant="secondary" disabled={state.loading || saved} onPress={() => {
         setFailure(''); void mutate('put', `/reading/materials/${encodeURIComponent(id)}/position`, workspace, { locator: current, source_anchor: '' }).then(() => setSaved(true)).catch(cause => setFailure(chatError(cause)));
-      }}>{saved ? 'Position saved' : 'Save reading position'}</Button>
-      <Field label="Selected passage" hint="Copy a passage from the selectable reading text and paste it here." value={selection} onChangeText={setSelection} multiline style={{ minHeight: 80 }} />
-      {['Explain selection', 'Translate', 'Vocabulary help', 'Practice this passage', 'Ask tutor about this passage'].map(action => <Button key={action} variant="secondary" disabled={!selection.trim()} onPress={() => ask(action)}>{action}</Button>)}
-      <DText muted>Read aloud and visual PDF/EPUB rendering are available in DeepTutor web.</DText>
+      }}>{t(saved ? 'Position saved' : 'Save reading position')}</Button>
+      <Field label={t("Selected passage")} hint={t("Copy a passage from the selectable reading text and paste it here.")} value={selection} onChangeText={setSelection} multiline style={{ minHeight: 80 }} />
+      {['Explain selection', 'Translate', 'Vocabulary help', 'Practice this passage', 'Ask tutor about this passage'].map(action => <Button key={action} variant="secondary" disabled={!selection.trim()} onPress={() => ask(action)}>{t(action)}</Button>)}
+      <DText muted>{t("Read aloud and visual PDF/EPUB rendering are available in DeepTutor web.")}</DText>
     </>}
-    <Button variant="ghost" onPress={() => router.replace(learningHref(book ? 'books' : 'reading', workspace))}>Back to {book ? 'Books' : 'Reading'}</Button>
+    <Button variant="ghost" onPress={() => router.replace(learningHref(book ? 'books' : 'reading', workspace))}>{t(book ? 'Back to books' : 'Back to reading')}</Button>
   </LearningLayout>;
 }

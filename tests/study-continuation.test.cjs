@@ -42,6 +42,7 @@ function screenHarness(view, rows) {
   const imports = ts.createSourceFile('screen.tsx', source, ts.ScriptTarget.Latest, true).statements.filter(ts.isImportDeclaration);
   const overrides = Object.fromEntries(imports.map(node => [node.moduleSpecifier.text, new Proxy({}, { get: (_, key) => String(key) })]));
   Object.assign(overrides, {
+    '@/features/entry/copy': { useCopy: () => key => key },
     react: { useCallback: fn => fn, useEffect() {}, useState: initial => [initial, () => {}], useRef: value => ({ current: value }) },
     'expo-router': { router: { push: url => navigations.push(url) }, useFocusEffect() {}, useLocalSearchParams: () => ({ view, workspace: 'workspace', pathId: 'path' }) },
     '@/features/auth/AuthProvider': { useAuth: () => ({ serverUrl: 'server', session: { profile: { id: 'user' } } }) },

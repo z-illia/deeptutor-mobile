@@ -1,3 +1,4 @@
+import { useCopy } from '@/features/entry/copy';
 import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useDesign } from '@/shared/design/DesignProvider';
@@ -9,6 +10,7 @@ import { chatError } from '@/features/chat/live/useLiveChat';
 import { bookOperation, type Book } from './repository';
 
 export function BookTools({ workspace, onCreated, canCreate }: { workspace: string; canCreate: boolean; onCreated: (book: Book) => void }) {
+  const t = useCopy();
   const { language } = useDesign();
   const [open, setOpen] = useState(false);
   const [goal, setGoal] = useState('');
@@ -26,15 +28,15 @@ export function BookTools({ workspace, onCreated, canCreate }: { workspace: stri
     finally { operation.current = null; setBusy(false); }
   };
   return <>
-    <Button variant="secondary" disabled={!canCreate} onPress={() => setOpen(true)}>Open book tools</Button>
-    {!canCreate && <DText muted>Book creation is unavailable for this account or workspace.</DText>}
-    <FullScreenModal open={open} title="Create a book" onClose={() => { if (!busy) setOpen(false); }}>
+    <Button variant="secondary" disabled={!canCreate} onPress={() => setOpen(true)}>{t("Open book tools")}</Button>
+    {!canCreate && <DText muted>{t("Book creation is unavailable for this account or workspace.")}</DText>}
+    <FullScreenModal open={open} title={t("Create a book")} onClose={() => { if (!busy) setOpen(false); }}>
       <View style={{ padding: 20, gap: 20 }}>
-        <DText>Describe the book you want. You can review its proposal before compiling chapters.</DText>
-        <Field label="Book goal" value={goal} onChangeText={setGoal} multiline style={{ minHeight: 140 }} />
-        {!!error && <InlineAlert tone="danger">{error}</InlineAlert>}
-        <Button loading={busy} disabled={!goal.trim()} onPress={() => void create()}>Generate book proposal</Button>
-        {busy && <DText muted>The server is preparing your proposal. Leaving the screen may interrupt this request; check Books before trying again.</DText>}
+        <DText>{t("Describe the book you want. You can review its proposal before compiling chapters.")}</DText>
+        <Field label={t("Book goal")} value={goal} onChangeText={setGoal} multiline style={{ minHeight: 140 }} />
+        {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
+        <Button loading={busy} disabled={!goal.trim()} onPress={() => void create()}>{t("Generate book proposal")}</Button>
+        {busy && <DText muted>{t("The server is preparing your proposal. Leaving the screen may interrupt this request; check Books before trying again.")}</DText>}
       </View>
     </FullScreenModal>
   </>;

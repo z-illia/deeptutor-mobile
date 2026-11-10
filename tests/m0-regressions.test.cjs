@@ -53,6 +53,7 @@ test('web theme SSR stays light without reading or subscribing to browser Appear
 test('custom web tab keeps the actual element ref and Router interaction props', () => {
   function Pressable() {}
   const { TabButton } = loadSource('src/components/app-tabs.web.tsx', {
+    '@/features/entry/copy': { useCopy: () => key => key },
     'expo-router/ui': {},
     'expo-symbols': {},
     'react-native': { Pressable, StyleSheet: { create: (styles) => styles } },

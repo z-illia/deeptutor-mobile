@@ -38,7 +38,12 @@ test('active resource count includes selections and pending files, excludes the 
   assert.throws(() => resources.toggleResource({}, 'reading', { id: 'real', available: true }), /readable revision/);
 });
 test('starter component renders exactly three compact accessible actions in one scrollable row', () => {
+  let language = 'en';
+  const { translateCopy } = load('src/i18n/copy.ts', Object.fromEntries(
+    ['en', 'zh', 'fr', 'de', 'uk', 'pl', 'pt', 'vi', 'ja', 'tr'].map(code => [`./locales/${code}.json`, require(`../src/i18n/locales/${code}.json`)])
+  ));
   const { StudyActionRow } = load('src/features/learning/live/StudyActionRow.tsx', {
+    '@/features/entry/copy': { useCopy: () => key => translateCopy(language, key) },
     'react-native': require('react-native-web'),
     'lucide-react-native': { CircleCheck: () => null, Lightbulb: () => null, Zap: () => null },
     '@/shared/design/DesignProvider': { useDesign: () => ({ colors: { primary: '#d4734b', card: '#242220', border: '#3a3634' } }) },
@@ -51,6 +56,13 @@ test('starter component renders exactly three compact accessible actions in one 
   assert.ok(html.includes('aria-selected="true"'));
   const disabled = renderToString(React.createElement(StudyActionRow, { disabled: true, onSelect() {} }));
   assert.equal((disabled.match(/aria-disabled="true"/g) || []).length, 3);
+  language = 'uk';
+  const localized = renderToString(React.createElement(StudyActionRow, { disabled: true, onSelect() {} }));
+  for (const action of actions.studyStrategies) assert.ok(localized.includes(translateCopy('uk', action.title)));
+  for (const child of StudyActionRow({ disabled: true, onSelect() {} }).props.children) {
+    assert.equal(child.props.accessibilityHint, translateCopy('uk', 'Available when the session and current objective are ready.'));
+  }
+  assert.ok(!localized.includes('Teach Me'));
 });
 test('shared transport guards empty/duplicate submissions and preserves an unsent answer during a contextual strategy', async () => {
   const states = [], refs = [], effects = [], commands = [];
