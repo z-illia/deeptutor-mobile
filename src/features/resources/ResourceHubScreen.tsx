@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { BookOpen, Database, Heart, ListChecks, MessageSquare, NotebookPen, Search, ChevronRight, type LucideIcon } from 'lucide-react-native';
+import { BookOpen, Bot, Brain, Database, Heart, ListChecks, MessageSquare, Network, NotebookPen, Plug, Search, Sparkles, Terminal, Users, ChevronRight, type LucideIcon } from 'lucide-react-native';
 import { router, type Href } from 'expo-router';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { useWorkspaces } from '@/features/workspaces/WorkspaceProvider';
@@ -18,13 +18,13 @@ const library: { title: string; href: Href; key?: ResourceKey; description: stri
   { title: 'Learning journal', icon: BookOpen, href: '/space/journal', description: 'Inspect your mission, session handoff and confirmed records.' },
 ];
 const account: typeof library = [
-  { title: 'Partners', href: '/partners', key: 'partners', description: 'Companions with their own soul, library and channels' },
-  { title: 'Personas', href: '/space/personas', key: 'personas', description: 'Behavior presets you can apply per chat turn.' },
-  { title: 'Skills', href: '/space/personas', key: 'skills', description: 'Capability playbooks the model reads on demand.' },
-  { title: 'Connectors', href: '/space/mcp', key: 'mcp', description: 'Connect hosted MCP services and bring their tools into chat.' },
-  { title: 'CLI apps', href: '/settings/agents', key: 'cli_apps', description: 'Command-line tools from the CLI-Anything catalog, callable from chat.' },
-  { title: 'Subagents & imports', href: '/agents', key: 'agents', description: 'Connect local or remote agents and consult them from any chat.' },
-  { title: 'Memory', href: '/memory', description: 'Review what your tutor remembers about you.' },
+  { title: 'Partners', icon: Bot, href: '/partners', key: 'partners', description: 'Companions with their own soul, library and channels' },
+  { title: 'Personas', icon: Users, href: '/space/personas', key: 'personas', description: 'Behavior presets you can apply per chat turn.' },
+  { title: 'Skills', icon: Sparkles, href: '/space/personas', key: 'skills', description: 'Capability playbooks the model reads on demand.' },
+  { title: 'Connectors', icon: Plug, href: '/space/mcp', key: 'mcp', description: 'Connect hosted MCP services and bring their tools into chat.' },
+  { title: 'CLI apps', icon: Terminal, href: '/settings/agents', key: 'cli_apps', description: 'Command-line tools from the CLI-Anything catalog, callable from chat.' },
+  { title: 'Subagents & imports', icon: Network, href: '/agents', key: 'agents', description: 'Connect local or remote agents and consult them from any chat.' },
+  { title: 'Memory', icon: Brain, href: '/memory', description: 'Review what your tutor remembers about you.' },
 ];
 export function ResourceHubScreen({ personalization = false }: { personalization?: boolean }) {
   const auth = useAuth(); const scope = useWorkspaces(); const t = useCopy(); const { colors } = useDesign();
