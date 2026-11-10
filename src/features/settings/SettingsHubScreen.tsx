@@ -1,3 +1,4 @@
+import { screenPath } from '@/features/navigation/paths';
 import { router, type Href } from 'expo-router';
 import { MobileAction, MobilePage, MobileRow, MobileText } from '@/features/mobile/ScreenLayout';
 import { useAuth } from '@/features/auth/AuthProvider';
@@ -28,7 +29,7 @@ export function SettingsHubScreen({ number }: { number: number }) {
   const [title, routes] = groups[number] ?? ['Account', [63, 62, 65, 81, 88, 139]];
   return <MobilePage title={t(title)}>
     {number === 61 && <MobileText>{auth.session?.profile?.username ?? t('Local account')}</MobileText>}
-    {routes.filter(route => route !== 146 || auth.session?.profile?.role === 'admin' || !auth.session?.status.enabled).map(route => <MobileRow key={route} title={t(titles[route] ?? groups[route]?.[0] ?? ({ 63: 'My profile', 62: 'Switch workspace', 65: 'Personalization', 88: 'Usage statistics', 139: 'Device sign-in' } as Record<number, string>)[route])} onPress={() => router.push(`/mobile/${route}` as Href)} />)}
+    {routes.filter(route => route !== 146 || auth.session?.profile?.role === 'admin' || !auth.session?.status.enabled).map(route => <MobileRow key={route} title={t(titles[route] ?? groups[route]?.[0] ?? ({ 63: 'My profile', 62: 'Switch workspace', 65: 'Personalization', 88: 'Usage statistics', 139: 'Device sign-in' } as Record<number, string>)[route])} onPress={() => router.push(`${screenPath(route)}` as Href)} />)}
     {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
     {number === 61 && <MobileAction variant="secondary" loading={signingOut} onPress={() => void signOut()}>{t('Sign out')}</MobileAction>}
   </MobilePage>;

@@ -215,11 +215,11 @@ export function KnowledgeBasesListScreen() {
   return (
     <MobilePage
       title={t('Knowledge bases')}
-      fallback="/mobile/26"
+      fallback="/library"
       tab={26}
       footer={
         <View style={{ gap: 12 }}>
-          <MobileAction onPress={() => router.push('/mobile/43')}>
+          <MobileAction onPress={() => router.push('/knowledge-bases/new')}>
             {t('New knowledge base')}
           </MobileAction>
           <MobileAction
@@ -263,10 +263,7 @@ export function KnowledgeBasesListScreen() {
                 selected={kb.is_default}
                 onPress={() => {
                   setActiveKbName(kb.name, scope);
-                  router.push({
-                    pathname: '/mobile/[screen]',
-                    params: { screen: '41', kb: kb.name },
-                  });
+                  router.push({ pathname: "/knowledge-bases/detail", params: { kb: kb.name } });
                 }}
               />
             );
@@ -276,7 +273,7 @@ export function KnowledgeBasesListScreen() {
       <MobileRow
         title={t('Knowledge engines')}
         description={t('Local · server · cloud · external sources')}
-        onPress={() => router.push('/mobile/59')}
+        onPress={() => router.push('/knowledge-bases/engines')}
       />
     </MobilePage>
   );
@@ -357,7 +354,7 @@ export function KnowledgeBaseDetailScreen({
   return (
     <MobilePage
       title={activeName}
-      fallback="/mobile/40"
+      fallback="/knowledge-bases"
       tab={26}
       footer={
         <MobileAction
@@ -394,10 +391,7 @@ export function KnowledgeBaseDetailScreen({
                 onPress={() => {
                   setActiveKbName(activeName, scope);
                   setActiveKbFile(file.name, scope);
-                  router.push({
-                    pathname: '/mobile/[screen]',
-                    params: { screen: '42', kb: activeName, file: file.name },
-                  });
+                  router.push({ pathname: "/knowledge-bases/preview", params: { kb: activeName, file: file.name } });
                 }}
               />
             );
@@ -410,40 +404,28 @@ export function KnowledgeBaseDetailScreen({
           title={t('Add documents')}
           description={t('Choose files or import a folder once')}
           onPress={() =>
-            router.push({
-              pathname: '/mobile/[screen]',
-              params: { screen: '44', kb: activeName },
-            })
+            router.push({ pathname: "/knowledge-bases/documents/add", params: { kb: activeName } })
           }
         />
         <MobileRow
           title={t('Connected sources')}
           description={t('Linked folders · GitHub · Web')}
           onPress={() =>
-            router.push({
-              pathname: '/mobile/[screen]',
-              params: { screen: '45', kb: activeName },
-            })
+            router.push({ pathname: "/knowledge-bases/sources", params: { kb: activeName } })
           }
         />
         <MobileRow
           title={t('Index versions')}
           description={t('2 versions · re-index and recovery details')}
           onPress={() =>
-            router.push({
-              pathname: '/mobile/[screen]',
-              params: { screen: '50', kb: activeName },
-            })
+            router.push({ pathname: "/knowledge-bases/index-recovery", params: { kb: activeName } })
           }
         />
         <MobileRow
           title={t('Knowledge base settings')}
           description={t('Default, move, metadata and deletion')}
           onPress={() =>
-            router.push({
-              pathname: '/mobile/[screen]',
-              params: { screen: '51', kb: activeName },
-            })
+            router.push({ pathname: "/knowledge-bases/settings", params: { kb: activeName } })
           }
         />
       </SectionBlock>
@@ -517,10 +499,7 @@ export function KnowledgeSourcePreviewScreen() {
     try {
       await deleteKnowledgeBaseFile(kbName, filename, workspaceId);
       setActiveKbFile('', scope);
-      router.replace({
-        pathname: '/mobile/[screen]',
-        params: { screen: '41', kb: kbName },
-      });
+      router.replace({ pathname: "/knowledge-bases/detail", params: { kb: kbName } });
     } catch (err) {
       setError(err instanceof Error ? err.message : t('Unavailable'));
     } finally {
@@ -536,7 +515,7 @@ export function KnowledgeSourcePreviewScreen() {
   return (
     <MobilePage
       title={t('Source preview')}
-      fallback="/mobile/41"
+      fallback="/knowledge-bases/detail"
       footer={
         <View style={{ gap: 12 }}>
           <MobileAction onPress={() => router.push('/chat')}>
@@ -643,10 +622,7 @@ export function NewKnowledgeBaseScreen() {
         workspaceId,
       );
       setActiveKbName(created.name, scope);
-      router.replace({
-        pathname: '/mobile/[screen]',
-        params: { screen: '41', kb: created.name },
-      });
+      router.replace({ pathname: "/knowledge-bases/detail", params: { kb: created.name } });
     } catch (err) {
       setError(err instanceof Error ? err.message : t('Unavailable'));
     } finally {
@@ -657,7 +633,7 @@ export function NewKnowledgeBaseScreen() {
   return (
     <MobilePage
       title={t('New knowledge base')}
-      fallback="/mobile/40"
+      fallback="/knowledge-bases"
       footer={
         <MobileAction loading={busy} onPress={() => void handleCreate()}>
           {t('Create knowledge base')}
@@ -702,17 +678,14 @@ export function NewKnowledgeBaseScreen() {
         <MobileRow
           title={t('Source type')}
           description={t('Create new / Link existing')}
-          onPress={() => router.push('/mobile/49')}
+          onPress={() => router.push('/knowledge-bases/sources/folder')}
         />
         <MobileRow
           title={t('Engine defaults')}
           description={t('Hybrid · 5 results · chunks 512 / overlap 50')}
           onPress={() => {
             setActiveEngineId(provider, scope);
-            router.push({
-              pathname: '/mobile/[screen]',
-              params: { screen: '60', engine: provider },
-            });
+            router.push({ pathname: "/knowledge-bases/engines/edit", params: { engine: provider } });
           }}
         />
         <MobileRow
@@ -772,10 +745,7 @@ export function AddDocumentsScreen() {
       );
       setSelectedFiles([]);
       setSavedMessage(t('Saved'));
-      router.replace({
-        pathname: '/mobile/[screen]',
-        params: { screen: '41', kb: kbName },
-      });
+      router.replace({ pathname: "/knowledge-bases/detail", params: { kb: kbName } });
     } catch (err) {
       setError(err instanceof Error ? err.message : t('Unavailable'));
     } finally {
@@ -786,7 +756,7 @@ export function AddDocumentsScreen() {
   return (
     <MobilePage
       title={t('Add documents')}
-      fallback="/mobile/41"
+      fallback="/knowledge-bases/detail"
       footer={
         <MobileAction
           loading={busy}
@@ -843,10 +813,7 @@ export function AddDocumentsScreen() {
         title={t('Keep a server folder in sync')}
         description={t('Use connected sources instead')}
         onPress={() =>
-          router.push({
-            pathname: '/mobile/[screen]',
-            params: { screen: '49', kb: kbName },
-          })
+          router.push({ pathname: "/knowledge-bases/sources/folder", params: { kb: kbName } })
         }
       />
     </MobilePage>
@@ -910,15 +877,12 @@ export function ConnectedSourcesScreen() {
   return (
     <MobilePage
       title={t('Connected sources')}
-      fallback="/mobile/41"
+      fallback="/knowledge-bases/detail"
       footer={
         <View style={{ gap: 12 }}>
           <MobileAction
             onPress={() =>
-              router.push({
-                pathname: '/mobile/[screen]',
-                params: { screen: '46', kb: kbName },
-              })
+              router.push({ pathname: "/knowledge-bases/sources/add", params: { kb: kbName } })
             }>
             {t('Add a source')}
           </MobileAction>
@@ -942,10 +906,7 @@ export function ConnectedSourcesScreen() {
               : t('Sync manually · deleted source files remain indexed')
           }
           onPress={() =>
-            router.push({
-              pathname: '/mobile/[screen]',
-              params: { screen: '49', kb: kbName },
-            })
+            router.push({ pathname: "/knowledge-bases/sources/folder", params: { kb: kbName } })
           }
         />
         <MobileRow
@@ -956,10 +917,7 @@ export function ConnectedSourcesScreen() {
               : t('Track Markdown docs · daily automatic sync')
           }
           onPress={() =>
-            router.push({
-              pathname: '/mobile/[screen]',
-              params: { screen: '47', kb: kbName },
-            })
+            router.push({ pathname: "/knowledge-bases/sources/github", params: { kb: kbName } })
           }
         />
         <MobileRow
@@ -970,10 +928,7 @@ export function ConnectedSourcesScreen() {
               : t('8 sources · schedules pending')
           }
           onPress={() =>
-            router.push({
-              pathname: '/mobile/[screen]',
-              params: { screen: '128', kb: kbName },
-            })
+            router.push({ pathname: "/knowledge-bases/sources/web", params: { kb: kbName } })
           }
         />
       </View>
@@ -988,37 +943,28 @@ export function AddSourceTypeScreen() {
   const kbName = params.kb || getActiveKbName(scope) || 'Databases';
 
   return (
-    <MobilePage title={t('Add source')} fallback="/mobile/45">
+    <MobilePage title={t('Add source')} fallback="/knowledge-bases/sources">
       <MobileText muted>{t('Databases · Choose one source type')}</MobileText>
       <View>
         <MobileRow
           title={t('Server folder')}
           description={t('Server path · explicit sync action')}
           onPress={() =>
-            router.push({
-              pathname: '/mobile/[screen]',
-              params: { screen: '49', kb: kbName },
-            })
+            router.push({ pathname: "/knowledge-bases/sources/folder", params: { kb: kbName } })
           }
         />
         <MobileRow
           title={t('GitHub repository')}
           description={t('Owner/repo, branch, path and glob')}
           onPress={() =>
-            router.push({
-              pathname: '/mobile/[screen]',
-              params: { screen: '47', kb: kbName },
-            })
+            router.push({ pathname: "/knowledge-bases/sources/github", params: { kb: kbName } })
           }
         />
         <MobileRow
           title={t('Documentation website')}
           description={t('Bounded crawl with depth and page limits')}
           onPress={() =>
-            router.push({
-              pathname: '/mobile/[screen]',
-              params: { screen: '48', kb: kbName },
-            })
+            router.push({ pathname: "/knowledge-bases/sources/web/edit", params: { kb: kbName } })
           }
         />
       </View>
@@ -1067,10 +1013,7 @@ export function GitHubSourceScreen() {
         workspaceId,
       );
       await load();
-      router.replace({
-        pathname: '/mobile/[screen]',
-        params: { screen: '45', kb: kbName },
-      });
+      router.replace({ pathname: "/knowledge-bases/sources", params: { kb: kbName } });
     } catch (err) {
       setError(err instanceof Error ? err.message : t('Unavailable'));
     } finally {
@@ -1094,7 +1037,7 @@ export function GitHubSourceScreen() {
   return (
     <MobilePage
       title={t('GitHub source')}
-      fallback="/mobile/45"
+      fallback="/knowledge-bases/sources"
       footer={
         <View style={{ gap: 12 }}>
           <MobileAction loading={busy} onPress={() => void handleAdd()}>
@@ -1103,7 +1046,7 @@ export function GitHubSourceScreen() {
           <MobileAction
             variant="secondary"
             onPress={() =>
-              router.canGoBack() ? router.back() : router.replace('/mobile/45')
+              router.canGoBack() ? router.back() : router.replace('/knowledge-bases/sources')
             }>
             {t('Cancel')}
           </MobileAction>
@@ -1183,10 +1126,7 @@ export function WebSourceScreen() {
         },
         workspaceId,
       );
-      router.replace({
-        pathname: '/mobile/[screen]',
-        params: { screen: '128', kb: kbName },
-      });
+      router.replace({ pathname: "/knowledge-bases/sources/web", params: { kb: kbName } });
     } catch (err) {
       setError(err instanceof Error ? err.message : t('Unavailable'));
     } finally {
@@ -1197,7 +1137,7 @@ export function WebSourceScreen() {
   return (
     <MobilePage
       title={t('Web source')}
-      fallback="/mobile/128"
+      fallback="/knowledge-bases/sources/web"
       footer={
         <MobileAction loading={busy} onPress={() => void handleAdd()}>
           {t('Add web source')}
@@ -1333,15 +1273,12 @@ export function WebSourcesListScreen() {
   return (
     <MobilePage
       title={t('Web sources')}
-      fallback="/mobile/45"
+      fallback="/knowledge-bases/sources"
       footer={
         <View style={{ gap: 12 }}>
           <MobileAction
             onPress={() =>
-              router.push({
-                pathname: '/mobile/[screen]',
-                params: { screen: '48', kb: kbName },
-              })
+              router.push({ pathname: "/knowledge-bases/sources/web/edit", params: { kb: kbName } })
             }>
             {t('Add web source')}
           </MobileAction>
@@ -1456,7 +1393,7 @@ export function LinkedFolderScreen() {
   return (
     <MobilePage
       title={t('Linked folder')}
-      fallback="/mobile/45"
+      fallback="/knowledge-bases/sources"
       footer={
         <View style={{ gap: 12 }}>
           <MobileAction loading={busy} onPress={() => void handleLink()}>
@@ -1568,7 +1505,7 @@ export function IndexRecoveryScreen() {
   return (
     <MobilePage
       title={t('Index & recovery')}
-      fallback="/mobile/41"
+      fallback="/knowledge-bases/detail"
       footer={
         <View style={{ gap: 12 }}>
           <MobileAction loading={busy} onPress={() => void handleReindex()}>
@@ -1690,15 +1627,12 @@ export function KnowledgeBaseSettingsScreen() {
   return (
     <MobilePage
       title={t('Library settings')}
-      fallback="/mobile/41"
+      fallback="/knowledge-bases/detail"
       footer={
         <MobileAction
           variant="danger"
           onPress={() =>
-            router.push({
-              pathname: '/mobile/[screen]',
-              params: { screen: '112', kb: kbName },
-            })
+            router.push({ pathname: "/knowledge-bases/delete", params: { kb: kbName } })
           }>
           {t('Review deletion')}
         </MobileAction>
@@ -1723,14 +1657,7 @@ export function KnowledgeBaseSettingsScreen() {
           title={t('Move knowledge base')}
           description={t('Review destination; workspace assignments update')}
           onPress={() =>
-            router.push({
-              pathname: '/mobile/[screen]',
-              params: {
-                screen: '140',
-                kb: kbName,
-                sourceId: kb?.id || `user:kb:${kbName}`,
-              },
-            })
+            router.push({ pathname: "/knowledge-bases/move", params: { kb: kbName, sourceId: kb?.id || `user:kb:${kbName}` } })
           }
         />
         <MobileRow
@@ -1768,7 +1695,7 @@ export function ReviewDeleteKbScreen() {
     try {
       await deleteKnowledgeBase(kbName, workspaceId);
       setActiveKbName('', scope);
-      router.replace('/mobile/40');
+      router.replace('/knowledge-bases');
     } catch (err) {
       setError(err instanceof Error ? err.message : t('Unavailable'));
     } finally {
@@ -1779,7 +1706,7 @@ export function ReviewDeleteKbScreen() {
   return (
     <MobilePage
       title={t('Review deletion')}
-      fallback="/mobile/51"
+      fallback="/knowledge-bases/settings"
       footer={
         <View style={{ gap: 12 }}>
           <MobileAction
@@ -1791,7 +1718,7 @@ export function ReviewDeleteKbScreen() {
           <MobileAction
             variant="secondary"
             onPress={() =>
-              router.canGoBack() ? router.back() : router.replace('/mobile/51')
+              router.canGoBack() ? router.back() : router.replace('/knowledge-bases/settings')
             }>
             {t('Keep knowledge base')}
           </MobileAction>
@@ -1852,7 +1779,7 @@ export function MoveKnowledgeBaseScreen() {
     setError(null);
     try {
       await moveKnowledgeBase(sourceId, targetWorkspace);
-      router.replace('/mobile/40');
+      router.replace('/knowledge-bases');
     } catch (err) {
       setError(err instanceof Error ? err.message : t('Unavailable'));
     } finally {
@@ -1863,7 +1790,7 @@ export function MoveKnowledgeBaseScreen() {
   return (
     <MobilePage
       title={t('Library move')}
-      fallback="/mobile/51"
+      fallback="/knowledge-bases/settings"
       footer={
         <View style={{ gap: 12 }}>
           <MobileAction loading={busy} onPress={() => void handleMove()}>
@@ -1872,7 +1799,7 @@ export function MoveKnowledgeBaseScreen() {
           <MobileAction
             variant="secondary"
             onPress={() =>
-              router.canGoBack() ? router.back() : router.replace('/mobile/51')
+              router.canGoBack() ? router.back() : router.replace('/knowledge-bases/settings')
             }>
             {t('Cancel')}
           </MobileAction>
@@ -1930,10 +1857,7 @@ export function KnowledgeEnginesScreen() {
 
   const openEngine = (engineId: string) => {
     setActiveEngineId(engineId, scope);
-    router.push({
-      pathname: '/mobile/[screen]',
-      params: { screen: '60', engine: engineId },
-    });
+    router.push({ pathname: "/knowledge-bases/engines/edit", params: { engine: engineId } });
   };
 
   const statusFor = (id: string, fallback: string): string => {
@@ -1945,7 +1869,7 @@ export function KnowledgeEnginesScreen() {
   return (
     <MobilePage
       title={t('Knowledge engines')}
-      fallback="/mobile/40"
+      fallback="/knowledge-bases"
       footer={
         <MobileAction
           variant="secondary"
@@ -2119,7 +2043,7 @@ export function EngineConfigScreen() {
   return (
     <MobilePage
       title={t('Engine configuration')}
-      fallback="/mobile/59"
+      fallback="/knowledge-bases/engines"
       footer={
         <View style={{ gap: 12 }}>
           <MobileAction

@@ -1,15 +1,25 @@
 import type { Href } from 'expo-router';
+import { screenPath } from '../navigation/paths';
 
 export function favoritesHref(notebookId?: string, recordId?: string): Href {
   const params = new URLSearchParams();
   if (notebookId) params.set('notebookId', notebookId);
   if (recordId) params.set('recordId', recordId);
-  return `/mobile/31${params.size ? `?${params.toString()}` : ''}` as Href;
+  return `/favorites${params.size ? `?${params.toString()}` : ''}` as Href;
 }
 /** Presentation routes only: never apply this mapping to HTTP API paths. */
 export function mobileHref(path: string): string {
-  const [pathname, query] = path.split('?');
-  const aliases: Record<string, string> = { '/personalization': '/mobile/65', '/settings': '/mobile/81', '/settings/overview': '/mobile/81', '/settings/general': '/mobile/82', '/settings/appearance': '/mobile/83', '/settings/archive': '/mobile/108', '/space/chat-history': '/mobile/27', '/notebooks': '/mobile/31' };
-  if (pathname.startsWith('/notebooks/')) return String(favoritesHref(decodeURIComponent(pathname.slice('/notebooks/'.length)), new URLSearchParams(query).get('recordId') ?? undefined));
-  return aliases[pathname] ? aliases[pathname] + (query ? `?${query}` : '') : path;
+  const match = path.match(/^([^?#]*)(.*)$/);
+  const pathname = match?.[1] ?? path;
+  const suffix = match?.[2] ?? '';
+  const legacy = pathname.match(/^\/mobile\/(\d+)$/);
+  if (legacy) return screenPath(legacy[1]) + suffix;
+  if (pathname.startsWith('/notebooks/')) {
+    try {
+      const query = new URLSearchParams(suffix.split('#')[0]);
+      return String(favoritesHref(decodeURIComponent(pathname.slice('/notebooks/'.length)), query.get('recordId') ?? undefined)) + (suffix.includes('#') ? '#' + suffix.split('#').slice(1).join('#') : '');
+    } catch { return path; }
+  }
+  const aliases: Record<string, string> = { '/settings/overview': '/settings', '/notebooks': '/favorites', '/space/skills': '/space/personas', '/space/cli-apps': '/settings/agents', '/whisper': '/settings/voice' };
+  return (aliases[pathname] ?? pathname) + suffix;
 }

@@ -20,7 +20,6 @@ import { SessionActionsSheet } from './SessionActionsSheet';
 import {
   displaySessionTitle,
   filterChatHistorySessions,
-  formatRelativeSessionTime,
   type HistoryArchiveFilter,
   type HistoryTypeFilter,
   type SessionOrganizationPatch,
@@ -162,13 +161,13 @@ export function MobileConversationLibrary({ archive = false, actions = false }: 
     }
   };
 
-  return <MobilePage title={t(archive ? 'Archived conversations' : 'Conversations')} fallback={archive ? '/mobile/27' : '/mobile/26'} tab={archive ? undefined : 26}>
+  return <MobilePage title={t(archive ? 'Archived conversations' : 'Conversations')} fallback={archive ? '/space/chat-history' : '/library'} tab={archive ? undefined : 26}>
     <MobileText muted>{t(archive ? 'Archived conversations' : 'Browse, rename, delete, and reopen previous conversations from your learning space.')}</MobileText>
     {!!error && <ErrorState message={t(error)} onRetry={() => void load()} />}
     <MobileField label={t(archive ? 'Search archived chats' : 'Search conversations')} value={query} onChangeText={setQuery} />
     {!archive && <>
       <MobileAction onPress={() => router.push('/chat?new=1')}>{t('New conversation')}</MobileAction>
-      <MobileRow title={t('Archived conversations')} description={String(archivedCount)} onPress={() => router.push('/mobile/108')} />
+      <MobileRow title={t('Archived conversations')} description={String(archivedCount)} onPress={() => router.push('/settings/archive')} />
       <Choice label={t('Type')} value={type} options={['all', 'chat', 'selection_tutor'].map(value => ({ value, label: t(value === 'all' ? 'All' : value === 'chat' ? 'Chat' : 'Selection Tutor') }))} onChange={value => setType(value as HistoryTypeFilter)} />
       <Choice label={t('Archive')} value={filter} options={['active', 'archived', 'all'].map(value => ({ value, label: t(value === 'active' ? 'Active' : value === 'archived' ? 'Archived' : 'All') }))} onChange={value => setFilter(value as HistoryArchiveFilter)} />
     </>}
@@ -180,7 +179,6 @@ export function MobileConversationLibrary({ archive = false, actions = false }: 
         <View style={{ flex: 1 }}>
           <MobileRow
             title={displaySessionTitle(session.title, t('New chat'))}
-            description={[session.preferences?.pinned ? t('Pinned') : '', session.last_message_preview, formatRelativeSessionTime(session.updated_at)].filter(Boolean).join(' · ')}
             onPress={() => router.push(`/chat/${encodeURIComponent(session.session_id)}`)}
           />
         </View>

@@ -25,9 +25,9 @@ export function SearchScreen() {
   const results = [...pages, ...rows];
   const pick = (index: number) => { const record = results[index]; if (record) router.replace(record.href as Href); };
   const labels = { page: 'navigation.jumpTo', session: 'Conversations', learning: 'navigation.learning', partner: 'navigation.partners', group: 'Groups' } as const;
-  return <MobilePage title={t('navigation.searchEverything')} fallback="/mobile/26">
+  return <MobilePage title={t('navigation.searchEverything')} fallback="/library">
     <MobileField label={t('navigation.searchEverything')} value={query} autoFocus maxLength={MAX_QUERY_LENGTH} onChangeText={value => { setQuery(value); setSelected(0); router.setParams({ q: value }); }} onSubmitEditing={() => { if (!search.loading) pick(Math.min(selected, results.length - 1)); }} returnKeyType="search" onKeyPress={event => {
-      if (event.nativeEvent.key === 'Escape') { if (router.canGoBack()) router.back(); else router.replace('/mobile/26'); }
+      if (event.nativeEvent.key === 'Escape') { if (router.canGoBack()) router.back(); else router.replace('/library'); }
       if (results.length && ['ArrowDown', 'ArrowUp'].includes(event.nativeEvent.key)) setSelected(previous => (previous + (event.nativeEvent.key === 'ArrowDown' ? 1 : -1) + results.length) % results.length);
     }} />
     {query.trim().length > MAX_QUERY_LENGTH && <InlineAlert tone="warning">{t('Search query must be 200 characters or fewer.')}</InlineAlert>}

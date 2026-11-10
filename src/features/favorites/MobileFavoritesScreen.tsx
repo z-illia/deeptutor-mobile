@@ -51,7 +51,7 @@ export function MobileFavoritesScreen({ create = false }: { create?: boolean }) 
   const modal = (open: boolean, label: string, close: () => void, children: ReactNode) => <FullScreenModal open={open} title={t(label)} onClose={() => { if (!busy) close(); }}><ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 20, gap: 24 }}>{!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}{children}</ScrollView></FullScreenModal>;
   const otherNotebooks = library.notebooks.filter(item => item.id !== notebookId && !item.unreadable);
   const startRelocate = (mode: 'move' | 'copy', item: NotebookRecordItem) => { setRelocate({ mode, record: item }); setTarget(otherNotebooks[0]?.id ?? ''); setError(''); };
-  return <MobilePage title={notebook?.name ?? t('Favorites')} fallback="/mobile/26" tab={notebookId ? undefined : 26}>
+  return <MobilePage title={notebook?.name ?? t('Favorites')} fallback="/library" tab={notebookId ? undefined : 26}>
     <MobileText muted>{notebook?.description || t('Keep original conversations and sources, ready to use in your notes.')}</MobileText>
     {!!error && !meta && !record && !relocate && !deleting && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
     {!!notice && <InlineAlert tone="success">{t(notice)}</InlineAlert>}
@@ -91,7 +91,7 @@ export function MobileFavoritesScreen({ create = false }: { create?: boolean }) 
         <MobileRow title={item.name} description={item.description || String(item.record_count)} accessibilityLabel={t('Open collection {value1}', { value1: item.name })} onPress={() => router.push(favoritesHref(item.id))} />
         <MobileAction variant="ghost" accessibilityLabel={t('Edit collection {value1}', { value1: item.name })} disabled={disabled} onPress={() => openMeta(item)}>{t('Edit')}</MobileAction>
       </View>)}
-      <MobileAction accessibilityLabel={t(library.notebooks.length ? 'New notebook' : 'Create first collection')} disabled={disabled} onPress={() => router.push('/mobile/32')}>{t('New collection')}</MobileAction>
+      <MobileAction accessibilityLabel={t(library.notebooks.length ? 'New notebook' : 'Create first collection')} disabled={disabled} onPress={() => router.push('/favorites/new')}>{t('New collection')}</MobileAction>
     </>}
     {modal(!!meta, meta === 'new' ? 'New collection' : 'Edit collection metadata', () => { setMeta(null); if (create) router.replace(favoritesHref()); }, <>
       <MobileField label={t('Collection Name')} value={name} onChangeText={setName} editable={!busy} />

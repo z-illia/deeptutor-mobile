@@ -180,7 +180,7 @@ export function MemoryOverviewScreen() {
 
   const openWorkbench = (layer: MemoryLayer, key: string) => {
     setMemoryTarget(scopeKey, { layer, key });
-    router.push('/mobile/79');
+    router.push('/memory/workbench');
   };
 
   const handleRefreshTraces = async () => {
@@ -199,7 +199,7 @@ export function MemoryOverviewScreen() {
   };
 
   return (
-    <MobilePage title={t('Memory')} fallback="/mobile/65">
+    <MobilePage title={t('Memory')} fallback="/personalization">
       <MobileText muted>
         {t('Review what the tutor retains and the evidence behind it.')}
       </MobileText>
@@ -245,7 +245,7 @@ export function MemoryOverviewScreen() {
       <MobileRow
         title={t('Explore evidence connections')}
         description={t('Touch-based list replaces hover-only graph')}
-        onPress={() => router.push('/mobile/80')}
+        onPress={() => router.push('/memory/evidence')}
       >
         <ChevronRight size={20} color={colors.mutedForeground} />
       </MobileRow>
@@ -253,7 +253,7 @@ export function MemoryOverviewScreen() {
       <MobileRow
         title={t('Memory processing settings')}
         description={t('Budgets, chunking and reference checks')}
-        onPress={() => router.push('/mobile/102')}
+        onPress={() => router.push('/settings/memory')}
       >
         <ChevronRight size={20} color={colors.mutedForeground} />
       </MobileRow>
@@ -525,7 +525,7 @@ export function MemoryWorkbenchScreen() {
       : `${layer} · ${t(SURFACE_TITLES[selectedKey as MemorySurface] ?? SLOT_TITLES[selectedKey as MemoryL3Slot] ?? 'Chat')} · ${currentDocOverview?.entry_count ?? parsedDoc.entries.length} ${layer === 'L3' ? 'propositions' : 'facts'}`;
 
   return (
-    <MobilePage title={t('Memory workbench')} fallback="/mobile/78">
+    <MobilePage title={t('Memory workbench')} fallback="/memory">
       <MobileText muted>{contextLabel}</MobileText>
       {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
       {!!statusMessage && <InlineAlert tone="info">{statusMessage}</InlineAlert>}
@@ -691,7 +691,7 @@ export function MemoryWorkbenchScreen() {
           <MobileRow
             title={t('Model')}
             description={t('Configured language model')}
-            onPress={() => router.push('/mobile/18')}
+            onPress={() => router.push('/chat/options/models')}
           >
             <ChevronRight size={20} color={colors.mutedForeground} />
           </MobileRow>
@@ -723,7 +723,7 @@ export function MemoryWorkbenchScreen() {
           <MobileRow
             title={t('Run trace')}
             description={t('System prompt, user prompt and response')}
-            onPress={() => router.push('/mobile/80')}
+            onPress={() => router.push('/memory/evidence')}
           >
             <ChevronRight size={20} color={colors.mutedForeground} />
           </MobileRow>
@@ -901,11 +901,11 @@ export function MemoryEvidenceScreen() {
 
   const openInWorkbench = (layer: MemoryLayer, key: string, focusId?: string) => {
     setMemoryTarget(scopeKey, { layer, key, focusId });
-    router.push('/mobile/79');
+    router.push('/memory/workbench');
   };
 
   return (
-    <MobilePage title={t('Memory evidence')} fallback="/mobile/78">
+    <MobilePage title={t('Memory evidence')} fallback="/memory">
       <MobileText muted>{t('L1 → L2 → L3 · tap to follow references')}</MobileText>
       {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
 
@@ -1184,7 +1184,7 @@ export function ImportConversationsScreen() {
   };
 
   return (
-    <MobilePage title={t('Import conversations')} fallback="/mobile/77">
+    <MobilePage title={t('Import conversations')} fallback="/agents">
       <MobileText muted>{t('Continue existing conversations in DeepTutor.')}</MobileText>
       {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
       {!!statusMessage && <InlineAlert tone="info">{statusMessage}</InlineAlert>}

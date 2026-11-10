@@ -81,7 +81,7 @@ function ConversationScreen({ sessionId, showHistory, favorite, initialPanel, ch
   });
   return <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-      <MobileHeader title={chat.serverSessionId ? renamedTitle ?? chat.title : t('New chat')} fallback="/mobile/1" bordered numberOfLines={1} right={<>
+      <MobileHeader title={chat.serverSessionId ? renamedTitle ?? chat.title : t('New chat')} fallback="/learning" bordered numberOfLines={1} right={<>
         <IconButton label={t('Conversation actions')} disabled={!chat.serverSessionId || chat.busy || chat.loading || actionsLoading} onPress={() => void openActions()}><MoreHorizontal size={22} color={colors.foreground} /></IconButton>
         <IconButton label={t('Switch workspace')} onPress={() => setWorkspaceOpen(true)}><Layers size={22} color={colors.foreground} /></IconButton>
         <IconButton label={t('Recent conversations')} onPress={openHistory}><History size={22} color={colors.foreground} /></IconButton>
@@ -136,10 +136,10 @@ function ConversationScreen({ sessionId, showHistory, favorite, initialPanel, ch
       onRename={(id, title) => mutate(() => renameConversation(id, title, selectedWorkspaceId), () => { setRenamedTitle(title.trim()); setActionsOpen(false); })}
       onOrganize={(id, patch) => mutate(() => organizeConversation(id, patch, selectedWorkspaceId), () => {
         setActionsOpen(false);
-        if (patch.archived || (patch.workspace_id !== undefined && patch.workspace_id !== selectedWorkspaceId)) router.replace('/mobile/27');
+        if (patch.archived || (patch.workspace_id !== undefined && patch.workspace_id !== selectedWorkspaceId)) router.replace('/space/chat-history');
         else void chat.refreshHistory();
       })}
-      onDelete={id => mutate(() => deleteConversation(id, selectedWorkspaceId), () => { setActionsOpen(false); router.replace('/mobile/27'); })}
+      onDelete={id => mutate(() => deleteConversation(id, selectedWorkspaceId), () => { setActionsOpen(false); router.replace('/space/chat-history'); })}
     />
     <FullScreenModal open={historyOpen} title={t('Recent conversations')} onClose={() => setHistoryOpen(false)} onShow={() => { if (showHistory) void chat.refreshHistory(); }}>
         {!!chat.historyError && <InlineAlert tone="danger">{t(chat.historyError)}</InlineAlert>}

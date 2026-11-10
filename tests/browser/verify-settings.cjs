@@ -28,7 +28,7 @@ assert.ok(simulation, 'Provide SETTINGS_SIM_URL including its routeKey.');
     const choose = async (label, value) => { await button(label).click(); await button(value).click(); };
     const local = () => page.evaluate(() => JSON.parse(localStorage.getItem('deeptutor-mobile-local-v1')).state);
     await config({ failure: 'load' });
-    await page.goto(`${base}/mobile/82`); await page.waitForURL('**/mobile/82');
+    await page.goto(`${base}/settings/general`); await page.waitForURL('**/settings/general');
     await page.getByText('Test settings unavailable', { exact: true }).first().waitFor({ timeout: 60000 });
     await config({}); await button('Retry').click();
     await button('Interface language').waitFor();

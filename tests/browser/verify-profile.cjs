@@ -25,7 +25,7 @@ const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR
     page.on('pageerror', error => errors.push(error.message));
     const button = name => page.getByRole('button', { name, exact: true });
     const input = name => page.getByLabel(name, { exact: true });
-    await page.goto(`${base}/mobile/63`);
+    await page.goto(`${base}/profile`);
     await button('Avatar').waitFor({ timeout: 60000 });
     await page.screenshot({ path: '/tmp/profile-mobile.png' });
     await button('Avatar').click();
@@ -67,12 +67,12 @@ const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR
     await button('Remove photo').click();
     await button('Remove photo').waitFor({ state: 'hidden' });
     assert.equal((await state()).profile.avatar, '');
-    await page.goto(`${base}/mobile/138`);
+    await page.goto(`${base}/profile/avatar`);
     await button('Upload image').waitFor();
     await page.screenshot({ path: '/tmp/profile-avatar-mobile.png' });
     await page.goto(`${base}/profile?change=1`);
     await page.waitForURL('**/profile/password');
-    await page.goto(`${base}/mobile/64`);
+    await page.goto(`${base}/profile/password`);
     await input('Current password').fill('wrong-password');
     await page.screenshot({ path: '/tmp/profile-password-mobile.png' });
     await input('New password').fill('replacement-password');

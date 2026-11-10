@@ -1,2 +1,6 @@
-import { Redirect } from 'expo-router';
-export default function Screen() { return <Redirect href="/mobile/108" />; }
+import { MobileConversationLibrary } from '@/features/chat/MobileConversationLibrary';
+import { ScreenRoute } from '@/features/navigation/ScreenRoute';
+
+export default function Screen() {
+  return <ScreenRoute><MobileConversationLibrary archive /></ScreenRoute>;
+}

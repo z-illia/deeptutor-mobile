@@ -5,10 +5,10 @@ import { useDesign } from '@/shared/design/DesignProvider';
 import { useMobileCopy } from './copy';
 
 export const mobileTabs = [
-  { number: 1, label: 'Learn', path: '/mobile/1', Icon: BookOpen },
+  { number: 1, label: 'Learn', path: '/learning', Icon: BookOpen },
   { number: 12, label: 'Tutor', path: '/chat', Icon: MessageCircle },
-  { number: 26, label: 'Library', path: '/mobile/26', Icon: Folder },
-  { number: 52, label: 'Plan', path: '/mobile/52', Icon: Calendar },
+  { number: 26, label: 'Library', path: '/library', Icon: Folder },
+  { number: 52, label: 'Plan', path: '/plan', Icon: Calendar },
 ] as const;
 
 export function BottomNavigation({ activeScreen }: { activeScreen: number }) {

@@ -25,7 +25,7 @@ assert.ok(simulation, 'Provide WORKSPACE_SIM_URL (including its routeKey).');
     });
     const page = await context.newPage();
     page.on('pageerror', error => errors.push(error.message));
-    await page.goto(`${base}/mobile/62`);
+    await page.goto(`${base}/workspaces/switch`);
     await page.getByRole('button', { name: 'Math A', exact: true }).waitFor({ timeout: 60000 });
     assert.equal(await page.getByRole('button', { name: 'Archived space', exact: true }).count(), 0);
     await page.getByRole('button', { name: 'Math A', exact: true }).click();

@@ -28,7 +28,7 @@ export function ToolsScreen({ details = false }: { details?: boolean }) {
   </MobilePage>;
 }
 function DataTool({ row, details, disabled, onToggle }: { row: Record<string, unknown>; details: boolean; disabled: boolean; onToggle: (next: boolean) => void }) {
-  return <><MobileRow title={String(row.name)} description={String(row.description ?? '')} onPress={() => router.push(`/mobile/120?tool=${encodeURIComponent(String(row.name))}` as Href)} />
+  return <><MobileRow title={String(row.name)} description={String(row.description ?? '')} onPress={() => router.push(`/settings/tools/detail?tool=${encodeURIComponent(String(row.name))}` as Href)} />
     {row.toggleable === true && <Toggle label={String(row.name)} value={row.enabled === true} onChange={onToggle} disabled={disabled || row.coming_soon === true} />}
     {details && <DataDetails value={row} />}</>;
 }

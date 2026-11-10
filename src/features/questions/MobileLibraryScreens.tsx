@@ -129,12 +129,12 @@ export function QuestionBankScreen({ mistakes = false }: { mistakes?: boolean })
     ...categories.map(cat => ({ value: `cat:${cat.id}`, label: `${cat.name} (${cat.entry_count})` })),
   ];
 
-  return <MobilePage title={t(mistakes ? 'Mistakes' : 'Question bank')} fallback={mistakes ? '/mobile/33' : '/mobile/26'} tab={26}>
+  return <MobilePage title={t(mistakes ? 'Mistakes' : 'Question bank')} fallback={mistakes ? '/space/questions' : '/library'} tab={26}>
     <MobileText muted>{mistakes ? t('Mistakes remain after review. Resolve one to pause its daily reviews.') : workspaceName || t('General workspace')}</MobileText>
     {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
     {!!notice && <InlineAlert tone="success">{t(notice)}</InlineAlert>}
     <MobileField label={t(mistakes ? 'Search mistakes' : 'Search')} value={search} onChangeText={setSearch} />
-    {!mistakes && <MobileRow title={t('Mistakes')} description={`${stats.wrong}`} onPress={() => router.push('/mobile/34')} />}
+    {!mistakes && <MobileRow title={t('Mistakes')} description={`${stats.wrong}`} onPress={() => router.push('/space/questions/mistakes')} />}
     <MobileChoice label={t(mistakes ? 'Filters' : 'Filters & sorting')} value={filter} disabled={busy} options={filterOptions} onChange={setFilter} />
     <MobileChoice label={t('Newest first')} value={sort} disabled={busy} options={[{ value: 'recent', label: t('Newest first') }, { value: 'oldest', label: 'oldest' }]} onChange={setSort} />
     <MobileAction variant="secondary" disabled={busy || loading} onPress={() => void load()}>{t('Refresh')}</MobileAction>
@@ -156,7 +156,7 @@ export function QuestionBankScreen({ mistakes = false }: { mistakes?: boolean })
           {Object.entries(entry.options).map(([key, val]) => <MobileText key={key} muted>{`${key}. ${val}`}</MobileText>)}
           {!!entry.correct_answer && <MobileText>{`${t('Correct')}: ${entry.correct_answer}`}</MobileText>}
           {!!entry.explanation && <ChatMarkdown content={entry.explanation} />}
-          <MobileAction onPress={() => router.push({ pathname: '/mobile/[screen]', params: { screen: '37', entryId: String(entry.id) } })}>{t('Practice question')}</MobileAction>
+          <MobileAction onPress={() => router.push({ pathname: "/space/questions/practice", params: { entryId: String(entry.id) } })}>{t('Practice question')}</MobileAction>
           <MobileAction variant="secondary" disabled={busy} onPress={() => void run(() => updateQuestionEntry(workspace, entry.id, { bookmarked: !entry.bookmarked }))}>{t(entry.bookmarked ? 'Bookmarked' : 'Bookmark')}</MobileAction>
           {(!entry.is_correct || mistakes) && <MobileAction variant="secondary" disabled={busy} onPress={() => void run(() => updateQuestionEntry(workspace, entry.id, { resolved: !entry.resolved }))}>{t(entry.resolved ? 'Marked as known' : 'Resolve a mistake')}</MobileAction>}
           {categories.length > 0 && <MobileChoice label={t('Manage tags')} value={entry.categories[0] ? String(entry.categories[0].id) : ''} disabled={busy} options={[{ value: '', label: t('Untagged') }, ...categories.map(c => ({ value: String(c.id), label: c.name }))]} onChange={val => {
@@ -171,11 +171,11 @@ export function QuestionBankScreen({ mistakes = false }: { mistakes?: boolean })
       </View>;
     })}
     {mistakes ? (
-      <MobileAction variant="secondary" onPress={() => router.push('/mobile/33')}>{t('Open question bank')}</MobileAction>
+      <MobileAction variant="secondary" onPress={() => router.push('/space/questions')}>{t('Open question bank')}</MobileAction>
     ) : <>
-      <MobileAction onPress={() => router.push('/mobile/35')}>{t('Import questions')}</MobileAction>
-      <MobileRow title={t('Manage tags')} description={t('Create and organize question tags')} onPress={() => router.push('/mobile/130')} />
-      <MobileRow title={t('Practice this view')} description={t('Available when questions are present')} onPress={() => router.push(selectedCategoryId !== undefined ? { pathname: '/mobile/[screen]', params: { screen: '37', categoryId: String(selectedCategoryId) } } : '/mobile/37')} />
+      <MobileAction onPress={() => router.push('/space/questions/import')}>{t('Import questions')}</MobileAction>
+      <MobileRow title={t('Manage tags')} description={t('Create and organize question tags')} onPress={() => router.push('/space/questions/tags')} />
+      <MobileRow title={t('Practice this view')} description={t('Available when questions are present')} onPress={() => router.push(selectedCategoryId !== undefined ? { pathname: "/space/questions/practice", params: { categoryId: String(selectedCategoryId) } } : '/space/questions/practice')} />
     </>}
     <ConfirmDialog open={!!deleting} title={t('Delete permanently')} confirmLabel={t('Delete')} busy={busy} onCancel={() => setDeleting(null)} onConfirm={() => {
       if (!deleting) return;
@@ -237,16 +237,16 @@ export function ManageTagsScreen() {
 
   const visible = categories.filter(c => !search.trim() || c.name.toLocaleLowerCase().includes(search.trim().toLocaleLowerCase()));
 
-  return <MobilePage title={t('Manage tags')} fallback="/mobile/33">
+  return <MobilePage title={t('Manage tags')} fallback="/space/questions">
     <MobileText muted>{t('Question bank / Skill library')}</MobileText>
     {!!error && !editing && !deleting && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
     {!!notice && <InlineAlert tone="success">{t(notice)}</InlineAlert>}
     <MobileField label={t('Search tags')} value={search} onChangeText={setSearch} />
-    <MobileRow title={t('All tags')} description={`${t('Show every item')} · ${stats.total}`} onPress={() => router.push('/mobile/33')} />
-    <MobileRow title={t('Untagged')} description={`${t('Items without a tag')} · ${stats.uncategorized}`} onPress={() => router.push({ pathname: '/mobile/[screen]', params: { screen: '33', filter: 'untagged' } })} />
+    <MobileRow title={t('All tags')} description={`${t('Show every item')} · ${stats.total}`} onPress={() => router.push('/space/questions')} />
+    <MobileRow title={t('Untagged')} description={`${t('Items without a tag')} · ${stats.uncategorized}`} onPress={() => router.push({ pathname: "/space/questions", params: { filter: 'untagged' } })} />
     {loading && <LoadingState />}
     {visible.map(cat => <View key={cat.id} style={{ gap: 8 }}>
-      <MobileRow title={cat.name} description={String(cat.entry_count)} onPress={() => router.push({ pathname: '/mobile/[screen]', params: { screen: '33', categoryId: String(cat.id) } })} />
+      <MobileRow title={cat.name} description={String(cat.entry_count)} onPress={() => router.push({ pathname: "/space/questions", params: { categoryId: String(cat.id) } })} />
       <View style={{ flexDirection: 'row', gap: 8 }}>
         <MobileAction variant="secondary" disabled={busy} onPress={() => { setEditing(cat); setEditName(cat.name); setError(''); }}>{t('Edit')}</MobileAction>
         <MobileAction variant="secondary" disabled={busy} onPress={() => { setDeleting(cat); setError(''); }}>{t('Delete')}</MobileAction>
@@ -296,12 +296,12 @@ export function ImportQuestionsScreen({ step }: { step: 35 | 36 | 115 }) {
   };
 
   if (step === 36) {
-    return <MobilePage title={t('Review import')} fallback="/mobile/35">
+    return <MobilePage title={t('Review import')} fallback="/space/questions/import">
       <MobileText muted>{preview?.filename || 'questions.csv'}</MobileText>
       {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
       {!preview ? <>
         <MobileText muted>{t('Choose file → Review preview → Save')}</MobileText>
-        <MobileAction onPress={() => router.replace('/mobile/35')}>{t('Choose question file')}</MobileAction>
+        <MobileAction onPress={() => router.replace('/space/questions/import')}>{t('Choose question file')}</MobileAction>
       </> : <>
         <MobileText style={{ fontWeight: '600' }}>{`${preview.valid} / ${preview.total}`}</MobileText>
         {preview.samples.map((sample, index) => <MobileRow key={index} title={sample.question} description={`${sample.question_type} · ${sample.correct_answer}`} />)}
@@ -310,23 +310,23 @@ export function ImportQuestionsScreen({ step }: { step: 35 | 36 | 115 }) {
           const res = await commitQuestionImport(workspace, preview.token!, preview.filename);
           saveImportCommitResult(scopeKey, res);
           setRevision(v => v + 1);
-          router.replace('/mobile/115');
+          router.replace('/space/questions/import/result');
         })}>{t('Save')}</MobileAction>}
-        <MobileAction variant="secondary" disabled={busy} onPress={() => router.replace('/mobile/35')}>{t('Choose question file')}</MobileAction>
+        <MobileAction variant="secondary" disabled={busy} onPress={() => router.replace('/space/questions/import')}>{t('Choose question file')}</MobileAction>
       </>}
     </MobilePage>;
   }
 
   if (step === 115) {
-    return <MobilePage title={t('Questions imported')} fallback="/mobile/33">
+    return <MobilePage title={t('Questions imported')} fallback="/space/questions">
       <MobileText muted>{committed?.filename || 'questions.csv'}</MobileText>
       {committed ? <InlineAlert tone="success">{`${committed.created} (${committed.duplicates})`}</InlineAlert> : <MobileText muted>{t('Changes saved')}</MobileText>}
-      <MobileAction onPress={() => router.replace('/mobile/33')}>{t('Open question bank')}</MobileAction>
-      <MobileAction variant="secondary" onPress={() => router.replace('/mobile/37')}>{t('Practice imported questions')}</MobileAction>
+      <MobileAction onPress={() => router.replace('/space/questions')}>{t('Open question bank')}</MobileAction>
+      <MobileAction variant="secondary" onPress={() => router.replace('/space/questions/practice')}>{t('Practice imported questions')}</MobileAction>
     </MobilePage>;
   }
 
-  return <MobilePage title={t('Import questions')} fallback="/mobile/33">
+  return <MobilePage title={t('Import questions')} fallback="/space/questions">
     <MobileText muted>XLSX · CSV · TSV · JSON</MobileText>
     {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
     {!!notice && <InlineAlert tone="success">{t(notice)}</InlineAlert>}
@@ -338,7 +338,7 @@ export function ImportQuestionsScreen({ step }: { step: 35 | 36 | 115 }) {
       if (!staged) return;
       stageImportPreview(scopeKey, staged);
       setRevision(v => v + 1);
-      router.push('/mobile/36');
+      router.push('/space/questions/import/review');
     })}>{t('Choose question file')}</MobileAction>
     <MobileRow title={t('Download template')} description="CSV" onPress={() => void run(async () => {
       const csv = await fetchQuestionTemplate(workspace);
@@ -399,11 +399,11 @@ export function PracticeQuestionScreen({ review = false }: { review?: boolean })
 
   if (review) {
     const active = outcome?.item;
-    return <MobilePage title={t('Answer review')} fallback="/mobile/37">
+    return <MobilePage title={t('Answer review')} fallback="/space/questions/practice">
       {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
       {!!notice && <InlineAlert tone="success">{t(notice)}</InlineAlert>}
       {!active ? (
-        <MobileAction onPress={() => router.replace('/mobile/37')}>{t('Practice question')}</MobileAction>
+        <MobileAction onPress={() => router.replace('/space/questions/practice')}>{t('Practice question')}</MobileAction>
       ) : <>
         <InlineAlert tone={outcome.correct === true ? 'success' : outcome.correct === false ? 'danger' : 'warning'}>
           {t(outcome.correct === true ? 'Correct' : outcome.correct === false ? 'Try again, or rate your recall below.' : 'Self assessment required. Rate your recall below.')}
@@ -439,7 +439,7 @@ export function PracticeQuestionScreen({ review = false }: { review?: boolean })
           await updateQuestionEntry(workspace, active.entry.id, { resolved: true });
           setNotice('Marked as known');
         })} />
-        <MobileAction onPress={() => router.replace('/mobile/37')}>{t('Next question')}</MobileAction>
+        <MobileAction onPress={() => router.replace('/space/questions/practice')}>{t('Next question')}</MobileAction>
         <MobileAction variant="secondary" onPress={() => router.push('/chat')}>{t('Ask tutor about this answer')}</MobileAction>
       </>}
     </MobilePage>;
@@ -448,12 +448,12 @@ export function PracticeQuestionScreen({ review = false }: { review?: boolean })
   const current = queue[index];
   const optionEntries = Object.entries(current?.entry.options ?? {});
 
-  return <MobilePage title={t('Practice question')} fallback="/mobile/33">
+  return <MobilePage title={t('Practice question')} fallback="/space/questions">
     {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
     {loading && <LoadingState />}
     {!loading && !error && !current && <>
       <MobileText style={{ fontSize: 22, fontWeight: '600' }}>{t('Nothing due today')}</MobileText>
-      <MobileAction variant="secondary" onPress={() => router.replace('/mobile/33')}>{t('Open question bank')}</MobileAction>
+      <MobileAction variant="secondary" onPress={() => router.replace('/space/questions')}>{t('Open question bank')}</MobileAction>
     </>}
     {current && <>
       <MobileText muted>{`${index + 1} / ${queue.length}`}</MobileText>
@@ -467,7 +467,7 @@ export function PracticeQuestionScreen({ review = false }: { review?: boolean })
         void run(async () => {
           const correct = await checkPracticeAnswer(current.content_workspace_id ?? workspace, current.entry.id, answer.trim());
           savePracticeReviewOutcome(scopeKey, { item: current, answer: answer.trim(), correct });
-          router.push('/mobile/38');
+          router.push('/space/questions/practice/review');
         });
       }}>{t('Check answer')}</MobileAction>
       {queue.length > 1 && <MobileAction variant="secondary" disabled={busy} onPress={() => { setIndex((index + 1) % queue.length); setAnswer(''); setError(''); }}>{t('Skip question')}</MobileAction>}
@@ -500,7 +500,7 @@ export function LearningJournalScreen() {
     return () => controller.abort();
   }, [load]));
 
-  return <MobilePage title={t('Learning journal')} fallback="/mobile/26" tab={26}>
+  return <MobilePage title={t('Learning journal')} fallback="/library" tab={26}>
     <MobileText muted>{workspaceName || t('General workspace')}</MobileText>
     {loading && <LoadingState />}
     {!!error && <ErrorState message={t(error)} onRetry={() => void load()} />}

@@ -110,12 +110,12 @@ export function PlanOverviewScreen() {
     <MobileRow
       title={selectedDate}
       description={daySummaryParts.join(' · ') || t('Footprints · 1 conversation')}
-      onPress={() => router.push('/mobile/54')}
+      onPress={() => router.push('/calendar/day')}
     />
     <MobileRow
       title={t('Calendar views')}
       description={t('Agenda · Month · Week · Day')}
-      onPress={() => router.push('/mobile/53')}
+      onPress={() => router.push('/calendar')}
     />
     <View style={{ gap: 12 }}>
       <MobileText style={{ fontSize: 18, fontWeight: '600' }}>{t('Tasks')}</MobileText>
@@ -128,14 +128,14 @@ export function PlanOverviewScreen() {
           description={[statusLabel(card.status, t), card.due_date ?? ''].filter(Boolean).join(' · ')}
           onPress={() => {
             setActiveTaskId(scopeKey, card.id);
-            router.push({ pathname: '/mobile/[screen]', params: { screen: '57', taskId: card.id } });
+            router.push({ pathname: "/plan/tasks/edit", params: { taskId: card.id } });
           }}
         />
       ))}
       <MobileAction
         onPress={() => {
           setActiveTaskId(scopeKey, null);
-          router.push('/mobile/57');
+          router.push('/plan/tasks/edit');
         }}
       >
         {t('Add a task')}
@@ -143,7 +143,7 @@ export function PlanOverviewScreen() {
       <MobileRow
         title={t('Task board')}
         description={t('To do · In progress · Done · Archived')}
-        onPress={() => router.push('/mobile/56')}
+        onPress={() => router.push('/kanban')}
       />
     </View>
     <MobileRow
@@ -209,9 +209,9 @@ export function CalendarScreen({ view }: { view: 'month' | 'day' | 'week' }) {
   }, [load]));
 
   const switchView = (nextView: string) => {
-    if (nextView === 'month') router.replace('/mobile/53');
-    else if (nextView === 'day') router.replace('/mobile/54');
-    else if (nextView === 'week') router.replace('/mobile/55');
+    if (nextView === 'month') router.replace('/calendar');
+    else if (nextView === 'day') router.replace('/calendar/day');
+    else if (nextView === 'week') router.replace('/calendar/week');
   };
 
   const shiftCurrent = (direction: -1 | 1) => {
@@ -246,7 +246,7 @@ export function CalendarScreen({ view }: { view: 'month' | 'day' | 'week' }) {
     }
     const selectedDayItems = itemsForDay(dateKey);
 
-    return <MobilePage title={dateKey.slice(0, 7)} fallback="/mobile/52">
+    return <MobilePage title={dateKey.slice(0, 7)} fallback="/plan">
       <MobileText muted>{t('Calendar · Month')}</MobileText>
       {!!error && <ErrorState message={t(error)} onRetry={() => void load()} />}
       <MobileChoice
@@ -334,19 +334,19 @@ export function CalendarScreen({ view }: { view: 'month' | 'day' | 'week' }) {
             .filter(Boolean)
             .join(' · ') || t('No activity')
         }
-        onPress={() => router.push('/mobile/54')}
+        onPress={() => router.push('/calendar/day')}
       />
       <MobileRow
         title={t('View options')}
         description={t('Today · previous / next month · Day · Week · Agenda')}
-        onPress={() => router.push('/mobile/55')}
+        onPress={() => router.push('/calendar/week')}
       />
     </MobilePage>;
   }
 
   if (view === 'week') {
     const week = weekDatesForDate(dateKey);
-    return <MobilePage title={`${week.dates[0]} – ${week.dates[6]}`} fallback="/mobile/52">
+    return <MobilePage title={`${week.dates[0]} – ${week.dates[6]}`} fallback="/plan">
       <MobileText muted>{t('Calendar · Week')}</MobileText>
       {!!error && <ErrorState message={t(error)} onRetry={() => void load()} />}
       <MobileChoice
@@ -385,7 +385,7 @@ export function CalendarScreen({ view }: { view: 'month' | 'day' | 'week' }) {
             description={summary || t('No activity')}
             onPress={() => {
               updateDate(day);
-              router.push('/mobile/54');
+              router.push('/calendar/day');
             }}
           />
         );
@@ -405,7 +405,7 @@ export function CalendarScreen({ view }: { view: 'month' | 'day' | 'week' }) {
     ...(dayItems.review?.paths.map(p => `${p.title} (${p.count})`) ?? []),
   ].filter(Boolean);
 
-  return <MobilePage title={dateKey} fallback="/mobile/52">
+  return <MobilePage title={dateKey} fallback="/plan">
     <MobileText muted>{t('Calendar · Day')}</MobileText>
     {!!error && <ErrorState message={t(error)} onRetry={() => void load()} />}
     <MobileChoice
@@ -430,7 +430,7 @@ export function CalendarScreen({ view }: { view: 'month' | 'day' | 'week' }) {
     <MobileRow
       title={t('All day')}
       description={allDaySummary.join(' · ') || t('No all-day items')}
-      onPress={() => router.push('/mobile/56')}
+      onPress={() => router.push('/kanban')}
     />
     {dayItems.footprint && dayItems.footprint.sessions.map(session => (
       <MobileRow
@@ -499,7 +499,7 @@ export function TaskBoardScreen() {
 
   const doingCount = (board?.cards ?? []).filter(c => !c.archived && c.status === 'doing').length;
 
-  return <MobilePage title={t('Task board')} fallback="/mobile/52">
+  return <MobilePage title={t('Task board')} fallback="/plan">
     <MobileText muted>
       {doingCount === 0 ? t('Independent board · 0 in progress') : `${doingCount} · ${t('In progress')}`}
     </MobileText>
@@ -527,14 +527,14 @@ export function TaskBoardScreen() {
         description={[statusLabel(card.status, t), card.due_date ?? '', card.note].filter(Boolean).join(' · ')}
         onPress={() => {
           setActiveTaskId(scopeKey, card.id);
-          router.push({ pathname: '/mobile/[screen]', params: { screen: '57', taskId: card.id } });
+          router.push({ pathname: "/plan/tasks/edit", params: { taskId: card.id } });
         }}
       />
     ))}
     <MobileAction
       onPress={() => {
         setActiveTaskId(scopeKey, null);
-        router.push('/mobile/57');
+        router.push('/plan/tasks/edit');
       }}
     >
       {t('Add a task')}
@@ -547,12 +547,12 @@ export function TaskBoardScreen() {
     <MobileRow
       title={t('Status colors')}
       description={t('Edit status appearance')}
-      onPress={() => router.push('/mobile/129')}
+      onPress={() => router.push('/plan/appearance')}
     />
     <MobileRow
       title={t('Open calendar')}
       description={t('View learning activity')}
-      onPress={() => router.push('/mobile/53')}
+      onPress={() => router.push('/calendar')}
     />
   </MobilePage>;
 }
@@ -673,7 +673,7 @@ export function TaskDetailsScreen() {
     }
   };
 
-  return <MobilePage title={t('Task details')} fallback="/mobile/56">
+  return <MobilePage title={t('Task details')} fallback="/kanban">
     <MobileText muted>{workspaceName || t('General workspace')}</MobileText>
     {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
     {loading ? <LoadingState /> : <>
@@ -731,7 +731,7 @@ export function TaskDetailsScreen() {
             }
           }
           setActiveTaskId(scopeKey, null);
-          router.replace('/mobile/56');
+          router.replace('/kanban');
         })}
       >
         {t('Save task')}
@@ -743,7 +743,7 @@ export function TaskDetailsScreen() {
           onPress={() => void run(async () => {
             await updateTaskCard(workspace, taskId, { archived: !archived });
             setActiveTaskId(scopeKey, null);
-            router.replace('/mobile/56');
+            router.replace('/kanban');
           })}
         />
       )}
@@ -817,7 +817,7 @@ export function TaskAppearanceScreen() {
     }
   };
 
-  return <MobilePage title={t('Task appearance')} fallback="/mobile/56">
+  return <MobilePage title={t('Task appearance')} fallback="/kanban">
     <MobileText muted>{t('Status color settings')}</MobileText>
     {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
     {saved && <InlineAlert tone="success">{t('Saved')}</InlineAlert>}

@@ -13,16 +13,16 @@ export function MobileText({ muted, style, ...props }: TextProps & { muted?: boo
   const { colors } = useDesign();
   return <Text {...props} style={[{ fontFamily: 'Inter', fontSize: muted ? 14 : 16, lineHeight: muted ? 20 : 23, color: muted ? colors.mutedForeground : colors.foreground }, style]} />;
 }
-export function MobileHeader({ title, root, fallback = '/mobile/61', onBack, onWorkspace, left, right, bordered, numberOfLines }: { title: string; root?: boolean; fallback?: Href; onBack?: () => void; onWorkspace?: () => void; left?: ReactNode; right?: ReactNode; bordered?: boolean; numberOfLines?: number }) {
+export function MobileHeader({ title, root, fallback = '/account', onBack, onWorkspace, left, right, bordered, numberOfLines }: { title: string; root?: boolean; fallback?: Href; onBack?: () => void; onWorkspace?: () => void; left?: ReactNode; right?: ReactNode; bordered?: boolean; numberOfLines?: number }) {
   const { colors } = useDesign(); const t = useCopy();
   const back = onBack ?? (() => router.canGoBack() ? router.back() : router.replace(fallback));
   return <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center', minHeight: 60, paddingLeft: 12, paddingRight: right ? 12 : 20, borderBottomWidth: bordered ? 1 : 0, borderColor: colors.border }}>
-    {left ?? <Pressable accessibilityRole="button" accessibilityLabel={t(root ? 'Switch workspace' : 'Back')} onPress={() => root ? (onWorkspace ? onWorkspace() : router.push('/mobile/62')) : back()} style={{ width: 48, height: 48, alignItems: 'center', justifyContent: 'center' }}>{root ? <Layers size={22} color={colors.foreground} /> : <ChevronLeft size={24} color={colors.foreground} />}</Pressable>}
+    {left ?? <Pressable accessibilityRole="button" accessibilityLabel={t(root ? 'Switch workspace' : 'Back')} onPress={() => root ? (onWorkspace ? onWorkspace() : router.push('/workspaces/switch')) : back()} style={{ width: 48, height: 48, alignItems: 'center', justifyContent: 'center' }}>{root ? <Layers size={22} color={colors.foreground} /> : <ChevronLeft size={24} color={colors.foreground} />}</Pressable>}
     <MobileText accessibilityRole="header" numberOfLines={numberOfLines} style={{ flex: 1, fontSize: 22, lineHeight: 31, fontWeight: '600' }}>{title}</MobileText>
-    {right ?? (root ? <Pressable accessibilityRole="button" accessibilityLabel={t('Account and settings')} onPress={() => router.push('/mobile/61')} style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.secondary, alignItems: 'center', justifyContent: 'center' }}><UserRound size={22} color={colors.primary} /></Pressable> : null)}
+    {right ?? (root ? <Pressable accessibilityRole="button" accessibilityLabel={t('Account and settings')} onPress={() => router.push('/account')} style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.secondary, alignItems: 'center', justifyContent: 'center' }}><UserRound size={22} color={colors.primary} /></Pressable> : null)}
   </View>;
 }
-export function MobilePage({ title, children, footer, fallback = '/mobile/61', tab, root, onBack, onWorkspace, headerLeft, headerRight }: { title: string; children: ReactNode; footer?: ReactNode; fallback?: Href; tab?: number; root?: boolean; onBack?: () => void; onWorkspace?: () => void; headerLeft?: ReactNode; headerRight?: ReactNode }) {
+export function MobilePage({ title, children, footer, fallback = '/account', tab, root, onBack, onWorkspace, headerLeft, headerRight }: { title: string; children: ReactNode; footer?: ReactNode; fallback?: Href; tab?: number; root?: boolean; onBack?: () => void; onWorkspace?: () => void; headerLeft?: ReactNode; headerRight?: ReactNode }) {
   const { colors } = useDesign();
   return <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>

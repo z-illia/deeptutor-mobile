@@ -1,3 +1,4 @@
+import { screenPath } from '@/features/navigation/paths';
 import { useState } from 'react';
 import { router, useLocalSearchParams, type Href } from 'expo-router';
 import { MobileAction, MobileChoice, MobileField, MobilePage, MobileRow, MobileText } from '@/features/mobile/ScreenLayout';
@@ -21,7 +22,7 @@ export function ServicesScreen({ number }: { number: number }) {
   const models = profile ? array(profile.models) : [];
   const model = models.find(row => row.id === params.modelId);
   const titles: Record<number, string> = { 89: 'Providers', 90: 'Provider connection', 91: 'Models', 92: 'Model configuration', 93: 'Task models', 94: 'Search service', 95: 'Voice & playback', 96: 'Media generation', 118: 'Task overrides' };
-  const href = (screen: number, extra: string) => `/mobile/${screen}?service=${service}${extra}` as Href;
+  const href = (screen: number, extra: string) => `${screenPath(screen)}?service=${service}${extra}` as Href;
   return <MobilePage title={t(titles[number])}>
     {remote.loading && <LoadingState />}{!!remote.error && <InlineAlert tone="danger">{t(remote.error)}</InlineAlert>}
     {!remote.loading && !remote.error && !catalog && <InlineAlert>{t('This page is not available for your account.')}</InlineAlert>}
@@ -44,8 +45,8 @@ export function ServicesScreen({ number }: { number: number }) {
 function ViewProfile({ row, service, providers, navigate }: { row: RecordData; service: string; providers: boolean; navigate: (href: Href) => void }) {
   const t = useCopy(); const profile = encodeURIComponent(String(row.id));
   return <>
-    <MobileRow title={String(row.name ?? row.id)} onPress={() => navigate(`/mobile/${providers ? 90 : 92}?service=${service}&profileId=${profile}` as Href)} />
-    {!providers && array(row.models).map(model => <MobileRow key={String(model.id)} title={String(model.display_name ?? model.model ?? model.id)} onPress={() => navigate(`/mobile/92?service=${service}&profileId=${profile}&modelId=${encodeURIComponent(String(model.id))}` as Href)} />)}
+    <MobileRow title={String(row.name ?? row.id)} onPress={() => navigate(`${screenPath(providers ? 90 : 92)}?service=${service}&profileId=${profile}` as Href)} />
+    {!providers && array(row.models).map(model => <MobileRow key={String(model.id)} title={String(model.display_name ?? model.model ?? model.id)} onPress={() => navigate(`/settings/llm/edit?service=${service}&profileId=${profile}&modelId=${encodeURIComponent(String(model.id))}` as Href)} />)}
     {!providers && service === 'search' && <DataDetails value={{ provider: row.binding, max_results: row.max_results }} />}
     {!providers && !array(row.models).length && service !== 'search' && <MobileText muted>{t('No models configured')}</MobileText>}
   </>;

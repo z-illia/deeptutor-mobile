@@ -1,2 +1,2 @@
 import { Redirect } from 'expo-router';
-export default function Screen() { return <Redirect href="/mobile/31" />; }
+export default function Screen() { return <Redirect href="/favorites" />; }

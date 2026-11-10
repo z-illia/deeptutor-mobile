@@ -10,9 +10,9 @@ export const shelves: readonly { id: ShelfId; label: string; account?: boolean }
 const entries: readonly [ShelfId, string, string][] = [
   ['home', 'Chat', '/chat'], ['home', 'Calendar', '/calendar'], ['home', 'Task Board', '/kanban'], ['home', 'Co-Writer', '/co-writer'],
   ['learning', 'navigation.createLearning', '/learning/new'], ['learning', 'navigation.allLearning', '/learning'], ['learning', 'Books', '/learning/books'], ['learning', 'Mastery Path', '/learning/mastery'], ['learning', 'Practice', '/learning/practice'], ['learning', 'Immersive Reading', '/learning/reading'],
-  ['resources', 'navigation.allResources', '/mobile/26'], ['resources', 'Chat History', '/mobile/27'], ['resources', 'Favorites', '/mobile/31'], ['resources', 'Learning journal', '/space/journal'], ['resources', 'Question Bank', '/space/questions'], ['resources', 'Knowledge Center', '/knowledge-bases'],
+  ['resources', 'navigation.allResources', '/library'], ['resources', 'Chat History', '/space/chat-history'], ['resources', 'Favorites', '/favorites'], ['resources', 'Learning journal', '/space/journal'], ['resources', 'Question Bank', '/space/questions'], ['resources', 'Knowledge Center', '/knowledge-bases'],
   ['partners', 'navigation.partners', '/partners'],
-  ['personalization', 'navigation.allPersonalization', '/mobile/65'], ['personalization', 'My Agents', '/agents'], ['personalization', 'Personas', '/space/personas'], ['personalization', 'Skills', '/space/skills'], ['personalization', 'MCP Services', '/space/mcp'], ['personalization', 'CLI Apps', '/space/cli-apps'], ['personalization', 'Memory', '/memory'],
+  ['personalization', 'navigation.allPersonalization', '/personalization'], ['personalization', 'My Agents', '/agents'], ['personalization', 'Personas', '/space/personas'], ['personalization', 'Skills', '/space/skills'], ['personalization', 'MCP Services', '/space/mcp'], ['personalization', 'CLI Apps', '/space/cli-apps'], ['personalization', 'Memory', '/memory'],
 ];
 export const shellRepository = {
   items: entries.map(([shelf, label, route]): NavigationItem => ({ key: route, shelf, label, route })),

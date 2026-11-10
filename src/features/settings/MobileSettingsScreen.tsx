@@ -21,9 +21,9 @@ export function MobileSettingsScreen({ appearance = false }: { appearance?: bool
   const [confirmReload, setConfirmReload] = useState(false); const p = settings.state.staged;
   const { edit, save } = settings;
   const title = t(appearance ? 'Appearance' : 'General'); const disabled = !!settings.busy;
-  if (settings.loading) return <MobilePage title={title} fallback="/mobile/141"><LoadingState /></MobilePage>;
-  if (!settings.loaded) return <MobilePage title={title} fallback="/mobile/141"><ErrorState message={t(settings.error || 'Failed to load settings')} onRetry={() => void settings.refresh()} /></MobilePage>;
-  return <MobilePage title={title} fallback="/mobile/141" footer={settings.state.phase !== 'clean' ? <>
+  if (settings.loading) return <MobilePage title={title} fallback="/settings/preferences"><LoadingState /></MobilePage>;
+  if (!settings.loaded) return <MobilePage title={title} fallback="/settings/preferences"><ErrorState message={t(settings.error || 'Failed to load settings')} onRetry={() => void settings.refresh()} /></MobilePage>;
+  return <MobilePage title={title} fallback="/settings/preferences" footer={settings.state.phase !== 'clean' ? <>
     <MobileText muted accessibilityLiveRegion="polite" testID="settings-phase">{t(settings.state.phase === 'applied' ? 'Applied' : settings.state.phase === 'saved-draft' ? 'Draft not applied yet' : 'Unsaved changes')}</MobileText>
     {settings.state.phase !== 'applied' && <>
       <MobileAction variant="secondary" disabled={disabled || settings.state.phase !== 'unsaved'} loading={settings.busy === 'save'} onPress={() => void save('save')}>{t('Save draft')}</MobileAction>
@@ -33,7 +33,7 @@ export function MobileSettingsScreen({ appearance = false }: { appearance?: bool
   </> : undefined}>
     <MobileText muted>{t(appearance ? 'Changes preview before you apply.' : 'Choose languages and complete the required chat setup.')}</MobileText>
     {!!settings.error && <InlineAlert tone="danger">{t(settings.error)}</InlineAlert>}
-    <MobileRow title={t(appearance ? 'General' : 'Appearance')} onPress={() => router.replace(appearance ? '/mobile/82' : '/mobile/83')} />
+    <MobileRow title={t(appearance ? 'General' : 'Appearance')} onPress={() => router.replace(appearance ? '/settings/general' : '/settings/appearance')} />
     <MobileAction variant="secondary" disabled={disabled} onPress={() => { if (settings.state.phase === 'unsaved' || settings.state.phase === 'saved-draft') setConfirmReload(true); else void settings.refresh(); }}>{t('Refresh')}</MobileAction>
     <ConfirmDialog open={confirmReload} title={t('Reload settings?')} confirmLabel={t('Refresh')} tone="default" onCancel={() => setConfirmReload(false)} onConfirm={() => { setConfirmReload(false); void settings.refresh(); }}>{t('Local edits will be replaced with the server settings and saved draft.')}</ConfirmDialog>
     {appearance ? <>
@@ -52,9 +52,9 @@ export function MobileSettingsScreen({ appearance = false }: { appearance?: bool
       <MobileChoice label={t('Interface layout')} disabled={disabled} value={p.layout} options={[{ value: 'classic', label: t('Classic') }, { value: 'modern', label: t('Modern') }]} onChange={layout => edit({ layout })} />
       <MobileText muted>{t('Mobile · web Classic / Modern preference retained for web')}</MobileText>
       {catalogEditable(f.mode) && <View style={{ gap: 12 }}><MobileText style={{ fontSize: 18, fontWeight: '600' }}>{t('Set up chat')}</MobileText>
-        {[['/mobile/89', '1 · Connect provider', 'Add credentials and test connection'], ['/mobile/91', '2 · Choose chat model', 'Test and set a default'], ['/mobile/106', '3 · Check service readiness', 'Basic chat needs no optional integrations']].map(([href, label, description]) => <MobileRow key={href} title={t(label)} description={t(description)} onPress={() => router.push(href as Href)} />)}
+        {[['/settings/connections', '1 · Connect provider', 'Add credentials and test connection'], ['/settings/llm', '2 · Choose chat model', 'Test and set a default'], ['/settings/status', '3 · Check service readiness', 'Basic chat needs no optional integrations']].map(([href, label, description]) => <MobileRow key={href} title={t(label)} description={t(description)} onPress={() => router.push(href as Href)} />)}
       </View>}
-      <MobileRow title={t('Optional services')} description={t('Knowledge search · Web search · Task models')} onPress={() => router.push('/mobile/143')} />
+      <MobileRow title={t('Optional services')} description={t('Knowledge search · Web search · Task models')} onPress={() => router.push('/settings/services')} />
     </>}
   </MobilePage>;
 }

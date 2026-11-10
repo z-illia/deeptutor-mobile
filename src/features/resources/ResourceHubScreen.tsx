@@ -10,27 +10,27 @@ import { useCopy } from '@/features/entry/copy';
 import { useResourceCounts } from './useResourceCounts';
 import type { ResourceKey } from './api';
 const library: { title: string; href: Href; key?: ResourceKey; description: string }[] = [
-  { title: 'Conversations', href: '/mobile/27', key: 'chat_history', description: 'Review and reopen previous conversations.' },
-  { title: 'Learning notebook', href: '/mobile/28', description: 'Authored notes' },
-  { title: 'Favorites', href: '/mobile/31', key: 'notebooks', description: 'Keep original conversations and sources, ready to use in your notes.' },
-  { title: 'Knowledge bases', href: '/mobile/40', key: 'knowledge', description: 'Manage knowledge bases and retrieval engines.' },
-  { title: 'Question bank', href: '/mobile/33', key: 'question_bank', description: 'Review and organize quiz questions across sessions.' },
-  { title: 'Learning journal', href: '/mobile/39', description: 'Inspect your mission, session handoff and confirmed records.' },
+  { title: 'Conversations', href: '/space/chat-history', key: 'chat_history', description: 'Review and reopen previous conversations.' },
+  { title: 'Learning notebook', href: '/notes', description: 'Authored notes' },
+  { title: 'Favorites', href: '/favorites', key: 'notebooks', description: 'Keep original conversations and sources, ready to use in your notes.' },
+  { title: 'Knowledge bases', href: '/knowledge-bases', key: 'knowledge', description: 'Manage knowledge bases and retrieval engines.' },
+  { title: 'Question bank', href: '/space/questions', key: 'question_bank', description: 'Review and organize quiz questions across sessions.' },
+  { title: 'Learning journal', href: '/space/journal', description: 'Inspect your mission, session handoff and confirmed records.' },
 ];
 const account: typeof library = [
-  { title: 'Partners', href: '/mobile/66', key: 'partners', description: 'Companions with their own soul, library and channels' },
-  { title: 'Personas', href: '/mobile/73', key: 'personas', description: 'Behavior presets you can apply per chat turn.' },
-  { title: 'Skills', href: '/mobile/73', key: 'skills', description: 'Capability playbooks the model reads on demand.' },
-  { title: 'Connectors', href: '/mobile/76', key: 'mcp', description: 'Connect hosted MCP services and bring their tools into chat.' },
-  { title: 'CLI apps', href: '/mobile/99', key: 'cli_apps', description: 'Command-line tools from the CLI-Anything catalog, callable from chat.' },
-  { title: 'Subagents & imports', href: '/mobile/77', key: 'agents', description: 'Connect local or remote agents and consult them from any chat.' },
-  { title: 'Memory', href: '/mobile/78', description: 'Review what your tutor remembers about you.' },
+  { title: 'Partners', href: '/partners', key: 'partners', description: 'Companions with their own soul, library and channels' },
+  { title: 'Personas', href: '/space/personas', key: 'personas', description: 'Behavior presets you can apply per chat turn.' },
+  { title: 'Skills', href: '/space/personas', key: 'skills', description: 'Capability playbooks the model reads on demand.' },
+  { title: 'Connectors', href: '/space/mcp', key: 'mcp', description: 'Connect hosted MCP services and bring their tools into chat.' },
+  { title: 'CLI apps', href: '/settings/agents', key: 'cli_apps', description: 'Command-line tools from the CLI-Anything catalog, callable from chat.' },
+  { title: 'Subagents & imports', href: '/agents', key: 'agents', description: 'Connect local or remote agents and consult them from any chat.' },
+  { title: 'Memory', href: '/memory', description: 'Review what your tutor remembers about you.' },
 ];
 export function ResourceHubScreen({ personalization = false }: { personalization?: boolean }) {
   const auth = useAuth(); const scope = useWorkspaces(); const t = useCopy(); const { colors } = useDesign();
   const owner = JSON.stringify([auth.serverUrl, auth.session?.profile?.id ?? null]);
   const { counts, refresh } = useResourceCounts(personalization, scope.selectedWorkspaceId, owner);
-  return <MobilePage title={t(personalization ? 'Personalization' : 'Library')} root={!personalization} fallback="/mobile/61" tab={personalization ? undefined : 26}>
+  return <MobilePage title={t(personalization ? 'Personalization' : 'Library')} root={!personalization} fallback="/account" tab={personalization ? undefined : 26}>
     <MobileText muted>{personalization ? t('Account resources can be assigned to multiple workspaces.') : scope.workspaces.find(item => item.workspace_id === scope.selectedWorkspaceId)?.display_name ?? (scope.selectedWorkspaceId || t('General workspace'))}</MobileText>
     {!personalization && <MobileRow title={t('Search library')} description={t('navigation.searchEverything')} onPress={() => router.push('/search')} />}
     {(personalization ? account : library).map(item => {

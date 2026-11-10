@@ -36,7 +36,7 @@ export function ProfileScreen({ view = 'profile' }: { view?: ProfileView }) {
   const busy = !!actions.busy;
   const textStyle = { fontFamily: 'Inter', fontSize: 16, lineHeight: 22.4, color: colors.foreground };
   const mutedStyle = { ...textStyle, fontSize: 14, lineHeight: 19.6, color: colors.mutedForeground };
-  const back = () => router.canGoBack() ? router.back() : router.replace(view === 'profile' ? '/mobile/61' : '/profile');
+  const back = () => router.canGoBack() ? router.back() : router.replace(view === 'profile' ? '/account' : '/profile');
   const action = (label: string, onPress: () => void, secondary = false) => <Button disabled={busy} loading={busy} onPress={onPress} variant={secondary ? 'secondary' : 'primary'} style={{ minHeight: 52, borderRadius: 12, backgroundColor: secondary ? colors.card : colors.primary }}><Text style={{ ...textStyle, fontWeight: '600', color: secondary ? colors.primary : colors.primaryForeground }}>{t(label)}</Text></Button>;
   const row = (label: string, description: string, onPress: () => void, selected?: boolean, leading?: ReactNode) => <Pressable key={label} accessibilityRole="button" accessibilityLabel={t(label)} aria-selected={selected} accessibilityState={{ selected, disabled: busy }} disabled={busy} onPress={onPress} style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: colors.border, opacity: pressed ? 0.65 : 1 })}>
     {leading}<View style={{ flex: 1, gap: 4 }}><Text style={{ ...textStyle, fontWeight: '500' }}>{t(label)}</Text>{!!description && <Text style={mutedStyle}>{t(description)}</Text>}</View>{selected ? <Check size={20} color={colors.primary} /> : <ChevronRight size={20} color={colors.mutedForeground} />}
@@ -58,7 +58,7 @@ export function ProfileScreen({ view = 'profile' }: { view?: ProfileView }) {
         {view === 'profile' && <>
           {row('Avatar', 'Upload picture · choose icon · color', () => router.push('/profile/avatar'))}
           {profile.canChangePassword && row('Change password', 'Current, new and confirm password', () => router.push('/profile/password'))}
-          {row('Public device sign-in', 'Create a link using a public HTTPS origin', () => router.push('/mobile/139'))}
+          {row('Public device sign-in', 'Create a link using a public HTTPS origin', () => router.push('/session-handoff'))}
           {action('Sign out of this device', () => void actions.signOut(), true)}
         </>}
         {view === 'password' && <>

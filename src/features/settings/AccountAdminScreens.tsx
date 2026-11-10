@@ -17,8 +17,8 @@ export function UsersScreen() {
     <MobileField label={t('Search users')} value={query} onChangeText={setQuery} />
     {remote.loading && <LoadingState />}{!!remote.error && <InlineAlert tone="danger">{t(remote.error)}</InlineAlert>}
     {users.filter(row => String(row.username).toLowerCase().includes(query.toLowerCase())).map(row => <MobileRow key={String(row.id)} title={String(row.username)} description={`${row.role} · ${row.created_at}`} disabled />)}
-    <MobileAction onPress={() => router.push('/mobile/110')}>{t('Add user')}</MobileAction>
-    <MobileAction variant="secondary" onPress={() => router.push('/mobile/111')}>{t('Import users')}</MobileAction>
+    <MobileAction onPress={() => router.push('/admin/users/new')}>{t('Add user')}</MobileAction>
+    <MobileAction variant="secondary" onPress={() => router.push('/admin/users/import')}>{t('Import users')}</MobileAction>
     <MobileAction variant="secondary" onPress={remote.refresh}>{t('Reload')}</MobileAction>
   </MobilePage>;
 }
@@ -27,7 +27,7 @@ export function AddUserScreen() {
   return <MobilePage title={t('Add user')}><ServerForm initial={{ username: '', password: '', preset: 'standard' }} path="/auth/users" method="post" transform={value => {
     if (!String(value.username).trim() || String(value.password).length < 8) throw new Error('Enter a username and a password with at least 8 characters.');
     return value;
-  }} onSaved={() => router.replace('/mobile/109')}>
+  }} onSaved={() => router.replace('/admin/users')}>
     {(value, setValue) => <><MobileField label={t('Username or email')} value={String(value.username)} autoCapitalize="none" onChangeText={username => setValue({ ...value, username })} />
       <MobileField label={t('Password')} secureTextEntry value={String(value.password)} onChangeText={password => setValue({ ...value, password })} />
       <MobileChoice label={t('Account preset')} value={String(value.preset)} options={['standard', 'learner', 'custom'].map(item => ({ value: item, label: t(item) }))} onChange={preset => setValue({ ...value, preset })} /></>}
@@ -77,6 +77,6 @@ export function AuxiliaryStateScreen({ number }: { number: number }) {
   return <MobilePage title={t(number === 114 ? 'Connection unavailable' : number === 116 ? 'No search results' : 'Settings')}>
     {number === 114 ? <><InlineAlert tone="danger">{t(auth.error || 'Check the connection and retry.')}</InlineAlert><MobileAction onPress={() => void auth.refresh()}>{t('Retry')}</MobileAction></>
       : number === 116 ? <MobileAction onPress={() => router.replace('/search')}>{t('Search')}</MobileAction>
-        : <MobileAction onPress={() => router.replace('/mobile/81')}>{t('Return to settings')}</MobileAction>}
+        : <MobileAction onPress={() => router.replace('/settings')}>{t('Return to settings')}</MobileAction>}
   </MobilePage>;
 }

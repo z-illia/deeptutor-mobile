@@ -19,7 +19,7 @@ export function AuthScreen({ register = false }: { register?: boolean }) {
   const serverUrl = serverInput ?? f.serverUrl;
   const [serverError, setServerError] = useState('');
   const [username, setUsername] = useState(''); const [password, setPassword] = useState(''); const [confirm, setConfirm] = useState(''); const [error, setError] = useState('');
-  const next = normalizeDestination(params.next ?? '/mobile/1');
+  const next = normalizeDestination(params.next ?? '/learning');
   if (f.session && (!f.session.status.enabled || f.session.status.authenticated)) return <Redirect href={(f.session.profile?.mustChange ? '/profile?change=1' : next) as Href} />;
   if (!f.loading && f.session && register && !f.session.firstUser) return <Redirect href={{ pathname: '/login', params: { next } }} />;
   if (!register && f.session?.firstUser) return <Redirect href={{ pathname: '/register', params: { next } }} />;

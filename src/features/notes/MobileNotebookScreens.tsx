@@ -86,7 +86,7 @@ export function NotebookListScreen() {
     return `${note.title} ${note.preview}`.toLocaleLowerCase().includes(query);
   });
 
-  return <MobilePage title={t('Notebook')} fallback="/mobile/26" tab={26}>
+  return <MobilePage title={t('Notebook')} fallback="/library" tab={26}>
     <MobileText muted>{`${notes.length} · ${workspaceName || t('General workspace')}`}</MobileText>
     {!!error && <ErrorState message={t(error)} onRetry={() => void load()} />}
     <MobileField label={t('Search pages')} placeholder={t('Search titles and notes')} value={search} onChangeText={setSearch} />
@@ -98,7 +98,7 @@ export function NotebookListScreen() {
         description={note.preview || t('Empty page')}
         onPress={() => {
           setActiveNoteId(scopeKey, note.id);
-          router.push({ pathname: '/mobile/[screen]', params: { screen: '29', docId: note.id } });
+          router.push({ pathname: "/notes/edit", params: { docId: note.id } });
         }}
       />
     ))}
@@ -107,7 +107,7 @@ export function NotebookListScreen() {
       onPress={() => {
         setActiveNoteId(scopeKey, null);
         stageNoteReview(scopeKey, null);
-        router.push('/mobile/29');
+        router.push('/notes/edit');
       }}
     >
       {t('New page')}
@@ -120,7 +120,7 @@ export function NotebookListScreen() {
         const imported = await pickAndImportDocx(workspace);
         if (!imported) return;
         setActiveNoteId(scopeKey, imported.id);
-        router.push({ pathname: '/mobile/[screen]', params: { screen: '29', docId: imported.id } });
+        router.push({ pathname: "/notes/edit", params: { docId: imported.id } });
       })}
     >
       {t('Import Word document')}
@@ -228,7 +228,7 @@ export function EditNoteScreen({ conversationNote = false }: { conversationNote?
         suggestionId: pending.id,
         revision,
       });
-      router.push('/mobile/30');
+      router.push('/notes/review');
       return;
     }
     const saved = await persistNote();
@@ -240,10 +240,10 @@ export function EditNoteScreen({ conversationNote = false }: { conversationNote?
       suggestedContent: res.edited_text,
       revision: saved.revision,
     });
-    router.push('/mobile/30');
+    router.push('/notes/review');
   };
 
-  return <MobilePage title={t(conversationNote ? 'Conversation note' : 'Edit note')} fallback={conversationNote ? '/chat' : '/mobile/28'}>
+  return <MobilePage title={t(conversationNote ? 'Conversation note' : 'Edit note')} fallback={conversationNote ? '/chat' : '/notes'}>
     <MobileText muted>{t(conversationNote ? 'Saving creates an authored notebook page. Favorites preserve the original conversation instead.' : 'Saved status persists per page')}</MobileText>
     {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
     {savedNotice && <InlineAlert tone="success">{`${t('Saved')} — ${t('Your latest changes are saved. Draft recovery across interruptions is proposed.')}`}</InlineAlert>}
@@ -305,7 +305,7 @@ export function EditNoteScreen({ conversationNote = false }: { conversationNote?
           setActiveNoteId(scopeKey, null);
           stageNoteReview(scopeKey, null);
           setConfirmDelete(false);
-          router.replace('/mobile/28');
+          router.replace('/notes');
         });
       }}
     >
@@ -368,11 +368,11 @@ export function ReviewNoteEditScreen() {
     }
   };
 
-  return <MobilePage title={t('Review note edit')} fallback="/mobile/29">
+  return <MobilePage title={t('Review note edit')} fallback="/notes/edit">
     <MobileText muted>{t('Dito suggestion')}</MobileText>
     {!!error && <InlineAlert tone="danger">{t(error)}</InlineAlert>}
     {!staged ? (
-      <MobileAction onPress={() => router.replace('/mobile/29')}>{t('Edit note')}</MobileAction>
+      <MobileAction onPress={() => router.replace('/notes/edit')}>{t('Edit note')}</MobileAction>
     ) : <>
       <MobileText muted style={{ fontSize: 12, fontWeight: '600' }}>{t('CURRENT PARAGRAPH')}</MobileText>
       <MobileText>{staged.originalContent || t('Empty page')}</MobileText>
@@ -396,7 +396,7 @@ export function ReviewNoteEditScreen() {
           }
           setActiveNoteId(scopeKey, staged.docId);
           stageNoteReview(scopeKey, null);
-          router.replace({ pathname: '/mobile/[screen]', params: { screen: '29', docId: staged.docId } });
+          router.replace({ pathname: "/notes/edit", params: { docId: staged.docId } });
         })}
       >
         {t('Accept suggestion')}
@@ -410,7 +410,7 @@ export function ReviewNoteEditScreen() {
           }
           setActiveNoteId(scopeKey, staged.docId);
           stageNoteReview(scopeKey, null);
-          router.replace({ pathname: '/mobile/[screen]', params: { screen: '29', docId: staged.docId } });
+          router.replace({ pathname: "/notes/edit", params: { docId: staged.docId } });
         })}
       >
         {t('Keep original')}

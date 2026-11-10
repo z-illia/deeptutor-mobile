@@ -20,10 +20,10 @@ function RemoteList({ path, collection, title, edit }: { path: string; collectio
 export function PersonasSkillsScreen() {
   const t = useCopy();
   return <MobilePage title={t('Personas & skills')}>
-    <RemoteList path="/personas" collection="personas" title="Personas" edit={name => `/mobile/74?kind=persona&name=${encodeURIComponent(name)}` as Href} />
-    <RemoteList path="/skills/list" collection="skills" title="Skills" edit={name => `/mobile/74?kind=skill&name=${encodeURIComponent(name)}` as Href} />
-    <MobileAction onPress={() => router.push('/mobile/74')}>{t('Create a playbook')}</MobileAction>
-    <MobileAction variant="secondary" onPress={() => router.push('/mobile/75')}>{t('Find extensions')}</MobileAction>
+    <RemoteList path="/personas" collection="personas" title="Personas" edit={name => `/space/playbooks/edit?kind=persona&name=${encodeURIComponent(name)}` as Href} />
+    <RemoteList path="/skills/list" collection="skills" title="Skills" edit={name => `/space/playbooks/edit?kind=skill&name=${encodeURIComponent(name)}` as Href} />
+    <MobileAction onPress={() => router.push('/space/playbooks/edit')}>{t('Create a playbook')}</MobileAction>
+    <MobileAction variant="secondary" onPress={() => router.push('/space/extensions')}>{t('Find extensions')}</MobileAction>
   </MobilePage>;
 }
 export function PlaybookScreen() {
@@ -45,7 +45,7 @@ function PlaybookForm({ name, kind }: { name?: string; kind: string }) {
   return <ServerForm initial={{ ...(name ? {} : { name: '' }), description: String(data.description ?? ''), content: String(data.content ?? '') }}
     path={name ? `${base}/${encodeURIComponent(name)}` : kind === 'persona' ? base : '/skills/create'} method={name ? 'put' : 'post'}
     transform={value => { if (!name && !String(value.name).trim()) throw new Error('Enter a name.'); return value; }}
-    onSaved={() => router.replace('/mobile/73')} />;
+    onSaved={() => router.replace('/space/personas')} />;
 }
 export function ExtensionsScreen({ details = false }: { details?: boolean }) {
   const { slug } = useLocalSearchParams<{ slug?: string }>(); const [query, setQuery] = useState(''); const [search, setSearch] = useState(''); const t = useCopy();
@@ -54,8 +54,8 @@ export function ExtensionsScreen({ details = false }: { details?: boolean }) {
   return <MobilePage title={t(details ? 'Extension details' : 'Find extensions')}>
     {!details && <><MobileField label={t('Search')} value={query} onChangeText={setQuery} onSubmitEditing={() => setSearch(query)} /><MobileAction onPress={() => setSearch(query)}>{t('Search')}</MobileAction></>}
     {remote.loading && <LoadingState />}{!!remote.error && <InlineAlert tone="danger">{t(remote.error)}</InlineAlert>}
-    {!details && rows.map(row => <MobileRow key={String(row.slug)} title={String(row.name ?? row.slug)} description={String(row.description ?? '')} onPress={() => router.push(`/mobile/117?slug=${encodeURIComponent(String(row.slug))}` as Href)} />)}
-    {details && remote.data != null && <><DataDetails value={remote.data} /><ServerForm initial={{ ref: `eduhub:${slug}` }} path="/skills/install" method="post" onSaved={() => router.replace('/mobile/73')} /></>}
+    {!details && rows.map(row => <MobileRow key={String(row.slug)} title={String(row.name ?? row.slug)} description={String(row.description ?? '')} onPress={() => router.push(`/space/extensions/detail?slug=${encodeURIComponent(String(row.slug))}` as Href)} />)}
+    {details && remote.data != null && <><DataDetails value={remote.data} /><ServerForm initial={{ ref: `eduhub:${slug}` }} path="/skills/install" method="post" onSaved={() => router.replace('/space/personas')} /></>}
     <MobileAction variant="secondary" onPress={remote.refresh}>{t('Reload')}</MobileAction>
   </MobilePage>;
 }
@@ -87,13 +87,13 @@ export function SubagentsScreen() {
   const t = useCopy(); const backends = useRemoteData('/subagents/detect');
   const rows = isRecord(backends.data) && Array.isArray(backends.data.backends) ? backends.data.backends.filter(isRecord) : [];
   return <MobilePage title={t('Subagents & imports')}>
-    <RemoteList path="/subagents/connections" collection="connections" title="Connected agents" edit={() => '/mobile/99'} />
+    <RemoteList path="/subagents/connections" collection="connections" title="Connected agents" edit={() => '/settings/agents'} />
     {!!backends.error && <InlineAlert tone="danger">{t(backends.error)}</InlineAlert>}
     <ServerForm initial={{ name: '', agent_kind: '', cwd: '' }} path="/subagents/connections" method="post">
       {(value, setValue) => <><MobileField label={t('Name')} value={String(value.name)} onChangeText={name => setValue({ ...value, name })} />
         <MobileChoice label={t('Agent')} value={String(value.agent_kind)} options={rows.filter(row => row.available === true).map(row => ({ value: String(row.kind), label: String(row.display_name ?? row.kind) }))} onChange={agent_kind => setValue({ ...value, agent_kind })} />
         <MobileField label={t('Working directory')} value={String(value.cwd)} onChangeText={cwd => setValue({ ...value, cwd })} /></>}
     </ServerForm>
-    <MobileAction variant="secondary" onPress={() => router.push('/mobile/123')}>{t('Import conversations')}</MobileAction>
+    <MobileAction variant="secondary" onPress={() => router.push('/memory/import')}>{t('Import conversations')}</MobileAction>
   </MobilePage>;
 }

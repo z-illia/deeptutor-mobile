@@ -1,7 +1,7 @@
 # Live mobile chat
 
 `/chat`, `/chat/[sessionId]`, and `/space/chat-history` use this module.
-The mobile Tutor entry (`/mobile/12`) and the former conversation mock screens
+The mobile Tutor entry (`/chat`) and the former conversation mock screens
 redirect to these routes. The screen uses the existing theme, controls, Markdown
 renderer, safe areas, keyboard avoidance and mobile bottom navigation.
 

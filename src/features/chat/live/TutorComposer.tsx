@@ -127,18 +127,18 @@ export function TutorComposer(props: TutorComposerProps) {
           <Button variant="secondary" style={selectionStyle(!(panel === 'Skills' ? config.skills : config.mcp)?.length)} accessibilityState={{ selected: !(panel === 'Skills' ? config.skills : config.mcp)?.length }} onPress={() => configure(panel === 'Skills' ? { skills: [] } : { mcp: [] })}>{t('Auto')}</Button>
           {options.map(option => <Button key={option.id} variant="secondary" style={selectionStyle(!!(panel === 'Skills' ? config.skills : config.mcp)?.includes(option.id))} accessibilityState={{ selected: (panel === 'Skills' ? config.skills : config.mcp)?.includes(option.id) }} onPress={() => toggle(panel === 'Skills' ? 'skills' : 'mcp', option.id)}>{option.label}</Button>)}
           {!options.length && <DText muted>{t('No available options')}</DText>}
-          {panel === 'Connections' && <Button variant="secondary" onPress={() => { setPanel(null); router.push('/mobile/76'); }}>{t('Connect MCP service')}</Button>}
-          {panel === 'Skills' && <Button variant="secondary" onPress={() => { setPanel(null); router.push('/mobile/73'); }}>{t('Manage personas & skills')}</Button>}
+          {panel === 'Connections' && <Button variant="secondary" onPress={() => { setPanel(null); router.push('/space/mcp'); }}>{t('Connect MCP service')}</Button>}
+          {panel === 'Skills' && <Button variant="secondary" onPress={() => { setPanel(null); router.push('/space/personas'); }}>{t('Manage personas & skills')}</Button>}
         </>}
         {(panel === 'Preferences' || panel === 'Partners') && !fetching && !failure && <>
           <Button variant="secondary" style={selectionStyle(panel === 'Preferences' ? !config.persona : !config.answer_by)} accessibilityState={{ selected: panel === 'Preferences' ? !config.persona : !config.answer_by }} onPress={() => configure(panel === 'Preferences' ? { persona: null } : { answer_by: '' })}>{t('DeepTutor')}</Button>
           {options.map(option => <Button key={option.id} variant="secondary" style={selectionStyle(panel === 'Preferences' ? config.persona === option.id : config.answer_by === `partner:${option.id}`)} accessibilityState={{ selected: panel === 'Preferences' ? config.persona === option.id : config.answer_by === `partner:${option.id}` }} onPress={() => configure(panel === 'Preferences' ? { persona: option.id } : { answer_by: `partner:${option.id}` })}>{option.label}</Button>)}
           {!options.length && <DText muted>{t('No available options')}</DText>}
           <DText muted>{t('Choices apply to subsequent turns in this conversation.')}</DText>
-          {panel === 'Partners' && <Button variant="secondary" onPress={() => { setPanel(null); router.push('/mobile/66'); }}>{t('Partners')}</Button>}
+          {panel === 'Partners' && <Button variant="secondary" onPress={() => { setPanel(null); router.push('/partners'); }}>{t('Partners')}</Button>}
         </>}
         {panel === 'Create' && <>
-          <Button variant="secondary" onPress={() => { setPanel(null); router.push('/mobile/74'); }}>{t('Create a playbook')}</Button>
+          <Button variant="secondary" onPress={() => { setPanel(null); router.push('/space/playbooks/edit'); }}>{t('Create a playbook')}</Button>
           {(['skill', 'persona'] as const).map(kind => <Button key={kind} variant="secondary" style={selectionStyle(config.create_target === kind)} accessibilityState={{ selected: config.create_target === kind }} onPress={() => { configure({ create_target: kind }); setPanel(null); }}>{t(kind === 'skill' ? 'Skill' : 'Persona')}</Button>)}
           <Button variant="ghost" onPress={() => { configure({ create_target: null }); setPanel(null); }}>{t('Clear')}</Button>
         </>}

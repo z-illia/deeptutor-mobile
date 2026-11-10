@@ -1,2 +1,6 @@
-import { Redirect } from 'expo-router';
-export default function Screen() { return <Redirect href="/mobile/83" />; }
+import { MobileSettingsScreen } from '@/features/settings/MobileSettingsScreen';
+import { ScreenRoute } from '@/features/navigation/ScreenRoute';
+
+export default function Screen() {
+  return <ScreenRoute><MobileSettingsScreen appearance /></ScreenRoute>;
+}

@@ -1,3 +1,4 @@
+import { screenPath } from '@/features/navigation/paths';
 import { router, useLocalSearchParams, type Href } from 'expo-router';
 import { MobileAction, MobileChoice, MobileField, MobilePage, MobileRow, MobileText } from '@/features/mobile/ScreenLayout';
 import { Toggle } from '@/shared/ui/Controls';
@@ -12,9 +13,9 @@ export function PartnersScreen() {
   const rows = Array.isArray(remote.data) ? remote.data.filter(isRecord) : [];
   return <MobilePage title={t('Partners')}>
     {remote.loading && <LoadingState />}{!!remote.error && <InlineAlert tone="danger">{t(remote.error)}</InlineAlert>}
-    {rows.map(row => <MobileRow key={String(row.partner_id)} title={String(row.name)} description={String(row.description ?? '')} onPress={() => router.push(`/mobile/67?partnerId=${encodeURIComponent(String(row.partner_id))}` as Href)} />)}
-    <MobileAction onPress={() => router.push('/mobile/67')}>{t('Create partner')}</MobileAction>
-    <MobileAction variant="secondary" onPress={() => router.push('/mobile/72')}>{t('Partner group')}</MobileAction>
+    {rows.map(row => <MobileRow key={String(row.partner_id)} title={String(row.name)} description={String(row.description ?? '')} onPress={() => router.push(`/partners/edit?partnerId=${encodeURIComponent(String(row.partner_id))}` as Href)} />)}
+    <MobileAction onPress={() => router.push('/partners/edit')}>{t('Create partner')}</MobileAction>
+    <MobileAction variant="secondary" onPress={() => router.push('/partners/groups')}>{t('Partner group')}</MobileAction>
     <MobileAction variant="secondary" onPress={remote.refresh}>{t('Reload')}</MobileAction>
   </MobilePage>;
 }
@@ -29,14 +30,14 @@ export function PartnerScreen({ number }: { number: number }) {
     {!partnerId && <ServerForm initial={{ name: '', description: '', emoji: '', language: 'en' }} path="/partners" method="post" transform={value => {
       if (!String(value.name).trim()) throw new Error('Enter a partner name.');
       return { ...value, workspace_id: scope.selectedWorkspaceId, start: false };
-    }} onSaved={data => { if (isRecord(data) && typeof data.partner_id === 'string') router.replace(`/mobile/67?partnerId=${encodeURIComponent(data.partner_id)}` as Href); else router.replace('/mobile/66'); }} />}
+    }} onSaved={data => { if (isRecord(data) && typeof data.partner_id === 'string') router.replace(`/partners/edit?partnerId=${encodeURIComponent(data.partner_id)}` as Href); else router.replace('/partners'); }} />}
     {partnerId && isRecord(remote.data) && <>
       {number === 67 && remote.data.can_manage !== false && <ServerForm key={partnerId} initial={Object.fromEntries(['name', 'description', 'emoji', 'language'].map(key => [key, String(remote.data && isRecord(remote.data) ? remote.data[key] ?? '' : '')]))} path={base} method="patch" />}
       {number === 68 && <ServerForm key={partnerId} initial={{ content: String(remote.data.content ?? '') }} path={path} />}
       {number === 69 && remote.data.can_manage !== false && <PartnerModelForm path={base} config={remote.data} />}
       {[70, 71].includes(number) && <DataDetails value={remote.data} />}
       {number === 70 && <ServerForm initial={{ skills: '', knowledge_bases: '', notebooks: '' }} path={`${base}/assets`} method="post" transform={value => Object.fromEntries(Object.entries(value).map(([key, item]) => [key, String(item).split(',').map(name => name.trim()).filter(Boolean)]))} onSaved={remote.refresh} />}
-      {[67, 68, 69, 70, 71].filter(item => item !== number).map(item => <MobileRow key={item} title={t(({ 67: 'Identity', 68: 'Personality', 69: 'Model & tools', 70: 'Library', 71: 'Review partner' } as Record<number, string>)[item])} onPress={() => router.push(`/mobile/${item}?partnerId=${encodeURIComponent(partnerId)}` as Href)} />)}
+      {[67, 68, 69, 70, 71].filter(item => item !== number).map(item => <MobileRow key={item} title={t(({ 67: 'Identity', 68: 'Personality', 69: 'Model & tools', 70: 'Library', 71: 'Review partner' } as Record<number, string>)[item])} onPress={() => router.push(`${screenPath(item)}?partnerId=${encodeURIComponent(partnerId)}` as Href)} />)}
     </>}
     <MobileAction variant="secondary" onPress={remote.refresh}>{t('Reload')}</MobileAction>
   </MobilePage>;

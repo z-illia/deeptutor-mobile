@@ -16,7 +16,7 @@ export function WorkspaceSheet({ open, onClose }: { open: boolean; onClose: () =
     <WorkspaceList open={open} onSelected={() => { onClose(); router.replace(switchDestination(path) as Href); }} />
     <Button variant="ghost" onPress={() => go('/settings/workspace')}>{t('Manage workspaces')}</Button>
     <View style={{ height: 1, backgroundColor: colors.border }} />
-    <Button variant="ghost" onPress={() => go('/mobile/81')}>{t('Settings')}</Button>
+    <Button variant="ghost" onPress={() => go('/settings')}>{t('Settings')}</Button>
     {f.profile && <><DText role="small" muted>{f.profile.username}</DText><Button variant="ghost" onPress={() => go('/profile')}>{t('My profile')}</Button>{f.profile.role === 'admin' && <Button variant="ghost" onPress={() => go('/admin/users')}>{t('Admin')}</Button>}<Button variant="ghost" onPress={() => go('/session-handoff')}>{t('Public device sign-in')}</Button><Button variant="ghost" onPress={() => { f.signOut(); onClose(); router.replace('/login'); }}>{t('Sign out')}</Button></>}
   </Dialog>;
 }
