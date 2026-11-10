@@ -1,7 +1,0 @@
-{
-  "forbidden": "simulated HTTP 403 displays permission error",
-  "network": "simulated network failure is distinct from authentication",
-  "mode": "live PUT outline accepted",
-  "confirmations": "reset confirmation blocks unconfirmed mutation; no destructive action executed",
-  "signIn": "live unauthenticated redirect preserves activity and session query"
-}
