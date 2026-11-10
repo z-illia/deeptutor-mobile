@@ -33,9 +33,10 @@ export function MobilePage({ title, children, footer, fallback = '/account', tab
     </KeyboardAvoidingView>
   </SafeAreaView>;
 }
-export function MobileRow({ title, description, selected, children, ...props }: Omit<ComponentProps<typeof Pressable>, 'children'> & { title: string; description?: string; selected?: boolean; children?: ReactNode }) {
+export function MobileRow({ title, description, selected, icon, children, ...props }: Omit<ComponentProps<typeof Pressable>, 'children'> & { title: string; description?: string; selected?: boolean; icon?: ReactNode; children?: ReactNode }) {
   const { colors } = useDesign();
   return <Pressable {...props} accessibilityRole={props.accessibilityRole ?? 'button'} accessibilityLabel={props.accessibilityLabel ?? title} aria-selected={selected} accessibilityState={{ ...props.accessibilityState, selected }} style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: colors.border, opacity: props.disabled ? 0.5 : pressed ? 0.65 : 1 })}>
+    {icon && <View pointerEvents="none" aria-hidden>{icon}</View>}
     <View style={{ flex: 1, gap: 4 }}><MobileText style={{ fontWeight: '500' }}>{title}</MobileText>{!!description && <MobileText muted>{description}</MobileText>}</View>{children ?? (selected ? <Check size={20} color={colors.primary} /> : <ChevronRight size={20} color={colors.mutedForeground} />)}
   </Pressable>;
 }

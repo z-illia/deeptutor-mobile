@@ -21,7 +21,7 @@ export function MobileWorkspaceScreen() {
     <MobileAction variant="secondary" disabled={disabled} onPress={() => void refresh()}>{t('Refresh')}</MobileAction>
     <MobileRow title={t('General workspace')} selected={selected === ''} disabled={disabled} onPress={() => setSelected('')} />
     {state.workspaces.map(item => <MobileRow key={item.workspace_id} title={item.display_name} selected={selected === item.workspace_id} disabled={disabled || !!state.error} onPress={() => setSelected(item.workspace_id)} />)}
-    <MobileRow title={t('Manage workspaces')} onPress={() => router.push('/settings/workspace')} />
     <MobileAction disabled={disabled || !exists || !!state.error} loading={state.switching} onPress={() => { void state.selectWorkspace(selected).then(ok => { if (ok) router.replace('/learning'); }); }}>{t('Use selected workspace')}</MobileAction>
+    <MobileAction variant="secondary" onPress={() => router.push('/settings/workspace')}>{t('Manage workspaces')}</MobileAction>
   </MobilePage>;
 }

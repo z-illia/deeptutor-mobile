@@ -37,7 +37,8 @@
             "image": "./assets/brand/color-logo.png"
           }
         }
-      ]
+      ],
+      "./plugins/withAndroidHttp.cjs"
     ],
     "experiments": {
       "typedRoutes": true,

@@ -114,12 +114,15 @@ test('removed workspace is marked unavailable without silently changing data sco
 });
 
 test('workspace repository validates responses, excludes archived/general duplicates, and isolates persisted identities', async () => {
-  let data = { workspaces: [a, a, { ...a, workspace_id: 'old', archived: true }, { ...a, workspace_id: '' }] };
+  let data = { workspaces: [a, a, { ...a, workspace_id: 'old', archived: true }, { ...a, workspace_id: '' },
+    { ...a, workspace_id: 'system', display_name: 'System workspace', kind: 'system' },
+    { ...a, workspace_id: 'general', display_name: 'General workspace', kind: 'general' },
+    { ...a, workspace_id: 'custom', display_name: 'General workspace', kind: 'workspace' }] };
   const requests = [];
   const load = createLoader({ '@/api/client': { api: { get: async (...args) => { requests.push(args); return { data }; } } } });
   const repo = load('src/features/workspaces/repository.ts');
   const signal = new AbortController().signal;
-  assert.deepEqual(await repo.listWorkspaces(signal), [a]);
+  assert.deepEqual(await repo.listWorkspaces(signal), [a, data.workspaces[6]]);
   assert.equal(requests[0][0], '/settings/workspace/registrations');
   assert.equal(requests[0][1].signal, signal);
   data = { workspaces: [{ workspace_id: 'bad' }] };
