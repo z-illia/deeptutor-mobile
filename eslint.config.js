@@ -5,7 +5,7 @@ const expoConfig = require('eslint-config-expo/flat');
 module.exports = defineConfig([
   {
     // The audit is reference material, including a separate Next.js checkout.
-    ignores: ['docs/mobile-ui/audit/**', 'dist/**', '.expo/**'],
+    ignores: ['dist/**', '.expo/**'],
   },
   expoConfig,
 ]);

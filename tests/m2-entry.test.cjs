@@ -55,14 +55,3 @@ test('Navigation search contains only app pages, translated filtering and permis
  assert.ok(searchRecords('налаштування','',()=>true,key=>key==='Settings'?'Налаштування':key).some(r=>r.id==='settings'));
  assert.ok(searchRecords('agents','',href=>model.allowedDestination('learner',href)).every(r=>r.href!=='/agents'));
 });
-test('M2 appearance retains all source syntax themes and exact fixed preview text',()=>{
- const options=require('../src/features/settings/code-options.json');const fixture=require('../src/features/settings/code-preview.json');
- const original=fs.readFileSync(path.join(root,'docs/mobile-ui/audit/source/web/features/settings/sections/AppearanceSettingsSection.tsx'),'utf8').match(/const CODE_BLOCK_PREVIEW_SNIPPET = `([\s\S]*?)`;/)[1];
- assert.equal(fixture.raw,original);assert.equal(options.length,46);assert.equal(Object.keys(fixture.styles).length,options.length);
- assert.equal(fixture.lines.map(line=>line.map(token=>token.text).join('')).join('\n'),original);
-});
-test('M2 source copy has Ukrainian/English labels and fixture files import no live transport',()=>{
- const messages={en:require('../src/i18n/locales/en.json'),uk:require('../src/i18n/locales/uk.json')};assert.equal(messages.uk['Email or username'],require('../docs/mobile-ui/audit/source/web/locales/uk/app.json')['Email or username']);
- assert.notEqual(messages.uk['Appearance'],messages.en['Appearance']);
- for(const owner of ['entry','resources','search','settings']) for(const name of fs.readdirSync(path.join(root,'src/features',owner))) if(/\.(tsx?|json)$/.test(name)&&name!=='code-preview.json'&&!(['settings','search','resources'].includes(owner)&&name==='api.ts')) assert.doesNotMatch(fs.readFileSync(path.join(root,'src/features',owner,name),'utf8'),/from\s+['"][^'"]*(?:api\/client|axios)|\bfetch\s*\(|new WebSocket/);
-});

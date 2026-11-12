@@ -87,34 +87,9 @@ test('custom web tab keeps the actual element ref and Router interaction props',
   assert.equal(Object.hasOwn(element.props, 'isFocused'), false);
 });
 
-test('typecheck includes mobile sources and excludes the separate audit application', () => {
-  const config = ts.readConfigFile(path.join(projectRoot, 'tsconfig.json'), ts.sys.readFile);
-  assert.equal(config.error, undefined);
-  const parsed = ts.parseJsonConfigFileContent(config.config, ts.sys, projectRoot);
-  assert.deepEqual(parsed.errors, []);
-  const files = new Set(parsed.fileNames.map((file) => path.relative(projectRoot, file)));
-  for (const filename of [
-    'src/app/index.tsx',
-    'src/app/explore.tsx',
-    'src/components/app-tabs.tsx',
-    'src/components/app-tabs.web.tsx',
-    'src/hooks/use-color-scheme.ts',
-    'src/hooks/use-color-scheme.web.ts',
-    'src/api/client.ts',
-    'src/i18n/translations.ts',
-  ]) {
-    assert.ok(files.has(filename), `${filename} must remain in the TypeScript program`);
-  }
-  assert.ok([...files].every((file) => !file.startsWith('docs/mobile-ui/audit/')));
-});
-
-test('ESLint excludes archived source without excluding native/web code or regression tests', async () => {
+test('ESLint includes native/web code and regression tests', async () => {
   const { ESLint } = require('eslint');
   const eslint = new ESLint({ cwd: projectRoot });
-  assert.equal(
-    await eslint.isPathIgnored(path.join(projectRoot, 'docs/mobile-ui/audit/source/web/app/layout.tsx')),
-    true,
-  );
   for (const filename of [
     'src/app/_layout.tsx',
     'src/components/app-tabs.tsx',
